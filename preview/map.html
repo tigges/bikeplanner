@@ -369,7 +369,7 @@ function sheet(){
       <div class="block"><h3>Days</h3><div id="dayslist"></div></div>
       ${sel?`<div class="block"><h3>On this day</h3>
         ${sparkSVG(sel.elev, 320, 36)}
-        <div class="photos">${(sel.photos||[]).map(ph=>`<img src="${ph.src}" alt="${ph.label}"><span>${ph.label}</span>`).join("")}</div>
+        <div class="photos">${(sel.photos||[]).map(ph=>`<div><img src="${ph.src}" alt="${ph.label}"><span>${ph.label}</span></div>`).join("")}</div>
         <p class="tm" style="margin-top:10px">Gold on the map is this stretch. Click the day again for the whole ride.</p>
       </div>`:""}
       <p class="note">${day?"The atlas stays a figure — gold marks the day, photos sit here beside it.":"Coral line = the ride. Click a day in the list or on the map. Ghost dashes switch ride."}</p>`;

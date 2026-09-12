@@ -10,5 +10,5 @@ This repo holds the design plan and static previews.
 - [MAP.md](MAP.md) — schematic paper atlas; network → ride → day.
 - [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation on the tour sheet, beside a map figure.
 - [preview/hub.html](preview/hub.html) — country hub.
-- [preview/switzerland.html](preview/switzerland.html) — trip gallery (photographs of places, no sparks).
-- [preview/map.html](preview/map.html) — tour sheet: elevation and days beside a labeled atlas.
+- [preview/switzerland.html](preview/switzerland.html) — **Switzerland first:** 29 trips, filters, paper atlas, tour sheet.
+- [preview/map.html](preview/map.html) — redirects into the Swiss page.

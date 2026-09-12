@@ -254,19 +254,18 @@ images/{slug}.json
 
 ---
 
-## 10. Next steps (pick one to implement first)
+## 10. Next steps
 
-Clean, bright, simple. One paper design. No new product features until the door matches the data.
+Clean, bright, simple. One paper design. **Switzerland first** — the catalogue is complete.
 
-| # | What | Why this order | Risk |
-|---|---|---|---|
-| **1. Hub** | Replace `docs/index.html` with the three country photo cards. Japan line: Shimanami, Biwaichi, Ring-Ring. | Highest feeling-of-new. No planner touch. | Low |
-| **2. Japan gallery** | Photo cards for the 10 ranked trips (Ring-Ring now Top 4). Same pattern as the Swiss mock. | The catalogue just grew; Tokyo’s easy loop is hidden behind “top”. | Low |
-| **3. Japan atlas** | Paper coastline + lakes (Biwa, Kasumigaura) as a figure beside the gallery/sheet. Do not fill the islands as a blob. | Ring-Ring and Biwaichi only read if the lake is there. | Medium |
-| **4. Planner sheet** | Restyle `template.html` onto the magazine sheet (stats, elevation, day list, map figure). All three countries. | Same chrome everywhere. Bigger than the door. | High |
-| **5. Spain trips** | Catalogue the crossing (and maybe a Pyrenees week / Camino week). Then Spain gets a gallery. | Data, not paint. | Medium |
-
-**Recommended first:** **1. Hub.** Then 2 + 3 together for Japan (cards and the lake atlas), then 4.
+| # | What | Status |
+|---|---|---|
+| **CH** | Swiss gallery + paper atlas + tour sheet from the live 29-trip file | **this slice** |
+| **1. Hub** | Three country photo cards on `/` | Next |
+| **2. Japan gallery** | Same pattern as Switzerland | After CH |
+| **3. Japan atlas** | Coastline + lakes (Biwa, Kasumigaura) | After CH |
+| **4. Planner sheet** | Restyle `template.html` | After the door |
+| **5. Spain trips** | Catalogue the crossing | Data |
 
 Do not start with 4. The live planner still works; the list on `/` does not say Shimanami.
 

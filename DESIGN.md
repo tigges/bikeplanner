@@ -49,10 +49,10 @@ The problem is the **door**. Nothing on the hub says Shimanami, Furka, Camino, B
 
 ## 3. What the repository already has (the hub hides this)
 
-As of 2026-09-12 (`tigges/routeplanner` `65545da`):
+As of 2026-09-12 (`tigges/routeplanner` `3b29fae`, live hub still a dark 1 KB list):
 
 1. **Trip catalogues**
-   - Japan: 19 trips. Cape-to-cape plus Shimanami, **Biwaichi (Top 2)**, Noto, Toyama Bay, Pacific Cycling Road, Kibi, Nichinan, named sections. Nine have `top` + `why`.
+   - Japan: 19 trips. Cape-to-cape plus Shimanami (Top 1), **Biwaichi (Top 2)**, Noto, **Ring-Ring Road (Top 4)** — Tsukuba → Tsuchiura, 110 km, 91 m climb, nearest to Tokyo. Ten have `top` + `why`.
    - Switzerland: 29 trips. E–W and N–S crossings, national routes 1–9 and 99, pass days, loops. Fifteen ranked Top 5/10/15.
    - Spain: **no trips file**. One crossing with forks. Next data job, not a new website.
 
@@ -60,11 +60,19 @@ As of 2026-09-12 (`tigges/routeplanner` `65545da`):
 
 3. **Sights on every segment** — `sight_list`. Japan ~6,148 points. The page already drops memorial / artwork / monument. Remaining kinds are the visual ones: peak, viewpoint, cape, castle, waterfall, beach, attraction.
 
-4. **Water and land** — lakes, named rivers, country fill (Spain, Switzerland). Japan stays a coastline. Friendliness strip: signed / mixed / busy.
+4. **Water and land**
+   - Spain / Switzerland: country fill + lakes + rivers.
+   - Japan: **coastline only** (`land_fill: false`) plus `japan_water.geojson` (lakes ≥ 20 km², named rivers). Biwa and Kasumigaura are on the graph. Without those lakes, Biwaichi and Ring-Ring are a scribble on empty sea.
+   - Friendliness strip: signed / mixed / busy.
 
-5. **Multi-page country, already solved** — Switzerland is two graphs; the picker jumps with `#trip=`. Architecture is one hub, several heavy pages.
+5. **Japan map, newly live**
+   - Towns Tsuchiura and Itako; forks at Tsukuba (Pacific vs Ring-Ring) and Tsuchiura (Kasumigaura south vs north shore).
+   - `entryTowns`: extra start/end towns (Nichinan, Wajima, Suzu, …) without being trunks.
+   - Loop trips **keep their own fork picks** (Biwa east/west, Kasumigaura north/south). Needed for loops that close against the default shore.
 
-6. **Not to merge** — `JAPMAP` / `JAPANRIDE` are separate experiments.
+6. **Multi-page country, already solved** — Switzerland is two graphs; the picker jumps with `#trip=`. Architecture is one hub, several heavy pages.
+
+7. **Not to merge** — `JAPMAP` / `JAPANRIDE` are separate experiments.
 
 The tool does not need new features. It needs a front that shows what is already there, and one visual system from the first photograph through the effort slider.
 
@@ -246,18 +254,24 @@ images/{slug}.json
 
 ---
 
-## 10. Build order
+## 10. Next steps (pick one to implement first)
 
-**Phase A — Hub.** Replace `docs/index.html` with the three country photo cards. No planner changes. Highest feeling-of-new, least risk.
+Clean, bright, simple. One paper design. No new product features until the door matches the data.
 
-**Phase B — Gallery photos.** `images/*.json` and a real photograph on each trip card. Switzerland and Japan become magazines. Spain unchanged. Keep filters, map hover, `#trip=`.
+| # | What | Why this order | Risk |
+|---|---|---|---|
+| **1. Hub** | Replace `docs/index.html` with the three country photo cards. Japan line: Shimanami, Biwaichi, Ring-Ring. | Highest feeling-of-new. No planner touch. | Low |
+| **2. Japan gallery** | Photo cards for the 10 ranked trips (Ring-Ring now Top 4). Same pattern as the Swiss mock. | The catalogue just grew; Tokyo’s easy loop is hidden behind “top”. | Low |
+| **3. Japan atlas** | Paper coastline + lakes (Biwa, Kasumigaura) as a figure beside the gallery/sheet. Do not fill the islands as a blob. | Ring-Ring and Biwaichi only read if the lake is there. | Medium |
+| **4. Planner sheet** | Restyle `template.html` onto the magazine sheet (stats, elevation, day list, map figure). All three countries. | Same chrome everywhere. Bigger than the door. | High |
+| **5. Spain trips** | Catalogue the crossing (and maybe a Pyrenees week / Camino week). Then Spain gets a gallery. | Data, not paint. | Medium |
 
-**Phase C — Planner onto the magazine sheet.** Same instruments, same page frame as the hub. Elevation and day list on the left; labeled atlas as a figure. Photos on the sheet for the selected day. Clickable profile bands.
+**Recommended first:** **1. Hub.** Then 2 + 3 together for Japan (cards and the lake atlas), then 4.
 
-**Phase D — Spain trips.** Same format as `switzerland-trips.json`: the crossing, a Pyrenees week, a Camino-only week, Fisterra extra. Then Spain gets a gallery too.
+Do not start with 4. The live planner still works; the list on `/` does not say Shimanami.
 
 ---
 
 ## 11. Success
 
-Someone who has never seen the tool opens the hub, knows the country from the picture, picks Biwaichi or the Rhône from a card that looks like a place, and only then hits the effort slider — still on the same cream page. The numbers stay honest. The pictures make the numbers mean a road.
+Someone who has never seen the tool opens the hub, knows the country from the picture, picks Biwaichi or Ring-Ring or the Rhône from a card that looks like a place, and only then hits the effort slider — still on the same cream page. The numbers stay honest. The pictures make the numbers mean a road.

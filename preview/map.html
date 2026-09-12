@@ -42,7 +42,7 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 .stats{display:flex;gap:28px;margin:18px 0 22px}
 .stats b{display:block;font-family:Georgia,serif;font-size:28px;font-weight:600;line-height:1.1}
 .stats span{font-size:12px;color:var(--mute)}
-.block{margin:0 0 22px}
+.block{margin:0 0 16px}
 .block h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 8px;font-weight:600}
 #profwrap svg{display:block;width:100%;height:72px;border-radius:10px;background:var(--card);border:1px solid var(--line)}
 #proflbl{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:6px}
@@ -61,7 +61,7 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 .spark{display:block;width:100%;height:28px;margin-top:6px}
 .photos{display:flex;gap:8px;margin-top:12px}
 .photos div{display:flex;flex-direction:column;gap:4px}
-.photos img{width:112px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.photos img{width:96px;height:68px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
 .photos span{font-size:11px;color:var(--mute)}
 .mapcard{background:#efe8dc;border:1px solid var(--line);border-radius:16px;overflow:hidden;position:sticky;top:16px;height:calc(100vh - 200px);min-height:520px}
 .mapcard svg{width:100%;height:100%;display:block}
@@ -151,8 +151,8 @@ function friendHTML(t){
 const TOWNS = [
   {label:"Genève", x:48, y:508},
   {label:"Lausanne", x:158, y:478},
-  {label:"Montreux", x:214, y:368},
-  {label:"Sion", x:258, y:378},
+  {label:"Montreux", x:188, y:352},
+  {label:"Sion", x:278, y:372},
   {label:"Brig", x:352, y:458},
   {label:"Andermatt", x:512, y:338},
   {label:"Luzern", x:398, y:228},
@@ -371,7 +371,6 @@ function sheet(){
       </div>
       <div class="block"><h3>Elevation</h3><div id="profwrap">${profileSVG(t)}</div></div>
       ${sel?`<div class="block"><h3>On this day</h3>
-        ${sparkSVG(sel.elev, 320, 36)}
         <div class="photos">${(sel.photos||[]).map(ph=>`<div><img src="${ph.src}" alt="${ph.label}"><span>${ph.label}</span></div>`).join("")}</div>
       </div>`:""}
       ${friendHTML(t)}

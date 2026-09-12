@@ -1,279 +1,262 @@
-# Visual routeplanner — design plan
+# Design proposal — visual front for the cycle-tour planners
 
-This is a plan, not a rebuild. The live planners stay as they are until a later pass
-lifts this layout onto them. The product already has more story, trips and sights
-than the pages show.
+Plan only. Do not rebuild the live planners in this pass.
 
-Live site: [tigges.github.io/routeplanner](https://tigges.github.io/routeplanner/).
-Source of truth: [tigges/routeplanner](https://github.com/tigges/routeplanner).
-This repo (`bikeplanner`) is the place to try a visual layer without touching the
-11 MB self-contained planner pages.
+Live site: [tigges.github.io/routeplanner](https://tigges.github.io/routeplanner/).  
+Source of truth: [tigges/routeplanner](https://github.com/tigges/routeplanner).  
+This repo (`bikeplanner`) is mocks and this proposal.
+
+Mocks: [preview/hub.html](preview/hub.html), [preview/switzerland.html](preview/switzerland.html), [preview/map.html](preview/map.html). Detail notes: [MAP.md](MAP.md), [GRAPHS.md](GRAPHS.md).
 
 ---
 
-## What the live site is today
+## 1. Verdict
+
+**One site, three rooms, two atmospheres.**
+
+```
+HUB (paper)          Where to ride — three country photographs
+   click a country
+GALLERY (paper)      Pick a trip — photograph + why + km
+   click a trip
+PLANNER (dark)       The tool you already have
+   click a day
+DAY                  Zoom that overnight; photos in popup and day rail
+```
+
+Do **not** split Japan / Switzerland / Spain into separate sites. The data is already split (one 2–11 MB HTML page per graph). The product should not be.
+
+Do **not** turn the planner into a paper atlas or a tiled map. Discovery is light and photographic. The planner stays the night workshop.
+
+---
+
+## 2. What the live site is
 
 Three self-contained cycle-tour planners behind a dark text list.
 
 | Page | What it is | Size | Opens on |
 |---|---|---|---|
-| Hub `/` | Title, one-line blurb, three links + dates | 1 KB | Country list |
-| [Japan](https://tigges.github.io/routeplanner/japan/) | Cape Sōya → Cape Sata, 113 towns, 126 segments | 11 MB | **Trip picker** (19 trips) |
-| [Switzerland](https://tigges.github.io/routeplanner/switzerland/) | National routes, passes, loops; second graph at `/switzerland-north-south/` | 3.2 MB + 0.8 MB | **Trip picker** (29 trips, default filter `top`) |
-| [Spain](https://tigges.github.io/routeplanner/spain/) | Cap de Creus → Cabo Fisterra, Camino-ish northern crossing | 2.3 MB | Planner (no trips yet) |
+| Hub `/` | Title, blurb, three links | 1 KB | Country list |
+| [Japan](https://tigges.github.io/routeplanner/japan/) | Cape Sōya → Cape Sata | 11 MB | Trip picker (19 trips) |
+| [Switzerland](https://tigges.github.io/routeplanner/switzerland/) | National routes, passes, loops; second graph at `/switzerland-north-south/` | 3.2 + 0.8 MB | Trip picker (29 trips, default `top`) |
+| [Spain](https://tigges.github.io/routeplanner/spain/) | Cap de Creus → Cabo Fisterra | 2.3 MB | Planner (no trips yet) |
 
-The planner itself is a serious tool: pick start and end, choose at each fork,
-set daily effort, get days computed (not stored). Elevation on every segment;
-shops, beds, baths, taps and stations within 2 km. Vehicle switch (bicycle /
-e-bike / 45 km/h speed pedelec). Train hops when a day cap is set. Copy link,
-CSV, GPX. Favourites in the browser. English / local names. Schematic SVG map
-(country fill, lakes, rivers), not tiled OSM.
+The planner is the product: pick start and end, choose at each fork, set daily effort, get **days computed not stored**. Elevation on every segment; shops, beds, baths, taps, stations within 2 km. Bicycle / e-bike / 45 km/h pedelec. Train hops. GPX / CSV / hash `#r=` / `#trip=`. Schematic SVG map, not OSM tiles.
 
-That tool is the product. The problem is the **door**: a grey list, then a dense
-control panel. Nothing on the hub says “Shimanami”, “Furka”, “Camino”. Nothing
-shows a place.
+The problem is the **door**. Nothing on the hub says Shimanami, Furka, Camino, Biwaichi. Nothing shows a place.
 
 ---
 
-## What the repository already has (and the hub hides)
+## 3. What the repository already has (the hub hides this)
 
-Published **today** (2026-09-12) and easy to miss from the hub:
+As of 2026-09-12 (`tigges/routeplanner` `65545da`):
 
-1. **Trip catalogues, not just trunks**
-   - Japan: 19 trips in `config/japan-trips.json` — cape-to-cape plus Shimanami,
-     **Biwaichi** (Top 2, Makino loop via Nagahama and Hikone), Noto, Toyama
-     Bay, Pacific Cycling Road, Kibi Plain, Nichinan, and named sections. Nine
-     carry a `top` rank and a one-line `why`.
-   - Switzerland: 29 trips in `config/switzerland-trips.json` — E–W and N–S
-     crossings, national routes 1–9 and 99, pass days, loops (Three passes,
-     Bodensee, Léman, Three Lakes). Fifteen are ranked Top 5/10/15.
-   - Spain: **no trips file yet**. One crossing with forks (coast vs Pyrenees,
-     San Sebastián, …). The trip layer is the obvious next data job for Spain.
+1. **Trip catalogues**
+   - Japan: 19 trips. Cape-to-cape plus Shimanami, **Biwaichi (Top 2)**, Noto, Toyama Bay, Pacific Cycling Road, Kibi, Nichinan, named sections. Nine have `top` + `why`.
+   - Switzerland: 29 trips. E–W and N–S crossings, national routes 1–9 and 99, pass days, loops. Fifteen ranked Top 5/10/15.
+   - Spain: **no trips file**. One crossing with forks. Next data job, not a new website.
 
-2. **Guide copy already written**
-   Each ranked trip has `name`, `sub`, `note`, `why`, `tags`, difficulty from
-   climb/km (easy / moderate / hard / very hard), and a stored `geo` line so
-   another page can draw it. Switzerland opens the picker on `top`. Japan uses
-   `routeWord: "famous routes"`.
+2. **Guide copy** — `name`, `sub`, `note`, `why`, `tags`. Difficulty is computed (climb/km), never tagged. `geo` line so another page can draw the trip.
 
-3. **Sights, already on every segment**
-   `seg_scores.json` → `sight_list`: `[km, name_en, kind, dist_km, name_local]`.
-   Japan alone: **6,148** named points. The page already plots them when zoomed
-   under ~60 km, and already **drops** `memorial` / `artwork` / `monument` on
-   Japan (Switzerland drops memorial + artwork). The remaining kinds are the
-   visual ones: attraction, museum, peak, viewpoint, cape, castle, ruins,
-   waterfall, beach, hot spring.
+3. **Sights on every segment** — `sight_list`. Japan ~6,148 points. The page already drops memorial / artwork / monument. Remaining kinds are the visual ones: peak, viewpoint, cape, castle, waterfall, beach, attraction.
 
-4. **Water and land as map character**
-   Lakes and named rivers (step 12). Closed borders fill as land (Spain,
-   Switzerland). Japan stays a coastline. Bike-friendliness colours the route
-   strip (signed/quiet / mixed / busy).
+4. **Water and land** — lakes, named rivers, country fill (Spain, Switzerland). Japan stays a coastline. Friendliness strip: signed / mixed / busy.
 
-5. **Multi-page country, already solved**
-   Switzerland is two graphs (`switzerland` + `switzerland-north-south`,
-   `hub: false` on the second). The picker draws both networks and jumps with
-   `#trip=`. Japan and Spain are one page each. The architecture is “one hub,
-   several heavy pages”, not three websites.
+5. **Multi-page country, already solved** — Switzerland is two graphs; the picker jumps with `#trip=`. Architecture is one hub, several heavy pages.
 
-6. **Related experiments, not to merge**
-   `JAPMAP` / `JAPANRIDE` are separate Vite apps; the GitHub Pages URL is
-   currently the unbuilt source. Keep routeplanner as the published product.
+6. **Not to merge** — `JAPMAP` / `JAPANRIDE` are separate experiments.
+
+The tool does not need new features. It needs a front that shows what is already there.
 
 ---
 
-The map, and how a trip becomes a ride and a day, is in [MAP.md](MAP.md).
-Difficulty, effort and elevation stay in the dark planner:
-[GRAPHS.md](GRAPHS.md). Clickable mock: [preview/map.html](preview/map.html).
+## 4. Two atmospheres, one accent
+
+**Discovery (hub + gallery)** — paper `#f6f1ea`, ink `#1c1916`, mute `#6f675e`. Serif titles, one photograph per country and per trip, short sentences. Coral `#f0713f` is the route colour everywhere.
+
+**Planner** — night `#0a141b`. Schematic map, coral ride, ghost network `#2a4150`, blue day dots. Elevation profile, effort bars, friendliness strip stay exactly as they are (the Spain sidebar). Photos attach *beside* the map (title, popup, day rail). They do not replace the line and they do not go on the gallery cards as charts.
+
+Tone, already in the data: everyday English, numbers not adjectives, local name next to English.
+
+Type: one serif for place names, system UI sans for controls. No icon font. Motion: a slow image fade; the planner already pans.
 
 ---
 
-## Verdict: one site, three rooms — do not split countries
+## 5. The three rooms
 
-**Build one site with a visual front page.** Keep each country’s planner as its
-own page (they are 2–11 MB of inlined graph data). Do **not** split into
-`japan.github.io`, `swiss-rides.com`, etc.
-
-| Split by country | One site, visual hub |
-|---|---|
-| Three brands, three navs, three deploys | One door: “where do you want to ride?” |
-| Hub already exists; Switzerland already spans two pages | Same URL family, shared template, shared trips format |
-| A Japan-only visitor still needs a country card | Hub → country gallery → planner is three clicks, not three products |
-| Photos and type can still be country-coloured | Spain can join the trip format later without a new site |
-
-The **data** is already split (one config, one HTML blob per graph). The **product**
-should not be. A rider comparing “a week in the Alps” vs “Shimanami plus the
-Inland Sea” should not leave the site.
-
-Internal page split (already correct):
+Internal URLs stay:
 
 ```
-/                         visual hub (countries)
-/japan/                   trip gallery, then planner
-/switzerland/             trip gallery (all 29, including N–S)
-/switzerland-north-south/  planner graph only (stay off the hub)
+/                         visual hub
+/japan/                   gallery, then planner
+/switzerland/             gallery (all 29, including N–S)
+/switzerland-north-south/  planner graph only (off the hub)
 /spain/                   planner today; gallery once trips exist
 ```
 
-Deep links stay: `#trip=shimanami`, `#r=…` for a saved route.
+Deep links stay: `#trip=shimanami`, `#r=…`, `#trip=r1&day=3`.
 
----
+### Room 1 — Hub: “Where to ride”
 
-## Design idea (simple, fresh, modern)
-
-Two atmospheres, one accent.
-
-**Discovery is light and photographic.** Paper background, big place names,
-one photograph per country and per trip. Short sentences. The existing coral
-`#f0713f` stays the route colour — it already means “the line you ride”.
-
-**The planner stays a dark workshop.** The schematic map needs contrast; do not
-paste a postcard over it. The map is the identity of the tool. Photos attach
-*beside* the map (cards, popups, day list), they do not replace the line.
-Elevation, effort and the friendliness strip stay in that dark sidebar — they
-already look like the Spain screenshot. Do not restyle them onto paper or
-put them on the gallery cards.
-
-Tone of voice, already in the data: everyday English, numbers not adjectives,
-local name next to English. Keep that. The hub copy should be as short as the
-trip `why` lines.
-
-### Visual system
-
-- **Type:** one serif for titles (source of place-feeling), system UI sans for
-  controls. No icon font, no illustration library.
-- **Colour:** paper `#f6f1ea`, ink `#1c1916`, mute `#6f675e`, route `#f0713f`,
-  map night `#0a141b` (unchanged). Country tints only as photo grade, not as
-  three palettes.
-- **Layout:** full-bleed photo cards, 12-column-ish but really “one stack on
-  the phone, three country cards on a desk”.
-- **Motion:** none except a slow image fade. The planner already pans/zooms.
-- **Photography:** real places, never generated “cycle touring” stock. Credit
-  on the image.
-
-### Three screens
-
-**1. Hub — “Where to ride”**  
 Three country cards, not a list.
 
-- Japan — a Shimanami bridge or cape light. Overline “19 trips · Biwaichi, Shimanami, cape to cape”.
-- Switzerland — a pass road or lake. Overline “29 trips · national routes 1–9”.
-- Spain — Fisterra or the Camino meseta. Overline “Cap de Creus to Fisterra”.
+- **Japan** — Shimanami bridge or cape light. Overline: 19 trips · Biwaichi, Shimanami, cape to cape.
+- **Switzerland** — pass road or lake. Overline: 29 trips · national routes 1–9.
+- **Spain** — Fisterra. Overline: Cap de Creus to Fisterra.
 
-Footer stays the GitHub credit. Add one line: days are computed, not stored.
+One line in the lede: days are computed, not stored. Footer stays the GitHub credit.
 
-**2. Country gallery — “Pick a trip”**  
-This **replaces** the current picker sidebar list as the first impression.
-Same trips, same filters (days, easy/hard, top, tags), but each card is a
-photograph + the existing badge, name, `why`, km / climb / days.
+### Room 2 — Gallery: “Pick a trip”
 
-The schematic map stays — it is how you see how trips share a network — but
-it sits as a stage behind or beside the cards, not as the only picture.
+This **replaces** the current picker list as the first impression of a country.
 
-Spain, until it has trips: skip this screen, open the planner, with a short
-photo strip of the trunk towns (Creus, Girona, Burgos, León, Santiago, Fisterra).
+Same trips, same filters (days, easy / moderate / hard, top, tags). Each card:
 
-**3. Planner — same tool, with a picture rail**
-Do not redesign the forks, effort slider, or day splitter. Add:
+- Photograph of the thing the `why` names
+- Badge, name, small difficulty pill (already on the live picker)
+- The `why`
+- `km · climb · ~days` at the country’s default effort
 
-- A **trip hero** (the trip’s photo) in the title strip, collapsed on scroll.
-- **Town and sight photos** in the existing popup (next to “Pin in Google Maps”).
-- A **day strip**: 1–3 images for the day’s best sight/town, taken from the
-  segment `sight_list` after the same kind filter the map already uses.
-- Trip cards in the picker gain a thumb image (Wikimedia) instead of only the
-  SVG outline.
+No elevation spark. No friendliness strip. No effort bar. The card is a place.
+
+The schematic map still sits beside or behind the cards so you can see how trips share a network. Hover a card or a line: that line goes coral. Click loads the ride.
+
+Layer chips on the map: **crossings · routes · sections**. They are the `kind` field. Default: crossings + routes on; sections/passes muted so 29 Swiss trips do not become spaghetti.
+
+Spain, until it has trips: skip this room, open the planner, with a short photo strip of trunk towns (Creus, Girona, Burgos, León, Santiago, Fisterra).
+
+### Room 3 — Planner: the tool, with a picture rail
+
+Do not redesign forks, effort slider, day splitter, vehicles, signed-route switch, GPX, hash.
+
+Add only:
+
+- A **trip hero** in the title strip, collapsed on scroll
+- **Town and sight photos** in the existing popup (next to “Pin in Google Maps”)
+- A **day rail**: 1–3 images for the day’s best sight/town, from `sight_list` after the same kind filter the map already uses
+
+The sidebar you already have, left as-is:
+
+- Stats (days, km, climb, % signed)
+- Whole-ride elevation, coloured by computed day
+- Friendliness strip + “colour the map line”
+- Folded Plan / Route
+- Days: `km · N eff`, relative bar, 26 px spark, shops · beds · baths · stations · longest gap
+
+Small improvement: click a profile day-band to zoom that day (the row already does this).
 
 ---
 
-## Images of key locations and route sights
+## 6. Map: one schematic, three selection levels
 
-The graph already knows *what* to photograph. It does not store pictures. Do
-not inline JPEGs into the 11 MB HTML.
+Do not invent a second map. One dark atlas.
 
-### What to show (curated, not every OSM pin)
+```
+NETWORK     all trips on the country
+   click a trip
+RIDE        one journey; days computed from effort
+   click a day
+DAY         one overnight, zoomed
+```
 
-| Layer | Source in data | How many to keep | Photo rule |
+Hover never commits. Click goes one level in. **All trips**, empty-map click, or Escape goes one level out.
+
+**Words** (so “section” is not used two ways):
+
+| Word | In the data | On the map |
+|---|---|---|
+| **Trip** | Catalogue card (`kind`: crossing / route / pass / section) | A line + badge on the network |
+| **Ride** | Loaded start→end + fork picks | The coral line |
+| **Day** | One computed overnight | Numbered dot; click zooms |
+| **Section** (catalogue) | A *kind* of trip — loop, lake circuit, pass day | Drawn quieter than numbered routes |
+
+A catalogue section (Three passes loop) is still a trip. Once you click it, it is the **ride**; its days are the **days**.
+
+**Look** — night workshop, not paper, not tiles:
+
+- Land `#13242f`, water from `P.water`, ghost `#2a4150` dashed
+- Crossings dashed; national routes solid with a numbered pill; sections thinner until hover
+- The ride: coral `#f0713f`
+- Day ends: existing blue discs
+- Towns named under ~300 km, sights under ~60 km (live rule)
+
+Photos are not on the map at network or ride. At day zoom they live in the popup and the day rail so the diagram stays tappable. Facilities stay as dots, from ride zoom onward.
+
+Ghost line click: “Rhine · click to switch ride” — new ride, days recompute. Forks stay in folded Route; they rewrite the coral line, they are not a fourth mode.
+
+Vehicle, signed-route, train hops, start/end: they rewrite the ride. The map stays at ride or day.
+
+**Phone:** map on top (~44vh, already the live split). Gallery: swipe cards, map highlights. Ride: the day list is the scroller.
+
+---
+
+## 7. Difficulty, effort, elevation
+
+They are three instruments, not one chart. They live in the dark planner.
+
+| Instrument | What it is |
+|---|---|
+| **Difficulty** | Climb per km. `<8` easy, `<14` moderate, `<20` hard, else very hard. Computed, never tagged. |
+| **Effort** | `km + climb/10` (e-bike: climb counts a third). Slider = daily budget. Days computed, not stored. |
+| **Elevation** | `SD[id].prof` on every segment. Whole-ride profile coloured by the split; each day inherits a spark. |
+
+There is no effort-over-distance line. Do not invent one. Do not put elevation on the map. Do not put sparks on gallery cards. Do not restyle the sidebar onto paper.
+
+Cape to cape is **easy** (7.4 m/km) and 3,500 km. Furka is **very hard** in 38 km. Show km and ~days next to the pill so grade is not mistaken for length.
+
+On the planner page, `tripStats`, `drawProfile`, `spark`, `diffPill`, `drawStrip` already exist. Gallery does not need `geo.prof`.
+
+---
+
+## 8. Images of places
+
+The graph already knows *what* to photograph. It does not store pictures. Do not inline JPEGs into the 11 MB HTML.
+
+| Layer | Source | How many | Rule |
 |---|---|---|---|
-| Country hero | editorial pick | 1 per country | Famous, uncluttered, rights-clean |
-| Trip hero | `trips[].id` | 1 per trip (19 + 29 + later Spain) | The thing the `why` names (bridge, pass, lake, cape) |
-| Towns | `P.nodes` (terminus, gateway first) | ~15–40 per country | Wikidata `P18` for the settlement |
-| Sights | `sight_list` | 3–8 per day, 1 per popup | Skip memorial / artwork / monument; prefer peak, viewpoint, castle, cape, waterfall, beach, castle, shrine/temple via `attraction` |
+| Country hero | editorial | 1 per country | Famous, uncluttered, rights-clean |
+| Trip hero | `trips[].id` | 1 per trip | The thing the `why` names |
+| Towns | `P.nodes` (terminus, gateway first) | ~15–40 per country | Wikidata `P18` |
+| Sights | `sight_list` | 1–3 per day, 1 per popup | Skip memorial / artwork / monument |
 
-Japan’s 6,148 sight rows are a **ranking problem**, not a gallery dump. Use
-the same declutter the map uses (nearest to the road, drop generic names), then
-cap. A day card with three pictures beats sixty pins.
+Japan’s 6,148 sight rows are a ranking problem, not a gallery dump.
 
-### How to get the pictures (no new imagery shoot)
+**How:** Wikimedia Commons / Wikidata `P18`. Thumbs 320 / 1280. Hand-pick the ~50 heroes. No Mapillary as the face of the product. No Unsplash cycling stock. No generated landscapes. Credit on the image (CC BY / CC BY-SA / PD).
 
-1. **Wikidata + Wikimedia Commons** (default). Look up the English or local
-   name, take `P18` (image) or the geosearch around the node lat/lon. Store
-   `file`, `thumb`, `artist`, `license`, `commons_page`. Thumbs only
-   (`320px` / `1280px`).
-2. **Hand pick** the ~50 trip and country heroes. One afternoon with Commons
-   search for “Shimanami Kaido”, “Furkapass”, “Cap de Creus”, “Catedral de
-   Santiago”, “Senmaida”, “Rhine Falls”.
-3. **Do not** use Mapillary/Street View as the face of the product (ugly,
-   ToS, busy). Optional later: a “road view” link, like the existing Google Maps
-   pin.
-4. **Fallback** when Wikidata misses: the SVG trip thumb already in the picker,
-   or a static map crop. Never a broken image.
-
-### Where the image index lives
-
-A small JSON, one per country, **not** baked into every segment:
+**Where:** `images/{slug}.json` of URLs, fetched by the published page (~100–300 KB). If the fetch fails, the planner still works. `tools/fetch_images.py` can be a later pipeline step.
 
 ```
 images/{slug}.json
   countries: { hero, credit }
   trips: { shimanami: { src, credit, alt } }
   places: { onomichi: { src, credit, wikidata } }
-  sights: { "Kibitsu shrine": { src, credit } }   # sparse; keyed by English name
+  sights: { "Kibitsu shrine": { src, credit } }
 ```
 
-The published planner fetches this file (GitHub Pages, cacheable, ~100–300 KB
-of URLs). The graph page stays self-contained if the fetch fails — photos are
-progressive enhancement. `tools/fetch_images.py` can be a pipeline step later;
-until then, a hand-written index for heroes is enough.
+---
 
-Legal: Commons licenses (CC BY / CC BY-SA / PD) with the author on the card.
-No Unsplash-as-default (generic cycling). No generated landscapes.
+## 9. What not to change
+
+- Day splitter, fork comparison, train hops, vehicles, signed-route switch, GPX / CSV, hash
+- Schematic map (clearer than tiles for a whole country)
+- Self-contained HTML publish path (`template.html` → `docs/<slug>/`)
+- “Days are computed, not stored”
+- The dark planner chrome and the Spain-style graph stack
 
 ---
 
-## What not to change in the first visual pass
+## 10. Build order
 
-- Day splitter, fork comparison, train hops, vehicles, signed-route switch,
-  GPX/CSV, hash state.
-- Schematic map (it is clearer than a tiled map for a whole country).
-- Self-contained HTML publish path (`template.html` → `docs/<slug>/`).
-- The rule “days are computed, not stored”.
+**Phase A — Hub.** Replace `docs/index.html` with the three country photo cards. No planner changes. Highest feeling-of-new, least risk.
 
----
+**Phase B — Gallery photos.** `images/*.json` and a real photograph on each trip card. Switzerland and Japan become magazines. Spain unchanged. Keep filters, map hover, `#trip=`.
 
-## Build order (when implementation starts)
+**Phase C — Planner pictures.** Hero in the title, photo in the popup, 1–3 images on the day rail. Clickable profile bands. Planner grid unchanged.
 
-**Phase A — Hub only (this repo can host the mock).**  
-Replace `docs/index.html` in routeplanner with the visual country cards. No
-planner changes. Spain/Japan/Switzerland keep working. This is the highest
-feeling-of-new for the least risk.
-
-**Phase B — Trip photos on the picker.**  
-Add `images/*.json` and a thumb on each `.tcard`. Switzerland and Japan
-become magazines; Spain unchanged.
-
-**Phase C — Popup + day-rail photos.**  
-Wikidata lookup for gateways and filtered sights. Day list shows a 72 px
-strip. Planner remains the same grid.
-
-**Phase D — Spain trips.**  
-Same format as `switzerland-trips.json`: the full crossing, a Pyrenees
-alternative, a Camino-only week, Fisterra extra, maybe a Basque coast.
-Then Spain gets a gallery too.
+**Phase D — Spain trips.** Same format as `switzerland-trips.json`: the crossing, a Pyrenees week, a Camino-only week, Fisterra extra. Then Spain gets a gallery too.
 
 ---
 
-## Success
+## 11. Success
 
-Someone who has never seen the tool can open the hub, know which country they
-want from the picture, pick Shimanami or the Rhône route from a card that looks
-like a place, and only then hit the effort slider. The numbers stay honest. The
-pictures make the numbers mean a road.
+Someone who has never seen the tool opens the hub, knows the country from the picture, picks Biwaichi or the Rhône from a card that looks like a place, and only then hits the effort slider. The numbers stay honest. The pictures make the numbers mean a road.

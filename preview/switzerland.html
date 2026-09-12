@@ -51,9 +51,35 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 .profhi,.proflo{position:absolute;right:8px;font-size:10px;color:var(--mute)}
 .profhi{top:4px}.proflo{bottom:4px}
 .strip{display:flex;height:10px;border-radius:6px;overflow:hidden;margin:8px 0 6px}
-.strip i{display:block;min-width:2px}
-.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--mute);margin:0 0 14px}
+.strip i{display:block;min-width:2px;cursor:pointer}
+.strip i.sel{outline:2px solid var(--ink);outline-offset:-2px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--mute);margin:0 0 14px;align-items:center}
 .legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+#friendtog{margin-left:auto;border:1px solid var(--line);border-radius:999px;padding:2px 8px;cursor:pointer;background:transparent;font:inherit;font-size:11px;color:var(--mute)}
+#friendtog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.segcard{margin:8px 0;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px}
+.segcard .schead{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.segcard .scx{border:0;background:none;cursor:pointer;font:inherit;color:var(--mute)}
+.segcard .scmeta{font-size:12px;color:var(--mute);margin:4px 0}
+.scbar{display:flex;height:6px;border-radius:4px;overflow:hidden;margin:6px 0}
+.scbar i{display:block;height:100%}
+.scbtns{display:flex;gap:8px;margin-top:8px}
+.fdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+#dirrow{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 0}
+#dirrow .opt{text-align:left;white-space:normal;line-height:1.35;border-radius:10px;max-width:100%}
+.slrow{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin:8px 0 2px}
+.forkq{font-size:12px;margin:10px 0 4px;color:var(--mute)}
+.forkoff{font-size:11px;color:var(--mute);margin:0 0 10px}
+.opt.train.on{background:#3d6b1e;border-color:#3d6b1e;color:#fff}
+.opt.train.auto{background:#97C459;border-color:#97C459;color:#1c1916}
+.opt[disabled]{opacity:.55;cursor:default}
+.day .bar{grid-column:2/-1;height:4px;background:#efe8dc;border-radius:3px;margin-top:2px}
+.day .bar i{display:block;height:100%;background:var(--route);border-radius:3px}
+.day .sup,.day .spark{grid-column:2/-1}
+.day .sup{font-size:11px;color:var(--mute)}
+.day.trn{opacity:.85}
+.day.trn .n{background:#6f675e}
+#warn{font-size:12px;color:#8a5a10;margin:4px 0 8px}
 .fold{border-top:1px solid var(--line);padding:8px 0;flex:0 0 auto}
 .foldhead{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:13px;color:var(--mute);background:none;border:0;font:inherit;width:100%;padding:0;gap:8px}
 .foldhead b{font-weight:600;color:var(--ink)}
@@ -89,6 +115,15 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 #mapback{left:12px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font:12px/1 inherit;color:var(--ink);cursor:pointer;box-shadow:0 1px 6px rgba(28,25,22,.08)}
 #maptools{right:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:72%}
 #maptools button{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font:12px/1 inherit;color:var(--ink);cursor:pointer;box-shadow:0 1px 6px rgba(28,25,22,.08)}
+#maplayers{position:absolute;z-index:6;right:12px;top:52px;display:flex;flex-direction:column;gap:5px}
+#maplayers[hidden]{display:none!important}
+#maplayers button{width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--mute);box-shadow:0 1px 6px rgba(28,25,22,.08)}
+#maplayers button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#maplayers button.on[data-l=shop]{color:#c9a227;border-color:#c9a227}
+#maplayers button.on[data-l=stay]{color:#3d7ec9;border-color:#3d7ec9}
+#maplayers button.on[data-l=bath]{color:#7a5ea7;border-color:#7a5ea7}
+#maplayers button.on[data-l=rail]{color:var(--ink);border-color:var(--ink)}
+#maplayers button.on[data-l=water]{color:#4a8fa3;border-color:#4a8fa3}
 .zoompair{display:flex}
 .zoompair button{border-radius:0;padding:6px 10px}
 .zoompair button:first-child{border-radius:999px 0 0 999px}
@@ -125,7 +160,7 @@ body.planner .export{flex:0 0 auto;background:var(--paper);z-index:1}
 }
 @media print{
   html,body{height:auto;overflow:visible;background:#fff}
-  header,footer,#mapback,#maptools,.export,.chips{display:none!important}
+  header,footer,#mapback,#maptools,#maplayers,.export,.chips{display:none!important}
   body.planner main{height:auto;padding:0}
   .split{display:block}
   .mapcard{height:420px;position:relative;break-inside:avoid}
@@ -154,11 +189,20 @@ body.planner .export{flex:0 0 auto;background:var(--paper);z-index:1}
         <g id="water"></g>
         <g id="ghost"></g>
         <g id="lines"></g>
+        <g id="ride"></g>
         <g id="gold"></g>
+        <g id="fac"></g>
         <g id="towns"></g>
         <g id="discs"></g>
         <g id="badges"></g>
       </svg>
+      <div id="maplayers" hidden>
+        <button type="button" data-l="shop" title="Shops"><svg viewBox="0 0 20 20"><path d="M3 7h14l-1.2 9.5H4.2z"/><path d="M7 7V5a3 3 0 0 1 6 0v2"/></svg></button>
+        <button type="button" data-l="stay" title="Beds"><svg viewBox="0 0 20 20"><path d="M2 15V8h16v7"/><path d="M2 12h16"/><path d="M4 8V5h5v3"/></svg></button>
+        <button type="button" data-l="bath" title="Baths and hot springs"><svg viewBox="0 0 20 20"><path d="M3 10h14v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M5 10V5a2 2 0 0 1 4 0"/></svg></button>
+        <button type="button" data-l="rail" title="Stations"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="11" rx="2.5"/><path d="M4 9h12M7 17l1-3M13 17l-1-3"/><circle cx="7.5" cy="11.5" r=".6"/><circle cx="12.5" cy="11.5" r=".6"/></svg></button>
+        <button type="button" data-l="water" title="Drinking water"><svg viewBox="0 0 20 20"><path d="M10 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9z"/></svg></button>
+      </div>
       <a id="pop" target="_self"></a>
     </aside>
   </div>
@@ -212,6 +256,18 @@ let TRIPS=[], mode="network", ride=null, hover=null, filter="top";
 let PLAN=null, effort=100, veh="bike", selDay=null;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
+let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
+try{
+  ["plan","route","days"].forEach(k=>{
+    const v=localStorage.getItem("fold:fold-"+k);
+    if(v==="0") folds[k]=false;
+    if(v==="1") folds[k]=true;
+  });
+  if(localStorage.getItem("friend")==="1") friendOn=true;
+  if(localStorage.getItem("friend")==="0") friendOn=false;
+}catch(e){}
+const BAND={g:"#97C459",a:"#EF9F27",r:"#E24B4A"};
+const LCOL={shop:"#c9a227",stay:"#3d7ec9",bath:"#7a5ea7",rail:"#1c1916",water:"#4a8fa3"};
 
 function geo(t){ return t.geo||{}; }
 function matches(t){
@@ -381,15 +437,17 @@ function paint(){
   syncMapTools();
 }
 function draw(){
+  skipCache=null;
   const gG=document.getElementById("ghost"), gL=document.getElementById("lines"), gB=document.getElementById("badges");
   const gGold=document.getElementById("gold"), gT=document.getElementById("towns"), gD=document.getElementById("discs");
-  [gG,gL,gB,gGold,gT,gD].forEach(g=>g.innerHTML="");
+  const gRide=document.getElementById("ride"), gFac=document.getElementById("fac");
+  [gG,gL,gB,gGold,gT,gD,gRide,gFac].forEach(g=>{ if(g) g.innerHTML=""; });
   const showIds=new Set(visible().map(t=>t.id));
   TRIPS.forEach(t=>{
     const line=geo(t).line; if(!line||line.length<2) return;
     const on=showIds.has(t.id);
     const isRide=ride && ride.id===t.id;
-    if(mode!=="network" && !isRide){ addTrip(t, gG, "ghost"); return; }
+    if(mode!=="network"){ addTrip(t, gG, "ghost"); return; }
     if(!on){ addTrip(t, gG, "off"); return; }
     addTrip(t, gL, "live");
   });
@@ -424,8 +482,9 @@ function applyHash(){
   if(p.trip && TRIPS.some(t=>t.id===p.trip)){
     const day=p.day?+p.day:null;
     selDay=day||null;
+    vbManual=false;
     if(!(mode==="ride" && ride && ride.id===p.trip)){
-      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; }
+      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; }
       ride=TRIPS.find(t=>t.id===p.trip); mode="ride"; hover=null;
       ensurePlan(p.trip);
     }
@@ -441,7 +500,8 @@ function openRide(id, day){
   else applyHash();
 }
 function goNetwork(){
-  zoom=1; applyView();
+  zoom=1; vbManual=false; selDay=null; selSeg=null;
+  applyView();
   if(location.hash!=="#network") location.hash="network";
   else applyHash();
 }
@@ -452,7 +512,11 @@ function ensurePlan(id){
   fetch("data/rides/"+id+".json").then(r=>r.ok?r.json():null).then(d=>{
     if(!ride || ride.id!==wanted) return;
     PLAN=d||false;
-    if(d){ effort=d.effort||100; startId=d.start; endId=d.end; zoom=1; }
+    if(d){
+      effort=d.effort||100; startId=d.start; endId=d.end; zoom=1; vbManual=false;
+      picks={}; (d.forks||[]).forEach(f=>picks[f.node]=f.pick);
+      reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; skipCache=null;
+    }
     draw();
   }).catch(()=>{ if(ride && ride.id===wanted){ PLAN=false; draw(); } });
 }
@@ -470,9 +534,101 @@ function showName(t){
   if(lang==="en") return t.nameEn || EN[local] || local;
   return local;
 }
-function activeSegs(){
-  if(!PLAN || PLAN===false) return [];
+function segBook(){
+  const m={};
+  ((PLAN&&PLAN.segs)||[]).forEach(s=>m[s.id]=s);
+  ((PLAN&&PLAN.altSegs)||[]).forEach(s=>m[s.id]=s);
+  return m;
+}
+function pickedIds(){
   const segs=PLAN.segs||[];
+  if(!PLAN.alts) return segs.map(s=>s.id);
+  const forks=PLAN.forks||[];
+  for(let i=forks.length-1;i>=0;i--){
+    const f=forks[i], def=f.options[0]&&f.options[0].id, p=picks[f.node]||f.pick||def;
+    if(p && p!==def && PLAN.alts[f.node+":"+p]) return PLAN.alts[f.node+":"+p].ids;
+  }
+  return segs.map(s=>s.id);
+}
+function flipSeg(s){
+  const line=(s.line||[]).slice().reverse();
+  const cand=(s.cand||[]).slice().reverse().map(c=>({...c, km:+((s.km-(c.km||0)).toFixed(1))}));
+  return {...s, frm:s.to, to:s.frm, frmName:s.toName, toName:s.frmName,
+    ascent:s.descent||0, descent:s.ascent||0, effort:s.effortR||s.effort, line, cand};
+}
+function chainSegs(){
+  if(!PLAN || PLAN===false) return [];
+  const book=segBook();
+  let segs=pickedIds().map(id=>book[id]).filter(Boolean).map(s=>{
+    if(s.cand&&s.cand.length) return s;
+    const last=s.line&&s.line[s.line.length-1], first=s.line&&s.line[0];
+    return {...s, cand:[
+      {km:0,eff:0,beds:0,label:s.frmName,lat:first&&first[0],lon:first&&first[1]},
+      {km:s.km,eff:s.effort,beds:0,node:s.to,label:s.toName,lat:last&&last[0],lon:last&&last[1]}
+    ]};
+  });
+  if(reversed) segs=segs.slice().reverse().map(flipSeg);
+  return segs;
+}
+function skipState(){
+  if(skipCache) return skipCache;
+  const segs=chainSegs();
+  const ids=segs.map(s=>s.id);
+  const cands=(PLAN.skippable||[]).filter(id=>ids.includes(id));
+  const on={...skipOn}, auto={};
+  function rideN(flag){
+    const kept=segs.filter(s=>!(on[s.id]||flag[s.id]));
+    if(!kept.length) return 0;
+    return splitRide({...PLAN, segs:kept, startName:kept[0].frmName, endName:kept[kept.length-1].toName}, effort, veh).length;
+  }
+  skipWarn="";
+  if(dtar>0){
+    for(const id of cands){
+      if(on[id]||skipOff[id]) continue;
+      if(rideN(auto)<=dtar) break;
+      auto[id]=1;
+    }
+    const n=rideN(auto);
+    if(n>dtar) skipWarn="Still "+n+" riding days with every sensible train hop taken — raise the daily effort, allow more days, or shorten the route.";
+  }
+  return skipCache={cands, on, auto};
+}
+function chainTowns(){
+  const segs=chainSegs();
+  const out=[], seen=new Set();
+  segs.forEach(s=>{
+    [{id:s.frm,name:s.frmName},{id:s.to,name:s.toName}].forEach(t=>{
+      if(!t.id||seen.has(t.id)) return;
+      seen.add(t.id);
+      out.push({id:t.id, name:t.name});
+    });
+  });
+  return out.length?out:(PLAN.towns||[]);
+}
+function forkSummary(){
+  const extra=[];
+  (PLAN.forks||[]).forEach(f=>{
+    const def=f.options[0]&&f.options[0].id;
+    const p=picks[f.node]||f.pick||def;
+    if(p && p!==def){
+      const o=f.options.find(x=>x.id===p);
+      extra.push(o?o.label:p);
+    }
+  });
+  return extra.length?"Main line · "+extra.join(" · "):(PLAN.forkSummary||"Main line");
+}
+function travelEnds(){
+  const segs=activeSegs();
+  if(!segs.length) return {from:PLAN.startName, to:PLAN.endName, fromId:startId, toId:endId};
+  return {from:showName(segs[0].frmName||segs[0].frm), to:showName(segs[segs.length-1].toName||segs[segs.length-1].to), fromId:segs[0].frm, toId:segs[segs.length-1].to};
+}
+function isSkipped(id){
+  const st=skipState();
+  return !!(st.on[id]||st.auto[id]);
+}
+function activeSegs(){
+  const segs=chainSegs();
+  const towns=segs.flatMap(s=>[s.frm,s.to]);
   let i0=segs.findIndex(s=>s.frm===startId);
   let i1=segs.findIndex(s=>s.to===endId);
   if(i0<0) i0=0;
@@ -481,39 +637,86 @@ function activeSegs(){
   return segs.slice(i0, i1+1);
 }
 function rideStats(){
-  const segs=activeSegs();
+  const segs=activeSegs().filter(s=>!isSkipped(s.id));
   let km=0,asc=0,signed=0;
   segs.forEach(s=>{ km+=s.km; asc+=s.ascent||0; signed+=(s.signed||0)*s.km; });
   return {km:Math.round(km), asc:Math.round(asc), signed:km?Math.round(signed/km):0};
 }
+function ridePoints(){
+  const pts=[];
+  activeSegs().forEach(s=>{ if(isSkipped(s.id)) return; (s.line||[]).forEach(p=>pts.push(p)); });
+  return pts;
+}
+function fitPts(pts, pad){
+  const svg=document.getElementById("map"); if(!svg||!pts||pts.length<2){ if(svg) svg.setAttribute("viewBox", VB0); return; }
+  const xypts=pts.map(p=>xy(p[0], p[1]));
+  let x0=Math.min(...xypts.map(p=>p[0])), x1=Math.max(...xypts.map(p=>p[0]));
+  let y0=Math.min(...xypts.map(p=>p[1])), y1=Math.max(...xypts.map(p=>p[1]));
+  const padN=pad||1.4;
+  let w=Math.max((x1-x0)*padN, W*0.34), h=Math.max((y1-y0)*padN, H*0.34);
+  const ar=W/H;
+  if(w/h<ar) w=h*ar; else h=w/ar;
+  let cx=(x0+x1)/2, cy=(y0+y1)/2;
+  let x=cx-w/2, y=cy-h/2;
+  x=Math.max(-40, Math.min(W+40-w, x));
+  y=Math.max(-40, Math.min(H+40-h, y));
+  zoom=Math.max(1, +(W/w).toFixed(2));
+  svg.setAttribute("viewBox", x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
+}
+function fitRide(){ fitPts(ridePoints(), 1.35); }
+function fitDay(){
+  const days=planDays();
+  const d=days.find(x=>x.n===selDay);
+  let line=d && d.line;
+  if(!line||line.length<2){
+    let k0=0,k1=0;
+    days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
+    line=sliceLine(activeSegs().filter(s=>!isSkipped(s.id)), k0, k1);
+  }
+  if(line&&line.length>1) fitPts(line, 1.55);
+  else fitRide();
+}
+function fitSeg(){
+  const s=activeSegs().find(x=>x.id===selSeg);
+  if(s&&s.line&&s.line.length>1) fitPts(s.line, 1.65);
+  else fitRide();
+}
 function applyView(){
   const svg=document.getElementById("map");
   if(!svg) return;
-  if(mode!=="ride" || zoom<=1){
+  if(mode!=="ride" || !PLAN || PLAN===false){
     svg.setAttribute("viewBox", VB0);
+    vbManual=false;
     return;
   }
-  const vw=W/zoom, vh=H/zoom;
-  let cx=W/2, cy=H/2;
-  if(selDay && PLAN && PLAN!==false){
-    const d=planDays().find(x=>x.n===selDay);
-    if(d && d.lat!=null){ const q=xy(d.lat,d.lon); cx=q[0]; cy=q[1]; }
-  }
-  let x=cx-vw/2, y=cy-vh/2;
-  x=Math.max(0, Math.min(W-vw, x));
-  y=Math.max(0, Math.min(H-vh, y));
-  svg.setAttribute("viewBox", x.toFixed(1)+" "+y.toFixed(1)+" "+vw.toFixed(1)+" "+vh.toFixed(1));
+  if(vbManual) return;
+  if(selDay) fitDay();
+  else if(selSeg) fitSeg();
+  else fitRide();
+}
+function bumpZoom(f){
+  const svg=document.getElementById("map"); if(!svg) return;
+  const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
+  const cx=vb[0]+vb[2]/2, cy=vb[1]+vb[3]/2;
+  let w=Math.min(Math.max(vb[2]*f, 90), W*1.45);
+  let h=w*(H/W);
+  vbManual=true;
+  zoom=Math.max(1, +(W/w).toFixed(2));
+  svg.setAttribute("viewBox", (cx-w/2).toFixed(1)+" "+(cy-h/2).toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
 }
 function syncMapTools(){
   const back=document.getElementById("mapback");
   const tools=document.getElementById("maptools");
+  const layers=document.getElementById("maplayers");
   const on=mode==="ride" && PLAN && PLAN!==false;
   back.hidden=!on;
   tools.hidden=!on;
+  layers.hidden=!on;
   if(!on) return;
   back.textContent="‹ All "+TRIPS.length+" trips";
   document.getElementById("vehbtn").textContent=VEH_LABEL[veh]||"Bicycle";
   document.getElementById("langbtn").textContent=lang==="local"?"English names":"Lokale Namen";
+  layers.querySelectorAll("button[data-l]").forEach(b=>b.classList.toggle("on", !!layersOn[b.dataset.l]));
 }
 function setVeh(k){
   veh=k;
@@ -521,18 +724,18 @@ function setVeh(k){
     const tr=PLAN.vehicles.targetRange[k];
     if(tr){ if(effort<tr[0]) effort=tr[0]; if(effort>tr[1]) effort=tr[1]; }
   }
-  selDay=null;
+  selDay=null; skipCache=null;
   draw();
 }
 
 function scaleSeg(s, v){
   if(v==="ebike"){
     return {km:s.km, effort:Math.round(s.km+(s.effort-s.km)/3), ascent:s.ascent,
-      cand:s.cand.map(c=>({...c, eff:+(c.km+(c.eff-c.km)/3).toFixed(1)}))};
+      cand:(s.cand||[]).map(c=>({...c, eff:+(c.km+(c.eff-c.km)/3).toFixed(1)}))};
   }
   if(v==="opium"){
     return {km:s.km, effort:Math.round(s.km), ascent:s.ascent,
-      cand:s.cand.map(c=>({...c, eff:+(+c.km).toFixed(1)}))};
+      cand:(s.cand||[]).map(c=>({...c, eff:+(+c.km).toFixed(1)}))};
   }
   return {km:s.km, effort:s.effort, ascent:s.ascent, cand:s.cand};
 }
@@ -590,11 +793,71 @@ function sliceLine(segs, k0, k1){
 function planDays(){
   if(!PLAN || PLAN===false) return [];
   const segs=activeSegs();
-  const full=startId===PLAN.start && endId===PLAN.end;
-  if(full && veh==="bike" && effort===PLAN.effort && PLAN.days) return PLAN.days.map(d=>({...d, frm:showName(d.frm), to:showName(d.to)}));
-  const startName=showName(townById(startId)||PLAN.startName);
-  const endName=showName(townById(endId)||PLAN.endName);
-  return splitRide({...PLAN, segs, startName, endName}, effort, veh).map(d=>({...d, frm:showName(d.frm), to:showName(d.to)}));
+  const st=skipState();
+  const skipped=segs.some(s=>st.on[s.id]||st.auto[s.id]);
+  const defaultPick=(PLAN.forks||[]).every(f=>(picks[f.node]||f.pick)===f.pick);
+  const full=!reversed && startId===PLAN.start && endId===PLAN.end && !skipped && defaultPick
+    && veh==="bike" && effort===PLAN.effort && PLAN.days;
+  if(full) return PLAN.days.map(d=>({...d, mode:"ride", frm:showName(d.frm), to:showName(d.to)}));
+  const days=[];
+  let buf=[];
+  const flush=()=>{
+    if(!buf.length) return;
+    splitRide({...PLAN, segs:buf, startName:buf[0].frmName, endName:buf[buf.length-1].toName}, effort, veh)
+      .forEach(d=>days.push({...d, mode:"ride"}));
+    buf=[];
+  };
+  segs.forEach(s=>{
+    if(isSkipped(s.id)){
+      flush();
+      days.push({mode:"train", frm:showName(s.frmName||s.frm), to:showName(s.toName||s.to), km:Math.round(s.km)});
+    } else buf.push(s);
+  });
+  flush();
+  let n=0;
+  days.forEach(d=>{
+    if(d.mode==="train") return;
+    n++; d.n=n; d.frm=showName(d.frm); d.to=showName(d.to);
+  });
+  return enrichDays(days);
+}
+function enrichDays(days){
+  const segs=activeSegs().filter(s=>!isSkipped(s.id));
+  let dayOff=0;
+  days.forEach(d=>{
+    if(d.mode==="train") return;
+    let shop=0,stay=0,bath=0,rail=0,water=0,k=0;
+    segs.forEach(s=>{
+      const a=Math.max(dayOff,k), b=Math.min(dayOff+d.km, k+s.km);
+      if(b>a+0.05){
+        const frac=(b-a)/s.km;
+        shop+=(s.shop||0)*frac; stay+=(s.stay||0)*frac; bath+=(s.bath||0)*frac;
+        rail+=(s.rail||0)*frac; water+=(s.water||0)*frac;
+      }
+      k+=s.km;
+    });
+    d.shop=Math.round(shop); d.stay=Math.round(stay); d.bath=Math.round(bath);
+    d.rail=Math.round(rail); d.water=Math.round(water);
+    if(!d.line||d.line.length<2) d.line=sliceLine(segs, dayOff, dayOff+d.km);
+    if(!d.prof||!d.prof.length){
+      const prof=[];
+      let k=0;
+      segs.forEach(s=>{
+        (s.prof||[]).forEach(q=>{
+          const x=k+q[0];
+          if(x>=dayOff-0.05 && x<=dayOff+d.km+0.05) prof.push([+(x-dayOff).toFixed(2), q[1]]);
+        });
+        k+=s.km;
+      });
+      d.prof=prof;
+    }
+    if(d.lat==null && d.line&&d.line.length){
+      const last=d.line[d.line.length-1];
+      d.lat=last[0]; d.lon=last[1];
+    }
+    dayOff+=d.km;
+  });
+  return days;
 }
 function dayPhotos(to){
   const m={
@@ -614,15 +877,58 @@ function niceName(label){
   return String(label).replace(/\b([a-z])/g,c=>c.toUpperCase());
 }
 function paintRide(){
-  const gGold=document.getElementById("gold"), gT=document.getElementById("towns"), gD=document.getElementById("discs");
-  [gGold,gT,gD].forEach(g=>g.innerHTML="");
+  const gRide=document.getElementById("ride"), gGold=document.getElementById("gold");
+  const gT=document.getElementById("towns"), gD=document.getElementById("discs"), gFac=document.getElementById("fac");
+  [gRide,gGold,gT,gD,gFac].forEach(g=>{ if(g) g.innerHTML=""; });
   if(mode!=="ride" || !PLAN || PLAN===false) return;
   const days=planDays();
-  const labels=[];
   const segs=activeSegs();
-  const c0=segs[0]&&segs[0].cand&&segs[0].cand[0];
-  if(c0&&c0.lat!=null) labels.push({name:showName(townById(startId)||PLAN.startName), lat:c0.lat, lon:c0.lon});
-  days.forEach(d=>{ if(d.lat!=null) labels.push({name:d.to, lat:d.lat, lon:d.lon}); });
+  const rideSegs=segs.filter(s=>!isSkipped(s.id));
+  rideSegs.forEach(seg=>{
+    const pts=seg.line||[];
+    if(pts.length<2) return;
+    const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+    p.setAttribute("points", linePts(pts));
+    p.setAttribute("fill","none");
+    p.setAttribute("stroke-linecap","round");
+    p.setAttribute("stroke-linejoin","round");
+    p.setAttribute("stroke", friendOn?(BAND[seg.band]||"#f0713f"):"#f0713f");
+    p.setAttribute("stroke-width", selSeg===seg.id?"3.2":"2.1");
+    gRide.appendChild(p);
+  });
+  if(selSeg){
+    const s=rideSegs.find(x=>x.id===selSeg);
+    if(s&&s.line&&s.line.length>1){
+      const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+      p.setAttribute("points", linePts(s.line));
+      p.setAttribute("fill","none"); p.setAttribute("stroke","#1c1916");
+      p.setAttribute("stroke-width","3.6"); p.setAttribute("stroke-opacity",".28");
+      p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
+      gGold.appendChild(p);
+    }
+  }
+  if(selDay){
+    const d=days.find(x=>x.n===selDay);
+    let line=d && d.line;
+    if(!line || !line.length){
+      let k0=0, k1=0;
+      days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
+      line=sliceLine(rideSegs, k0, k1);
+    }
+    if(line && line.length>1){
+      const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+      p.setAttribute("points", linePts(line));
+      p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
+      p.setAttribute("stroke-width","6"); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
+      gGold.appendChild(p);
+    }
+  }
+  const labels=[];
+  const c0=rideSegs[0]&&rideSegs[0].cand&&rideSegs[0].cand[0];
+  const ends=travelEnds();
+  if(c0&&c0.lat!=null) labels.push({name:ends.from, lat:c0.lat, lon:c0.lon});
+  else if(rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0]) labels.push({name:ends.from, lat:rideSegs[0].line[0][0], lon:rideSegs[0].line[0][1]});
+  days.forEach(d=>{ if(d.mode==="train") return; if(d.lat!=null) labels.push({name:d.to, lat:d.lat, lon:d.lon}); });
   labels.forEach(t=>{
     if(t.lat==null || t.lon==null) return;
     const q=xy(t.lat,t.lon);
@@ -633,13 +939,13 @@ function paintRide(){
     gT.appendChild(tx);
   });
   days.forEach(d=>{
-    if(d.lat==null) return;
+    if(d.mode==="train" || d.lat==null) return;
     const q=xy(d.lat,d.lon);
     const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
     c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", 8);
     c.setAttribute("fill", selDay===d.n?"#c9a227":"#f0713f");
     c.style.cursor="pointer";
-    c.addEventListener("click",e=>{ e.stopPropagation(); openRide(ride.id, selDay===d.n?null:d.n); });
+    c.addEventListener("click",e=>{ e.stopPropagation(); vbManual=false; selSeg=null; openRide(ride.id, selDay===d.n?null:d.n); });
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
     tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+4);
     tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","10");
@@ -647,28 +953,31 @@ function paintRide(){
     tx.textContent=d.n;
     gD.appendChild(c); gD.appendChild(tx);
   });
-  if(selDay){
-    const d=days.find(x=>x.n===selDay);
-    let line=d && d.line;
-    if(!line || !line.length){
-      let k0=0, k1=0;
-      days.forEach(x=>{ if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
-      line=sliceLine(activeSegs(), k0, k1);
-    }
-    if(line && line.length>1){
-      const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-      p.setAttribute("points", linePts(line));
-      p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
-      p.setAttribute("stroke-width","6"); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
-      gGold.appendChild(p);
-    }
-  }
+  rideSegs.forEach(seg=>{
+    const fac=seg.fac||{};
+    Object.keys(LCOL).forEach(k=>{
+      if(!layersOn[k]) return;
+      (fac[k]||[]).forEach(f=>{
+        if(f.lat==null||f.lon==null) return;
+        const q=xy(f.lat,f.lon);
+        const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+        c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", "1.6");
+        c.setAttribute("fill", LCOL[k]);
+        c.setAttribute("fill-opacity","0.9");
+        c.setAttribute("stroke", "#fffdf8");
+        c.setAttribute("stroke-width","0.4");
+        if(f.name) c.setAttribute("title", f.name);
+        gFac.appendChild(c);
+      });
+    });
+  });
 }
 function gpxFor(days){
   let g='<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="bikeplanner"><metadata><name>'+PLAN.name+'</name></metadata>';
   let off=0;
   days.forEach(d=>{
-    const line=(d.line&&d.line.length)?d.line:sliceLine(activeSegs(), off, off+d.km);
+    if(d.mode==="train") return;
+    const line=(d.line&&d.line.length)?d.line:sliceLine(activeSegs().filter(s=>!isSkipped(s.id)), off, off+d.km);
     off+=d.km;
     g+='<trk><name>Day '+d.n+': '+d.frm+' → '+d.to+'</name><trkseg>';
     (line||[]).forEach(p=>{ g+='<trkpt lat="'+p[0]+'" lon="'+p[1]+'"/>'; });
@@ -677,8 +986,8 @@ function gpxFor(days){
   return g+'</gpx>';
 }
 function csvFor(days){
-  const rows=[["day","from","to","km","climb_m","effort"]];
-  days.forEach(d=>rows.push([d.n,d.frm,d.to,d.km,d.climb,d.eff]));
+  const rows=[["day","from","to","mode","km","climb_m","effort","shops","beds","baths","stations"]];
+  days.forEach(d=>rows.push([d.n||"",d.frm,d.to,d.mode||"ride",d.km,d.climb||0,d.eff||"",d.shop||0,d.stay||0,d.bath||0,d.rail||0]));
   return rows.map(r=>r.join(",")).join("\n");
 }
 function download(name, text, mime){
@@ -693,7 +1002,7 @@ function drawProfile(days){
   g.innerHTML="";
   const W=300,H=56;
   const pts=[]; let tot=0, lo=Infinity, hi=-Infinity;
-  activeSegs().forEach(s=>{
+  activeSegs().filter(s=>!isSkipped(s.id)).forEach(s=>{
     (s.prof||[]).forEach(q=>{ pts.push([tot+q[0], q[1]]); lo=Math.min(lo,q[1]); hi=Math.max(hi,q[1]); });
     tot+=s.km;
   });
@@ -726,9 +1035,13 @@ function plannerSheet(t){
   const st=rideStats();
   const d0=grade(st.km, st.asc);
   const days=planDays();
-  const startNm=showName(townById(startId)||PLAN.startName);
-  const endNm=showName(townById(endId)||PLAN.endName);
-  const rng=(PLAN.vehicles.targetRange||{})[veh]||[55,300];
+  const rideDays=days.filter(d=>d.mode!=="train");
+  const ends=travelEnds();
+  const rng=(PLAN.vehicles&&PLAN.vehicles.targetRange||{})[veh]||[55,300];
+  const dir=PLAN.dir||{};
+  const fw=dir.fw||{km:st.km,asc:st.asc};
+  const bk=dir.bk||{km:st.km,asc:st.asc};
+  const kmDay=rideDays.length?Math.round(st.km/rideDays.length):st.km;
   document.getElementById("head").innerHTML="";
   col.className="sheet";
   col.innerHTML=`
@@ -737,7 +1050,7 @@ function plannerSheet(t){
         <span class="dl dl${d0}">${DNAME[d0]}</span>${t.top?`<span class="top">${topLabel(t.top)}</span>`:""}</div>
       <p class="tm" style="margin:4px 0 0">${t.sub}${t.note?" · "+t.note:""}</p>
       <div class="stats4">
-        <div><b id="sd">${days.length}</b><span>days</span></div>
+        <div><b id="sd">${rideDays.length}</b><span>days</span></div>
         <div><b>${st.km}</b><span>km</span></div>
         <div><b>${st.asc.toLocaleString()}</b><span>m climbed</span></div>
         <div><b>${st.signed}%</b><span>signed route</span></div>
@@ -747,48 +1060,69 @@ function plannerSheet(t){
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
       <div class="strip" id="strip"></div>
-      <div class="legend"><span><i style="background:#97C459"></i>signed / quiet</span><span><i style="background:#EF9F27"></i>minor / mixed</span><span><i style="background:#E24B4A"></i>busy road</span></div>
+      <div class="legend">
+        <span><i style="background:#97C459"></i>signed / quiet</span>
+        <span><i style="background:#EF9F27"></i>minor / mixed</span>
+        <span><i style="background:#E24B4A"></i>busy road</span>
+        <button type="button" id="friendtog" class="${friendOn?"on":""}" title="colour the route line on the map the same way">colour the map line</button>
+      </div>
+      <div class="segcard" id="segcard" hidden></div>
     </div>
     <div class="fold${folds.plan?"":" closed"}" id="foldplan">
-      <button class="foldhead" type="button" data-fold="plan"><b>Plan</b> <span>${startNm} → ${endNm} · ${days.length} days</span></button>
+      <button class="foldhead" type="button" data-fold="plan"><b>Plan</b> <span>${ends.from} → ${ends.to} · ${rideDays.length} days</span></button>
       <div class="foldbody">
         <div class="ends">
           <label>From <select id="start"></select></label>
           <label>To <select id="end"></select></label>
         </div>
-        <p class="tm" style="margin:6px 0 4px">Daily effort <b id="slv">${effort}</b> · ~${days.length?Math.round(st.km/days.length):st.km} km/day</p>
+        <div id="dirrow"></div>
+        <div class="slrow"><span>Daily effort</span><span><b id="slv">${effort}</b> (~${kmDay} km/day)</span></div>
         <input class="effort" id="eff" type="range" min="${rng[0]}" max="${rng[1]}" step="5" value="${effort}">
+        <div class="slrow"><span>Days I have</span><span id="dlv">${dtar?dtar+" days":"no limit"}</span></div>
+        <input class="effort" id="dtar" type="range" min="0" max="20" step="1" value="${dtar}">
+        <p class="ghost">Set a limit and the planner proposes train hops through the dull stretches until the days fit. Click a hop to keep or drop it.</p>
+        <div class="row" id="skips"></div>
+        <p class="ghost" id="vehnote"></p>
       </div>
     </div>
     <div class="fold${folds.route?"":" closed"}" id="foldroute">
-      <button class="foldhead" type="button" data-fold="route"><b>Route</b> <span>${PLAN.forkSummary}</span></button>
+      <button class="foldhead" type="button" data-fold="route"><b>Route</b> <span>${forkSummary()}</span></button>
       <div class="foldbody">
-        <p class="tm">Fork picks on the Swiss graph. They stay on the main Rhône in this example.</p>
+        <p class="ghost">${st.signed}% of this journey is on a signed cycle route. Forks rewrite the coral line; they are not a fourth map mode.</p>
         <div id="forks"></div>
       </div>
     </div>
     <div class="fold grow${folds.days?"":" closed"}" id="folddays">
-      <button class="foldhead" type="button" data-fold="days"><b>Days</b> <span>click a day to mark it</span></button>
-      <div class="foldbody"><ol class="dlist" id="days"></ol></div>
+      <button class="foldhead" type="button" data-fold="days"><b>Days</b> <span>click a day to zoom to it</span></button>
+      <div class="foldbody">
+        <div id="warn">${skipWarn||""}</div>
+        <ol class="dlist" id="days"></ol>
+      </div>
     </div>
     <div class="export">
       <div class="row">
         <button class="opt" id="gpx">GPX</button>
         <button class="opt" id="csv">CSV</button>
         <button class="opt" id="pdf">Print / PDF</button>
+        <button class="opt" id="copylink">Copy link</button>
       </div>
       <p class="ghost" id="expnote">Export the computed days. Print opens the browser dialog — save as PDF from there.</p>
     </div>`;
-  drawProfile(days);
+  drawProfile(rideDays);
   const strip=document.getElementById("strip");
   activeSegs().forEach(s=>{
+    if(isSkipped(s.id)) return;
     const i=document.createElement("i");
     i.style.flexGrow=Math.max(s.km,1);
-    i.style.background={g:"#97C459",a:"#EF9F27",r:"#E24B4A"}[s.band]||"#c4b8a8";
-    i.title=showName(s.frmName)+" → "+showName(s.toName)+" · "+Math.round(s.km)+" km · signed "+s.signed+"% · busy "+s.busy+"%";
+    i.style.background=BAND[s.band]||"#c4b8a8";
+    i.dataset.seg=s.id;
+    i.classList.toggle("sel", selSeg===s.id);
+    i.title=showName(s.frmName)+" → "+showName(s.toName)+" · "+Math.round(s.km)+" km · signed "+Math.round(s.signed||0)+"% · busy "+Math.round(s.busy||0)+"%";
+    i.onclick=()=>selectSeg(s);
     strip.appendChild(i);
   });
-  const towns=PLAN.towns||[];
+  if(selSeg) renderSegCard(activeSegs().find(s=>s.id===selSeg));
+  const towns=chainTowns();
   const startSel=document.getElementById("start"), endSel=document.getElementById("end");
   towns.forEach((tn,i)=>{
     const o=document.createElement("option"); o.value=tn.id; o.textContent=showName(tn);
@@ -805,55 +1139,173 @@ function plannerSheet(t){
     startId=startSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
     if(i1<=i0) endId=towns[towns.length-1].id;
-    selDay=null; draw();
+    selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   endSel.onchange=()=>{
     endId=endSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
     if(i1<=i0) startId=towns[0].id;
-    selDay=null; draw();
+    selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
+  const dirrow=document.getElementById("dirrow");
+  const sn=showName(townById(PLAN.start)||PLAN.startName);
+  const en=showName(townById(PLAN.end)||PLAN.endName);
+  const fwDays=!reversed?rideDays.length:Math.max(1, Math.round((fw.km+(fw.asc||0)/10)/effort));
+  const bkDays=reversed?rideDays.length:1;
+  [[false,sn,en,fw,fwDays],[true,en,sn,bk,bkDays]].forEach(row=>{
+    const b=document.createElement("button");
+    b.type="button";
+    b.className="opt"+(reversed===row[0]?" on":"");
+    b.textContent=row[1]+" → "+row[2]+" · ↑"+Math.round(row[3].asc||0).toLocaleString()+" m · "+row[4]+" d";
+    b.title=row[0]?"ride it the other way":"the direction you are planning";
+    if(reversed!==row[0]) b.onclick=()=>{
+      const tmp=startId; startId=endId; endId=tmp;
+      reversed=row[0]; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+    };
+    dirrow.appendChild(b);
+  });
   document.getElementById("eff").oninput=e=>{ document.getElementById("slv").textContent=e.target.value; };
-  document.getElementById("eff").onchange=e=>{ effort=+e.target.value; selDay=null; draw(); };
-  document.getElementById("gpx").onclick=()=>{ download((PLAN.id||"ride")+".gpx", gpxFor(days), "application/gpx+xml"); document.getElementById("expnote").textContent="GPX downloaded."; };
+  document.getElementById("eff").onchange=e=>{ effort=+e.target.value; selDay=null; skipCache=null; draw(); };
+  document.getElementById("dtar").oninput=e=>{ document.getElementById("dlv").textContent=+e.target.value?e.target.value+" days":"no limit"; };
+  document.getElementById("dtar").onchange=e=>{ dtar=+e.target.value; selDay=null; skipCache=null; draw(); };
+  const skipBox=document.getElementById("skips");
+  const stt=skipState();
+  const book=segBook();
+  if(!stt.cands.length) skipBox.innerHTML='<span class="ghost">No skippable stretch on this route.</span>';
+  stt.cands.forEach(id=>{
+    const s=book[id]; if(!s) return;
+    const b=document.createElement("button");
+    const auto=!!stt.auto[id] && !stt.on[id];
+    const on=!!(stt.on[id]||stt.auto[id]);
+    b.type="button";
+    b.className="opt train"+(on?" on":"")+(auto?" auto":"");
+    b.dataset.id=id;
+    b.textContent=showName(s.frmName||s.frm)+" → "+showName(s.toName||s.to)+" · "+Math.round(s.km)+" km";
+    b.title=stt.on[id]?"kept by you":auto?"proposed — click to refuse":"click to take the train here";
+    b.onclick=()=>{
+      if(on){ if(skipOn[id]){ delete skipOn[id]; skipOff[id]=1; } else skipOff[id]=1; }
+      else { delete skipOff[id]; skipOn[id]=1; }
+      skipCache=null; selDay=null; vbManual=false; draw();
+    };
+    skipBox.appendChild(b);
+  });
+  const vnote=document.getElementById("vehnote");
+  vnote.textContent=veh==="opium"?"S-pedelec mode: a day is distance only (no climb penalty).":
+    veh==="ebike"?"E-bike mode: same roads as the bicycle, climbing counts a third, days capped at one battery.":"";
+  document.getElementById("friendtog").onclick=()=>{
+    friendOn=!friendOn;
+    try{ localStorage.setItem("friend", friendOn?"1":"0"); }catch(e){}
+    document.getElementById("friendtog").classList.toggle("on", friendOn);
+    paint();
+  };
+  document.getElementById("gpx").onclick=()=>{ download((PLAN.id||"ride")+".gpx", gpxFor(rideDays), "application/gpx+xml"); document.getElementById("expnote").textContent="GPX downloaded."; };
   document.getElementById("csv").onclick=()=>{ download((PLAN.id||"ride")+"-days.csv", csvFor(days), "text/csv"); document.getElementById("expnote").textContent="CSV downloaded."; };
   document.getElementById("pdf").onclick=()=>window.print();
+  document.getElementById("copylink").onclick=()=>{
+    const url=location.href;
+    const done=()=>{ document.getElementById("expnote").textContent="Link copied."; };
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done).catch(()=>{ window.prompt("Copy this link", url); done(); });
+    else { window.prompt("Copy this link", url); done(); }
+  };
   document.querySelectorAll(".foldhead").forEach(b=>b.onclick=()=>{
     const id=b.dataset.fold;
     b.parentElement.classList.toggle("closed");
     folds[id]=!b.parentElement.classList.contains("closed");
+    try{ localStorage.setItem("fold:fold-"+id, folds[id]?"1":"0"); }catch(e){}
   });
   const fb=document.getElementById("forks");
-  (PLAN.forks||[]).forEach(f=>{
-    const p=document.createElement("p"); p.className="tm"; p.style.margin="8px 0 4px"; p.textContent="At "+showName(f.name);
-    fb.appendChild(p);
+  const onNodes=new Set();
+  chainSegs().forEach(s=>{ onNodes.add(s.frm); onNodes.add(s.to); });
+  const forkByNode={};
+  (PLAN.forks||[]).forEach(f=>forkByNode[f.node]=f);
+  const list=(PLAN.networkForks&&PLAN.networkForks.length)?PLAN.networkForks:(PLAN.forks||[]).map(f=>({node:f.node, prompt:f.prompt||("At "+f.name), on:true, options:f.options}));
+  list.forEach(nf=>{
+    const live=forkByNode[nf.node];
+    const onJourney=onNodes.has(nf.node);
+    const q=document.createElement("div"); q.className="forkq"; q.textContent=nf.prompt||("At "+showName(nf.node));
+    fb.appendChild(q);
     const row=document.createElement("div"); row.className="row";
-    f.options.forEach(o=>{
-      const b=document.createElement("button"); b.className="opt"+(o.id===f.pick?" on":""); b.textContent=o.label;
-      b.disabled=true; b.title="This example keeps the Rhône’s own picks";
+    const pick=live?(picks[nf.node]||live.pick||(live.options[0]&&live.options[0].id)):null;
+    (nf.options||[]).forEach(o=>{
+      const b=document.createElement("button");
+      b.type="button";
+      b.className="opt"+(live&&o.id===pick?" on":"");
+      const dot=document.createElement("span");
+      dot.className="fdot";
+      dot.style.background=BAND[o.band]||"#c4b8a8";
+      b.appendChild(dot);
+      b.appendChild(document.createTextNode(o.label));
+      if(live && onJourney && PLAN.alts[live.node+":"+o.id]){
+        b.onclick=()=>{
+          picks[nf.node]=o.id;
+          const towns=chainTowns();
+          if(!towns.some(x=>x.id===startId)) startId=towns[0]&&towns[0].id;
+          if(!towns.some(x=>x.id===endId)) endId=towns[towns.length-1]&&towns[towns.length-1].id;
+          selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+        };
+      } else if(!live || !onJourney){
+        b.disabled=true;
+      }
       row.appendChild(b);
     });
     fb.appendChild(row);
+    if(!onJourney){
+      const off=document.createElement("div"); off.className="forkoff"; off.textContent="not on the current journey";
+      fb.appendChild(off);
+    }
   });
   const box=document.getElementById("days");
+  const maxE=Math.max(1, ...rideDays.map(d=>d.eff||0));
   days.forEach(d=>{
     const li=document.createElement("li");
+    if(d.mode==="train"){
+      li.className="day trn";
+      li.innerHTML=`<span class="n"></span><div><div class="who">train: ${d.frm} to ${d.to}</div>
+        <div class="meta">${d.km} km skipped</div></div>`;
+      box.appendChild(li);
+      return;
+    }
     const open=selDay===d.n;
     li.className="day"+(open?" sel":"");
-    let extra="";
-    if(open){
-      const photos=dayPhotos(d.to);
-      const spark=d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:"";
-      extra=`<div class="extra">${d.shop!=null?`<div class="meta">${d.shop} shops · ${d.stay} beds · ${d.water||0} taps · ${d.rail||0} stations</div>`:""}${spark}
-        <div class="phs">${photos.map(src=>`<div style="background-image:url('${src}')"></div>`).join("")}</div></div>`;
-    }
+    const spark=d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:"";
+    const gap=d.gap?` · longest gap ${Math.round(d.gap)} km`:"";
+    const photos=open?dayPhotos(d.to):[];
     li.innerHTML=`<span class="n">${d.n}</span><div><div class="who">${d.frm} → ${d.to}</div>
-      <div class="meta">${d.km} km · ${d.climb||"—"} m</div></div>${extra}`;
-    li.onclick=()=>openRide(ride.id, selDay===d.n?null:d.n);
+      <div class="meta">${d.km} km · ${Math.round(d.eff||0)} eff</div></div>
+      <div class="bar"><i style="width:${Math.round(100*(d.eff||0)/maxE)}%"></i></div>
+      ${spark}
+      <div class="sup"><b>${d.shop||0}</b> shops · <b>${d.stay||0}</b> beds · <b>${d.bath||0}</b> baths · <b>${d.rail||0}</b> stations${gap}</div>
+      ${open?`<div class="phs">${photos.map(src=>`<div style="background-image:url('${src}')"></div>`).join("")}</div>`:""}`;
+    li.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, selDay===d.n?null:d.n); };
     box.appendChild(li);
   });
 }
+function selectSeg(s){
+  if(!s){ selSeg=null; const c=document.getElementById("segcard"); if(c) c.hidden=true; vbManual=false; paint(); return; }
+  if(selSeg===s.id){ selectSeg(null); return; }
+  selSeg=s.id; selDay=null; vbManual=false;
+  renderSegCard(s);
+  paint();
+}
+function renderSegCard(s){
+  const c=document.getElementById("segcard"); if(!c||!s) return;
+  const fac=s.fac||{};
+  const shops=(fac.shop||[]).length||s.shop||0;
+  const beds=(fac.stay||[]).length||s.stay||0;
+  const sights=typeof s.sights==="number"?s.sights:0;
+  const r=Math.round(s.signed||0), bsy=Math.round(s.busy||0);
+  c.hidden=false;
+  c.innerHTML=`<div class="schead"><b>${showName(s.frmName||s.frm)} → ${showName(s.toName||s.to)}</b><button type="button" class="scx" title="close">×</button></div>
+    <div class="scmeta">${Math.round(s.km)} km · ${Math.round(s.ascent||0)} m climb</div>
+    <div class="scbar"><i style="width:${r}%;background:#97C459"></i><i style="width:${bsy}%;background:#E24B4A"></i></div>
+    <div class="scmeta">signed ${r}% · busy ${bsy}% · ${shops} shops · ${beds} beds · ${sights} sights</div>
+    <div class="scbtns"><button class="opt" id="sHere">start here</button><button class="opt" id="eHere">end here</button></div>`;
+  c.querySelector(".scx").onclick=e=>{ e.stopPropagation(); selectSeg(null); };
+  c.querySelector("#sHere").onclick=()=>{ startId=s.frm; selSeg=null; selDay=null; vbManual=false; skipCache=null; draw(); };
+  c.querySelector("#eHere").onclick=()=>{ endId=s.to; selSeg=null; selDay=null; vbManual=false; skipCache=null; draw(); };
+}
 function sparkPoly(d){
+  if(!d.prof||d.prof.length<2||!d.km) return "";
   const W=300,H=26, mx=Math.max.apply(null,d.prof.map(p=>p[1])), top=Math.max(100,mx);
   const pts=d.prof.map(p=>(p[0]/d.km*W).toFixed(1)+","+(H-2-(p[1]/top)*(H-6)).toFixed(1)).join(" ");
   return `<polyline points="0,${H-2} ${pts} ${W},${H-2}" fill="#f0713f" fill-opacity=".18" stroke="none"/>
@@ -958,12 +1410,17 @@ document.getElementById("vehbtn").onclick=()=>{
 };
 document.getElementById("langbtn").onclick=()=>{ lang=lang==="local"?"en":"local"; draw(); };
 document.getElementById("fitbtn").onclick=()=>{
-  zoom=1;
+  selDay=null; selSeg=null; vbManual=false;
   if(ride) openRide(ride.id, null);
   else applyView();
 };
-document.getElementById("zin").onclick=()=>{ zoom=Math.min(2.4, +(zoom+0.35).toFixed(2)); applyView(); };
-document.getElementById("zout").onclick=()=>{ zoom=Math.max(1, +(zoom-0.35).toFixed(2)); applyView(); };
+document.getElementById("zin").onclick=()=>bumpZoom(0.78);
+document.getElementById("zout").onclick=()=>bumpZoom(1.22);
+document.getElementById("maplayers").addEventListener("click", e=>{
+  const b=e.target.closest("button[data-l]"); if(!b) return;
+  layersOn[b.dataset.l]=!layersOn[b.dataset.l];
+  paint();
+});
 
 document.addEventListener("keydown",e=>{ if(e.key==="Escape" && mode!=="network") goNetwork(); });
 window.addEventListener("hashchange", applyHash);

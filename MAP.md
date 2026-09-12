@@ -20,8 +20,8 @@ DAY         that stretch marked on the same atlas; photos on the sheet
 Hover never commits. Click goes one level in. **All trips** or Escape goes
 one level out. Clicking a selected day again (list, disc, or profile band)
 returns to the whole ride. The URL keeps the place: `#trip=r1`, then
-`#trip=r1&day=3`. The map stays a figure of the country — it does not zoom
-into the day.
+`#trip=r1&day=3`. The figure auto-fits the ride, then the selected day
+or strip segment, with padding — not a free GIS canvas.
 
 Words (so “section” is not used two ways):
 
@@ -58,7 +58,10 @@ The planner is not a second, darker product.
 - Labels: town names on the ride sheet (Andermatt, Brig, Sion, Genève…)
 
 The map lives in a rounded paper card, same width rhythm as the hub.
-It is a reference figure, not a second full-screen product.
+It is a reference figure, not a second full-screen product. Opening a ride
+fits that journey in the figure; a selected day or strip segment fits that
+stretch with padding. Whole trip returns to the ride fit. Modest auto-fit
+only — not a free GIS canvas.
 
 Photos do **not** become the map:
 

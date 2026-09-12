@@ -132,7 +132,7 @@ Same trips, same filters (days, easy / moderate / hard, top, tags). Each card:
 
 No elevation spark. No friendliness strip. No effort bar. The card is a place.
 
-The schematic map still sits beside or behind the cards so you can see how trips share a network. Hover a card or a line: that line goes coral. Click loads the ride.
+The schematic map still sits beside or behind the cards so you can see how trips share a network. Hover a card or a line: that line goes coral. Click a **card** to open the tour sheet. Click a **line** (or the map popup) to open the published planner — a real URL such as `https://tigges.github.io/routeplanner/switzerland/#trip=r1`, not an in-page hash. North–South uses `/switzerland-north-south/#trip=ns`. Hover must not rebuild the SVG (that kills the click).
 
 Layer chips on the map: **crossings · routes · sections**. They are the `kind` field. Default: crossings + routes on; sections/passes muted so 29 Swiss trips do not become spaghetti.
 

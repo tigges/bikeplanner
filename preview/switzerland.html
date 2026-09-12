@@ -272,8 +272,12 @@ const BAND={g:"#97C459",a:"#EF9F27",r:"#E24B4A"};
 const LCOL={shop:"#c9a227",stay:"#3d7ec9",bath:"#7a5ea7",rail:"#1c1916",water:"#4a8fa3"};
 
 function geo(t){ return t.geo||{}; }
+function daysEst(g){
+  const eff=g.eff||g.km||0;
+  return Math.max(1, Math.round(eff/100));
+}
 function matches(t){
-  const g=geo(t), n=g.n||0, tags=t.tags||[];
+  const g=geo(t), n=daysEst(g), tags=t.tags||[];
   if(filter==="top") return t.top>0;
   if(filter==="all") return true;
   if(filter==="d3") return n>0 && n<=3;
@@ -1379,7 +1383,7 @@ function sheet(){
         <div class="b"><div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
         <span class="dl dl${d}">${DNAME[d]}</span>${t.top?`<span class="top">${topLabel(t.top)}</span>`:""}</div>
         ${t.why?`<div class="why">${t.why}</div>`:""}
-        <div class="tm">${t.sub} · ${g.km||"—"} km · ${(g.asc||0).toLocaleString()} m · ~${g.n||"—"} days</div></div>`;
+        <div class="tm">${t.sub} · ${g.km||"—"} km · ${(g.asc||0).toLocaleString()} m · ~${daysEst(g)} days</div></div>`;
       el.onmouseenter=()=>setHover(t.id);
       el.onmouseleave=()=>setHover(null);
       el.onclick=()=>openRide(t.id);
@@ -1400,7 +1404,7 @@ function sheet(){
         <div class="tn" style="margin-bottom:8px"><span class="badge">${t.num}</span>
           <span class="dl dl${d}">${DNAME[d]}</span>${t.top?`<span class="top">${topLabel(t.top)}</span>`:""}</div>
         <div class="stats">
-          <div><b>${g.n||"—"}</b><span>days</span></div>
+          <div><b>${daysEst(g)}</b><span>days</span></div>
           <div><b>${g.km||"—"}</b><span>km</span></div>
           <div><b>${(g.asc||0).toLocaleString()}</b><span>m climbed</span></div>
         </div>

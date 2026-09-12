@@ -257,7 +257,7 @@ Clean, bright, simple. One paper design. **Switzerland first** — the catalogue
 
 | # | What | Status |
 |---|---|---|
-| **CH** | Swiss gallery + paper atlas + tour sheet from the live 29-trip file | **this slice** |
+| **CH** | Swiss gallery + paper atlas + **Rhône planner example** (days, elevation, strip, effort, GPX) | **this slice** |
 | **1. Hub** | Three country photo cards on `/` — all stay in this site | Next |
 | **2. Japan gallery** | Same pattern as Switzerland (now includes Fuji-ichi) | After CH |
 | **3. Japan atlas** | Coastline + lakes (Biwa, Kasumigaura, Fuji Five Lakes) | After CH |

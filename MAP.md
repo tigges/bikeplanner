@@ -14,12 +14,14 @@ NETWORK     all trips on the country
    click a trip
 RIDE        one journey; days are computed
    click a day
-DAY         one day’s stretch, zoomed; photos appear
+DAY         that stretch marked on the same atlas; photos on the sheet
 ```
 
-Hover never commits. Click goes one level in. **All trips**, empty-map click,
-or Escape goes one level out. The URL keeps the place: `#trip=r1`, then
-`#trip=r1&day=3`.
+Hover never commits. Click goes one level in. **All trips** or Escape goes
+one level out. Clicking a selected day again (list, disc, or profile band)
+returns to the whole ride. The URL keeps the place: `#trip=r1`, then
+`#trip=r1&day=3`. The map stays a figure of the country — it does not zoom
+into the day.
 
 Words (so “section” is not used two ways):
 
@@ -27,7 +29,7 @@ Words (so “section” is not used two ways):
 |---|---|---|
 | **Trip** | A catalogue card (`kind`: crossing / route / pass / section) | A line + badge on the network |
 | **Ride** | The loaded start→end + fork picks; days computed from effort | The coral line you are on |
-| **Day** | One computed overnight stretch | Numbered dot; click = zoom that stretch |
+| **Day** | One computed overnight stretch | Numbered disc; gold on that stretch |
 | **Section** (catalogue) | A *kind* of trip: a loop, lake circuit, pass day — not a national route | Drawn quieter than numbered routes |
 
 A catalogue **section** (Three passes loop, Léman circuit) is still a trip.
@@ -52,17 +54,19 @@ The planner is not a second, darker product.
 - **Pass days / sections**: thinner, muted, until hover
 - **The ride**: coral `#f0713f`
 - **The selected day**: gold `#c9a227` on that stretch
-- Day ends: cream discs, ink numbers
-- Labels: towns when zoomed (names under ~300 km, sights under ~60 km)
+- Day ends: coral discs with white numbers; gold when selected
+- Labels: town names on the ride sheet (Andermatt, Brig, Sion, Genève…)
 
-Photos do **not** become the map. They clip onto it:
+The map lives in a rounded paper card, same width rhythm as the hub.
+It is a reference figure, not a second full-screen product.
 
-- Network / gallery: no photos on the map (photos live on the paper cards)
-- Ride: still no photos on the map
-- Day: **photo chips** at 3–5 sights on the zoomed stretch, or in the
-  popup / day rail. Prefer the rail and popup so the diagram stays tappable.
+Photos do **not** become the map:
 
-Friendliness colour stays on the **strip** in the sidebar, and optionally
+- Network / gallery: photos on the cards
+- Ride: no photos on the map
+- Day: 1–3 photos on the **sheet**, under “On this day”, next to that day’s spark
+
+Friendliness colour stays on the **strip** on the sheet, and optionally
 on the ride line as a toggle — same as today.
 
 ---
@@ -88,13 +92,12 @@ on the same paper as the magazine gallery.
 
 ### 2. Ride (you have committed to a trip)
 
-Sidebar swaps: back link, trip title, stats, effort slider (unchanged),
-**days as the stretch list**. Elevation profile, friendliness strip, and
-per-day sparks sit here — restyled to paper, not dumped onto gallery cards.
+The page stays a magazine sheet: back link, kicker (“Your tour, planned”),
+serif title, stats, elevation, friendliness, **days as a numbered list**.
 
-Map: ghost the rest of the network (so you still see where you are in the
-country). The ride is the coral line. Day dots 1…n. Click a day in the list
-**or** on the map: that day becomes the zoom, map frames it.
+Map: ghost the rest of the network. The ride is the coral line. Numbered
+discs 1…n. Click a day in the list **or** on the map: gold on that stretch.
+The atlas does not reframe.
 
 Clicking a ghost line pops “Rhine · click to switch ride” — you can jump
 without going back, but it is a new ride (days recompute).
@@ -104,17 +107,16 @@ not a fourth map mode.
 
 ### 3. Day (one overnight)
 
-The map zooms to that stretch (~1.5× padding, same as today’s `zoomDay`).
-Gold on the day’s polyline. Photo chips at the best sights (peak, castle,
-viewpoint, cape… — never memorial/artwork). Tap a chip: the existing popup
-(name, local name, pin in Google Maps) **plus** the picture.
+Same sheet, same atlas. Gold on the day’s polyline. The selected row in the
+list turns gold. Under “On this day”: that day’s spark and 1–3 photos
+(peak, castle, viewpoint, cape… — never memorial/artwork). The live popup
+(name, local name, pin in Google Maps) can still attach a picture.
 
-Click the same day again, **Whole trip**, empty-map click, or Escape: zoom
-back to the ride. The day stays selected in the list until you click it again
-or leave.
+Click the same day again, or Escape: back to the whole ride. The atlas
+never leaves the country view.
 
 The clickable mock at `preview/map.html` does this loop (`#network`,
-`#ride=r1`, `#ride=r1&day=3`) including the day zoom.
+`#ride=r1`, `#ride=r1&day=3`).
 
 ---
 
@@ -123,26 +125,26 @@ The clickable mock at `preview/map.html` does this loop (`#network`,
 - Vehicle, signed-route switch, train hops, start/end: they rewrite the
   **ride** line. The map stays at ride or day, whichever you were on.
 - Facilities (shop/bed/bath/water/rail): still layer buttons. They are dots,
-  not photos. They appear from ride zoom onward, same as now.
+  not photos. They appear from the ride onward, same as now.
 - Spain with no trips: skip network, open as a ride (the full crossing). Days
-  are still the stretches you zoom.
+  are still the stretches you mark on the atlas.
 
 ---
 
 ## Phone
 
-Map on top (~44vh, already the live split). Network: swipe the card list,
-the map highlights. Ride: the day list is the scroller; tap a day to zoom.
-Photo chips only on day zoom, max three, so the line stays tappable.
+Map figure on top (~42vh). Network: swipe the card list, the map highlights.
+Ride: the day list is the scroller; tap a day for gold on the atlas and
+photos on the sheet.
 
 ---
 
 ## Keep from the live page
 
 The live interaction is already this model. Do not replace it with a
-story-slideshow or a tiled map. Change the chrome to paper so the planner
-is the same product as the hub. Name the three levels clearly, and add
-photos beside the line. The graph, the day splitter, and the hash stay.
+story-slideshow or a tiled map. Keep the same magazine page as the hub:
+diagrams on the sheet, map as a figure. Name the three levels clearly.
+The graph, the day splitter, and the hash stay.
 
-Difficulty, effort and elevation stay in the planner sidebar, on paper:
+Difficulty, effort and elevation sit on the tour sheet:
 [GRAPHS.md](GRAPHS.md).

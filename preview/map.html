@@ -3,95 +3,102 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Map mock — network, ride, day</title>
+<title>Switzerland · planner</title>
 <style>
 :root{
   --paper:#f6f1ea; --ink:#1c1916; --mute:#6f675e; --line:#ddd4c8;
   --route:#f0713f; --gold:#c9a227; --card:#fffdf8; --land:#e7dfd2; --water:#c5d5de;
-  --ghost:#c4b8a8;
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);
-  font:15px/1.45 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
-#app{display:grid;grid-template-columns:340px 1fr;height:100%}
-#side{overflow:auto;background:var(--paper);border-right:1px solid var(--line);padding:0 0 28px}
-#stage{position:relative;background:#efe8dc;overflow:hidden}
-svg{width:100%;height:100%;display:block;cursor:grab}
-h1{font-family:Georgia,"Iowan Old Style",serif;font-size:26px;margin:18px 18px 4px;font-weight:600}
-.kicker,.sub{margin:0 18px;color:var(--mute);font-size:13px}
-.back{display:inline-flex;margin:16px 18px 0;color:var(--mute);font-size:13px;cursor:pointer;border:0;background:none;font:inherit;padding:0;text-decoration:none}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 18px}
-.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;font-size:12px;color:var(--mute);cursor:pointer;font:inherit}
+html,body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.5 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+header{padding:22px 24px 0;max-width:1120px;margin:0 auto}
+a.back,button.back{font-size:13px;color:var(--mute);text-decoration:none;border:0;background:none;font:inherit;cursor:pointer;padding:0}
+.kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:10px 0 8px}
+h1{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:600;
+  font-size:clamp(28px,4vw,40px);letter-spacing:-.02em;margin:0 0 6px;line-height:1.1}
+.lede{color:var(--mute);margin:0 0 16px;max-width:42em}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--mute);cursor:pointer;font:inherit;background:transparent}
 .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.stats{display:flex;gap:16px;margin:12px 18px 10px}
-.stats b{display:block;font-size:20px;font-weight:600}
-.stats span{font-size:11px;color:var(--mute)}
-.tcard,.day{margin:0 14px 8px;border:1px solid var(--line);background:var(--card);border-radius:12px;cursor:pointer;overflow:hidden}
-.tcard{display:grid;grid-template-columns:72px 1fr}
-.tcard.hl,.day.on{border-color:var(--route)}
-.tcard .ph{background:#cfc4b4 center/cover}
-.tcard .b{padding:8px 10px}
-.tn{display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#efe8dc;color:var(--ink);font-size:10px;font-weight:700}
-.badge.route{background:var(--route);color:#fff}
-.why,.tm{font-size:12px;color:var(--mute);margin:2px 0 0}
-.day{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:8px 10px}
-.day .n{color:var(--mute);font-size:12px}
-.day.on{background:#fff6ea}
-.hint{position:absolute;left:14px;bottom:12px;font-size:12px;color:var(--mute);background:rgba(246,241,234,.92);padding:4px 8px;border-radius:6px;border:1px solid var(--line)}
-#legend{position:absolute;right:14px;top:12px;display:flex;flex-direction:column;gap:4px}
-#legend button{font-size:11px;background:var(--card)}
-#pop{display:none;position:absolute;z-index:5;max-width:240px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(28,25,22,.12)}
-#pop b{display:block} #pop .cta{color:var(--route);margin-top:4px;font-size:12px}
-.chip-photo{stroke:#fff;stroke-width:2}
-#titlebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.note{margin:14px 18px 0;font-size:12px;color:var(--mute);border-left:3px solid var(--route);padding-left:10px}
+main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
+.split{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:22px;align-items:start}
+.tcard{display:grid;grid-template-columns:112px 1fr;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;margin:0 0 12px}
+.tcard.hl{border-color:var(--route)}
+.tcard .ph{background:#cfc4b4 center/cover no-repeat;min-height:92px}
+.tcard .b{padding:12px 14px}
+.tn{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tn h2{font-family:Georgia,serif;font-size:18px;margin:0;font-weight:600}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--route);color:#fff;font-size:11px;font-weight:700}
+.why{font-size:13.5px;color:#3f3a34;margin:4px 0 0}
+.tm{font-size:12px;color:var(--mute);margin-top:6px}
 .dl{font-size:10px;font-weight:600;border:1px solid;border-radius:9px;padding:1px 6px;white-space:nowrap}
 .dl0{color:#3d6b1e;border-color:#97C459}
 .dl1{color:#8a5a10;border-color:#EF9F27}
 .dl2{color:#c45a28;border-color:#f07d3f}
 .dl3{color:#a32d2c;border-color:#E24B4A}
-.spark{display:block;width:100%;height:28px;margin-top:6px}
-#profwrap{margin:4px 18px 8px}
-#profwrap svg{display:block;width:100%;height:56px;border-radius:4px;background:#efe8dc;border:1px solid var(--line)}
-#proflbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mute);margin-top:3px}
-#strip{display:flex;height:14px;border-radius:3px;overflow:hidden;gap:1px;margin:0 18px;background:var(--line)}
-#friendleg{margin:4px 18px 12px;font-size:11px;color:var(--mute);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.title-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 4px}
+.title-row h1{margin:0}
+.stats{display:flex;gap:28px;margin:18px 0 22px}
+.stats b{display:block;font-family:Georgia,serif;font-size:28px;font-weight:600;line-height:1.1}
+.stats span{font-size:12px;color:var(--mute)}
+.block{margin:0 0 22px}
+.block h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 8px;font-weight:600}
+#profwrap svg{display:block;width:100%;height:72px;border-radius:10px;background:var(--card);border:1px solid var(--line)}
+#proflbl{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:6px}
+#strip{display:flex;height:10px;border-radius:999px;overflow:hidden;gap:1px;background:var(--line)}
+#friendleg{margin-top:8px;font-size:12px;color:var(--mute);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 #friendleg i{width:9px;height:9px;border-radius:2px;display:inline-block}
-.bar{grid-column:2/4;height:3px;background:#efe8dc;border-radius:2px}
-.bar i{display:block;height:100%;background:var(--route);border-radius:2px}
-.day{grid-template-columns:28px 1fr auto;grid-template-rows:auto auto auto auto}
-.day svg.spark{grid-column:2/4;height:26px;margin:0}
-.pills{margin-left:auto;display:flex;gap:4px;align-items:center}
-@media(max-width:760px){
-  #app{grid-template-columns:1fr;grid-template-rows:42vh 1fr}
-  #stage{order:0;border-bottom:1px solid var(--line)}#side{order:1;border-right:0}
+.dayrow{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.dayrow:first-child{border-top:1px solid var(--line)}
+.dayrow .n{width:22px;height:22px;border-radius:11px;background:var(--route);color:#fff;font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.dayrow .name{font-weight:600;font-size:14.5px}
+.dayrow .meta{font-size:12px;color:var(--mute)}
+.dayrow .km{font-size:12px;color:var(--mute);white-space:nowrap}
+.dayrow.on .n{background:var(--gold);color:#1c1916}
+.dayrow.on .name{color:var(--ink)}
+.dayrow.on .km{color:var(--ink);font-weight:600}
+.spark{display:block;width:100%;height:28px;margin-top:6px}
+.photos{display:flex;gap:8px;margin-top:12px}
+.photos div{display:flex;flex-direction:column;gap:4px}
+.photos img{width:112px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.mapcard{background:#efe8dc;border:1px solid var(--line);border-radius:16px;overflow:hidden;position:sticky;top:16px;min-height:640px;height:calc(100vh - 40px)}
+.mapcard svg{width:100%;height:100%;display:block}
+#pop{display:none;position:absolute;z-index:5;max-width:220px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(28,25,22,.12)}
+#pop b{display:block} #pop .cta{color:var(--route);margin-top:4px;font-size:12px}
+.note{margin-top:18px;padding:12px 0 0;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
+footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
+@media(max-width:860px){
+  .split{grid-template-columns:1fr}
+  .mapcard{position:relative;top:0;height:42vh;min-height:280px;order:-1}
 }
 </style>
 </head>
 <body>
-<div id="app">
-  <div id="side"></div>
-  <div id="stage">
-    <svg id="map" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet">
-      <path id="land" fill="#e7dfd2" stroke="#cbbfaf" stroke-width="1.4"
-        d="M90,470 C70,420 55,320 80,210 C100,90 180,40 280,50 C400,30 520,55 640,80 C740,70 820,110 850,200 C870,280 840,360 800,400 C760,470 680,540 560,560 C480,600 420,590 380,540 C320,560 220,530 90,470 Z"/>
-      <ellipse cx="118" cy="448" rx="52" ry="22" fill="#c5d5de" stroke="#a8c0cc" transform="rotate(-18 118 448)"/>
-      <ellipse cx="210" cy="300" rx="38" ry="14" fill="#c5d5de" stroke="#a8c0cc"/>
-      <ellipse cx="402" cy="268" rx="28" ry="16" fill="#c5d5de" stroke="#a8c0cc"/>
-      <ellipse cx="508" cy="528" rx="22" ry="28" fill="#c5d5de" stroke="#a8c0cc"/>
-      <ellipse cx="640" cy="98" rx="48" ry="18" fill="#c5d5de" stroke="#a8c0cc"/>
-      <g id="ghost"></g>
-      <g id="lines"></g>
-      <g id="days"></g>
-      <g id="photos"></g>
-      <g id="badges"></g>
-    </svg>
-    <div id="legend"></div>
-    <div id="hint"></div>
-    <div id="pop"></div>
+<header id="head"></header>
+<main>
+  <div class="split">
+    <div id="col"></div>
+    <aside class="mapcard" id="stage">
+      <svg id="map" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet">
+        <path id="land" fill="#e7dfd2" stroke="#cbbfaf" stroke-width="1.4"
+          d="M90,470 C70,420 55,320 80,210 C100,90 180,40 280,50 C400,30 520,55 640,80 C740,70 820,110 850,200 C870,280 840,360 800,400 C760,470 680,540 560,560 C480,600 420,590 380,540 C320,560 220,530 90,470 Z"/>
+        <ellipse cx="118" cy="448" rx="52" ry="22" fill="#c5d5de" stroke="#a8c0cc" transform="rotate(-18 118 448)"/>
+        <ellipse cx="210" cy="300" rx="38" ry="14" fill="#c5d5de" stroke="#a8c0cc"/>
+        <ellipse cx="402" cy="268" rx="28" ry="16" fill="#c5d5de" stroke="#a8c0cc"/>
+        <ellipse cx="508" cy="528" rx="22" ry="28" fill="#c5d5de" stroke="#a8c0cc"/>
+        <ellipse cx="640" cy="98" rx="48" ry="18" fill="#c5d5de" stroke="#a8c0cc"/>
+        <g id="ghost"></g>
+        <g id="lines"></g>
+        <g id="days"></g>
+        <g id="names" fill="#6f675e" font-size="11" font-family="Georgia, serif"></g>
+        <g id="badges"></g>
+      </svg>
+      <div id="pop"></div>
+    </aside>
   </div>
-</div>
+</main>
+<footer>Design preview. Same paper as the hub and gallery — the map is a figure, not a second product.</footer>
 <script>
 const PH = {
   furka:"img/furka.jpg", lucerne:"img/lucerne.jpg", lavaux:"img/lavaux.jpg",
@@ -99,6 +106,7 @@ const PH = {
 };
 const DNAME=["easy","moderate","hard","very hard"];
 function grade(km,asc){ const r=asc/km; return r<8?0:r<14?1:r<20?2:3; }
+function climb(s){ return Math.max(0, Math.round((s.eff - s.km)*10)); }
 function sparkPts(el,w,h){
   const mx=Math.max.apply(null,el), mn=Math.min.apply(null,el), span=Math.max(mx-mn,120);
   return el.map((z,i)=>(i/(el.length-1)*w).toFixed(1)+","+(h-3-(z-mn)/span*(h-8)).toFixed(1)).join(" ");
@@ -106,39 +114,50 @@ function sparkPts(el,w,h){
 function sparkSVG(el,w,h){
   if(!el||el.length<2) return "";
   const pts=sparkPts(el,w,h);
-  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="0,${h} ${pts} ${w},${h}" fill="#f0713f" fill-opacity=".18" stroke="none"/><polyline points="${pts}" fill="none" stroke="#f0713f" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg>`;
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="0,${h} ${pts} ${w},${h}" fill="#f0713f" fill-opacity=".16" stroke="none"/><polyline points="${pts}" fill="none" stroke="#f0713f" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg>`;
 }
 function profileSVG(t){
   const stops=t.stops;
   if(!stops||!stops.length){
     const el=t.elev||[];
-    return sparkSVG(el,300,56)+`<div id="proflbl"><span>▲ ${(el.length?Math.max.apply(null,el):0).toLocaleString()} m</span><span>whole trip</span><span>▼ ${(el.length?Math.min.apply(null,el):0).toLocaleString()} m</span></div>`;
+    return sparkSVG(el,360,72)+`<div id="proflbl"><span>▲ ${(el.length?Math.max.apply(null,el):0).toLocaleString()} m</span><span>whole trip</span><span>▼ ${(el.length?Math.min.apply(null,el):0).toLocaleString()} m</span></div>`;
   }
-  const W=300,H=56, tot=stops.reduce((a,s)=>a+s.km,0);
+  const W=360,H=72, tot=stops.reduce((a,s)=>a+s.km,0);
   const all=stops.flatMap(s=>s.elev||[]);
   const hi=Math.max.apply(null,all), lo=Math.min.apply(null,all), span=Math.max(hi-lo,150);
   let off=0, pts=[], bands="";
   stops.forEach(s=>{
     const w=s.km/tot*W, sel=day===s.n;
-    bands+=`<rect class="pband" data-day="${s.n}" x="${off.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${H}" fill="${sel?"#f3e2c4":(s.n%2?"#efe8dc":"#f6f1ea")}" style="cursor:pointer"/>`;
-    if(w>18) bands+=`<text x="${(off+3).toFixed(1)}" y="${H-5}" font-size="9" fill="#6f675e" font-family="inherit" style="pointer-events:none">${s.n}</text>`;
+    bands+=`<rect class="pband" data-day="${s.n}" x="${off.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${H}" fill="${sel?"#f3e2c4":(s.n%2?"#fffdf8":"#f6f1ea")}" style="cursor:pointer"/>`;
+    if(w>22) bands+=`<text x="${(off+6).toFixed(1)}" y="${H-8}" font-size="10" fill="#6f675e" font-family="inherit" style="pointer-events:none">${s.n}</text>`;
     (s.elev||[]).forEach((z,i,a)=>{
-      const x=off+(i/(Math.max(a.length-1,1)))*w, y=4+(1-(z-lo)/span)*(H-12);
+      const x=off+(i/(Math.max(a.length-1,1)))*w, y=6+(1-(z-lo)/span)*(H-16);
       pts.push(x.toFixed(1)+","+y.toFixed(1));
     });
     off+=w;
   });
   const d=pts.join(" ");
-  return `<svg id="prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${bands}<polyline points="0,${H} ${d} ${W},${H}" fill="#f0713f" fill-opacity=".2" stroke="none"/><polyline points="${d}" fill="none" stroke="#f0713f" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg>
-    <div id="proflbl"><span>▲ ${Math.round(hi).toLocaleString()} m</span><span>coloured by day</span><span>▼ ${Math.round(lo).toLocaleString()} m</span></div>`;
+  return `<svg id="prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${bands}<polyline points="0,${H} ${d} ${W},${H}" fill="#f0713f" fill-opacity=".18" stroke="none"/><polyline points="${d}" fill="none" stroke="#f0713f" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>
+    <div id="proflbl"><span>▲ ${Math.round(hi).toLocaleString()} m</span><span>coloured by day — click a band</span><span>▼ ${Math.round(lo).toLocaleString()} m</span></div>`;
 }
 function friendHTML(t){
   const s=t.friend; if(!s) return "";
   const col={g:"#97C459",y:"#EF9F27",r:"#E24B4A"};
   const cells=[...s].map(c=>`<div style="flex:1;background:${col[c]}"></div>`).join("");
-  return `<div id="strip">${cells}</div>
-    <div id="friendleg"><span><i style="background:#97C459"></i>signed / quiet</span><span><i style="background:#EF9F27"></i>minor / mixed</span><span><i style="background:#E24B4A"></i>busy road</span></div>`;
+  return `<div class="block"><h3>Friendliness</h3><div id="strip">${cells}</div>
+    <div id="friendleg"><span><i style="background:#97C459"></i>signed / quiet</span><span><i style="background:#EF9F27"></i>minor / mixed</span><span><i style="background:#E24B4A"></i>busy road</span></div></div>`;
 }
+const TOWNS = [
+  {label:"Genève", x:92, y:498},
+  {label:"Lausanne", x:148, y:452},
+  {label:"Montreux", x:188, y:398},
+  {label:"Sion", x:228, y:392},
+  {label:"Brig", x:338, y:448},
+  {label:"Andermatt", x:478, y:348},
+  {label:"Luzern", x:418, y:248},
+  {label:"Zürich", x:548, y:128},
+  {label:"St. Gallen", x:668, y:88}
+];
 const TRIPS = [
   {id:"ew", num:"E–W", name:"East–West crossing", kind:"crossing",
    sub:"Müstair → Genève", km:605, asc:4768, daysN:11, eff:1081,
@@ -190,9 +209,8 @@ function trip(id){ return TRIPS.find(t=>t.id===id); }
 
 function draw(){
   const gL=document.getElementById("lines"), gB=document.getElementById("badges");
-  const gD=document.getElementById("days"), gP=document.getElementById("photos"), gG=document.getElementById("ghost");
-  [gL,gB,gD,gP,gG].forEach(g=>g.innerHTML="");
-  const show = TRIPS.filter(visible);
+  const gD=document.getElementById("days"), gG=document.getElementById("ghost"), gN=document.getElementById("names");
+  [gL,gB,gD,gG,gN].forEach(g=>g.innerHTML="");
   const active = hover || (ride && ride.id);
   TRIPS.forEach(t=>{
     const on = visible(t);
@@ -203,30 +221,28 @@ function draw(){
     p.setAttribute("fill","none");
     p.setAttribute("stroke-linecap","round");
     p.setAttribute("stroke-linejoin","round");
-    if(!on && mode==="network"){ p.setAttribute("stroke","#d4c9ba"); p.setAttribute("stroke-width","1.2"); p.setAttribute("opacity",".4"); gG.appendChild(p); return; }
+    if(!on && mode==="network"){ p.setAttribute("stroke","#d4c9ba"); p.setAttribute("stroke-width","1.2"); p.setAttribute("opacity",".35"); gG.appendChild(p); return; }
     if(mode!=="network" && !isRide){
-      p.setAttribute("stroke","#c4b8a8"); p.setAttribute("stroke-width","1.4"); p.setAttribute("stroke-dasharray","4 5"); p.setAttribute("opacity",".7");
+      p.setAttribute("stroke","#c4b8a8"); p.setAttribute("stroke-width","1.6"); p.setAttribute("stroke-dasharray","5 6"); p.setAttribute("opacity",".55");
       p.style.cursor="pointer";
       p.addEventListener("click",e=>{ e.stopPropagation(); openRide(t.id); });
       gG.appendChild(p); return;
     }
     const hl = (mode==="network" && t.id===active) || isRide;
-    const rideQuiet = isRide && mode==="day";
     p.setAttribute("stroke", hl ? "#f0713f" : (t.kind==="crossing"?"#8a7f72": t.kind==="section"?"#b8aea0":"#8a7f72"));
-    p.setAttribute("stroke-width", hl ? (rideQuiet?3.4:5) : (t.kind==="section"?2:3.2));
+    p.setAttribute("stroke-width", hl ? 5.5 : (t.kind==="section"?2:3.2));
     if(t.kind==="crossing" && !hl) p.setAttribute("stroke-dasharray","7 5");
-    p.setAttribute("opacity", dim?".28": (rideQuiet?".55":"1"));
+    p.setAttribute("opacity", dim?".3":"1");
     p.style.cursor="pointer";
-    p.dataset.id=t.id;
     p.addEventListener("mouseenter",()=>setHover(t.id));
     p.addEventListener("mouseleave",()=>setHover(null));
     p.addEventListener("click",e=>{
       e.stopPropagation();
-      if(isRide){ if(mode==="day") openDay(day); return; }
+      if(isRide) return;
       openRide(t.id);
     });
     gL.appendChild(p);
-    if(mode==="network" || isRide){
+    if(mode==="network"){
       const pt=t.d.split(" ")[0].split(","), x=+pt[0], y=+pt[1];
       const g=document.createElementNS("http://www.w3.org/2000/svg","g");
       const w=Math.max(22, String(t.num).length*7+12);
@@ -262,59 +278,29 @@ function draw(){
       }
     }
     ride.stops.forEach(s=>{
+      const sel=day===s.n;
       const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-      c.setAttribute("cx",s.x); c.setAttribute("cy",s.y); c.setAttribute("r", day===s.n?10:7);
-      c.setAttribute("fill", day===s.n?"#c9a227":"#fffdf8");
-      c.setAttribute("stroke","#1c1916");
+      c.setAttribute("cx",s.x); c.setAttribute("cy",s.y); c.setAttribute("r", sel?11:8);
+      c.setAttribute("fill", sel?"#c9a227":"#f0713f");
+      c.setAttribute("stroke","#fffdf8");
       c.setAttribute("stroke-width","2");
       c.style.cursor="pointer";
       c.addEventListener("click",e=>{ e.stopPropagation(); openDay(s.n); });
       const t=document.createElementNS("http://www.w3.org/2000/svg","text");
       t.setAttribute("x",s.x); t.setAttribute("y",s.y+4); t.setAttribute("text-anchor","middle");
-      t.setAttribute("fill","#1c1916"); t.setAttribute("font-size","9"); t.setAttribute("font-weight","700"); t.setAttribute("font-family","inherit");
+      t.setAttribute("fill", sel?"#1c1916":"#fff"); t.setAttribute("font-size","10"); t.setAttribute("font-weight","700"); t.setAttribute("font-family","inherit");
       t.textContent=s.n; t.style.pointerEvents="none";
       gD.appendChild(c); gD.appendChild(t);
     });
-    if(day){
-      const s=ride.stops.find(x=>x.n===day);
-      if(s){
-        (s.photos||[]).forEach((ph,i)=>{
-          const x=s.x+22+i*56, y=s.y-42;
-          const img=document.createElementNS("http://www.w3.org/2000/svg","image");
-          img.setAttributeNS("http://www.w3.org/1999/xlink","href", ph.src);
-          img.setAttribute("href", ph.src);
-          img.setAttribute("x",x); img.setAttribute("y",y); img.setAttribute("width",48); img.setAttribute("height",36);
-          img.setAttribute("preserveAspectRatio","xMidYMid slice");
-          const rr=document.createElementNS("http://www.w3.org/2000/svg","rect");
-          rr.setAttribute("x",x-1); rr.setAttribute("y",y-1); rr.setAttribute("width",50); rr.setAttribute("height",38); rr.setAttribute("rx",6);
-          rr.setAttribute("fill","#fff"); rr.setAttribute("stroke","#1c1916"); rr.setAttribute("stroke-width",".6");
-          gP.appendChild(rr); gP.appendChild(img);
-          img.addEventListener("click",e=>{ e.stopPropagation(); showPop(x+24,y, ph.label, "on this day’s stretch"); });
-        });
-      }
-    }
+    TOWNS.forEach(n=>{
+      const t=document.createElementNS("http://www.w3.org/2000/svg","text");
+      t.setAttribute("x", n.x); t.setAttribute("y", n.y);
+      t.textContent=n.label;
+      gN.appendChild(t);
+    });
   }
-  setView();
-  side();
-  hint();
+  sheet();
   pop();
-}
-
-function setView(){
-  const svg=document.getElementById("map");
-  if(mode==="day" && ride && ride.stops){
-    const s=ride.stops.find(x=>x.n===day);
-    const pts=(s.seg||(s.x+","+s.y)).split(" ").map(p=>p.split(",").map(Number));
-    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
-    const minX=Math.min(...xs), maxX=Math.max(...xs);
-    const minY=Math.min(...ys), maxY=Math.max(...ys);
-    const pad=120;
-    const w=Math.max(320, maxX-minX+pad*2);
-    const h=Math.max(240, maxY-minY+pad*2);
-    svg.setAttribute("viewBox", `${(minX+maxX)/2-w/2} ${(minY+maxY)/2-h/2} ${w} ${h}`);
-  } else {
-    svg.setAttribute("viewBox","0 0 900 640");
-  }
 }
 
 function setHover(id){ hover=id; draw(); }
@@ -332,30 +318,31 @@ function openDay(n){
 }
 function goNetwork(){ mode="network"; ride=null; day=null; hover=null; location.hash="network"; draw(); }
 
-function side(){
-  const el=document.getElementById("side");
+function sheet(){
+  const head=document.getElementById("head");
+  const col=document.getElementById("col");
   if(mode==="network"){
-    el.innerHTML = `<a class="back" href="hub.html">‹ Where to ride</a>
-      <h1>Switzerland by bike</h1>
-      <p class="sub">Hover a line or a card. Click to make it the ride. Days are computed after that.</p>
-      <div class="chips" id="filters"></div>
-      <p class="kicker" style="margin-top:8px">Trips · ${TRIPS.filter(visible).length}</p>
-      <div id="cards"></div>
-      <p class="note">Mock of the map model — not the live planner. Crossings dashed, numbered routes solid, sections quieter.</p>`;
+    head.innerHTML = `<a class="back" href="switzerland.html">‹ Switzerland by bike</a>
+      <p class="kicker">Pick a trip</p>
+      <h1>The network</h1>
+      <p class="lede">Hover a line or a card. Click to plan the ride. Days are computed after that.</p>
+      <div class="chips" id="filters"></div>`;
     const f=document.getElementById("filters");
     [["crossing","crossings"],["route","national routes"],["section","sections / passes"]].forEach(([k,lab])=>{
       const b=document.createElement("button"); b.className="chip"+(layers[k]?" on":""); b.textContent=lab;
       b.onclick=()=>{ layers[k]=!layers[k]; draw(); };
       f.appendChild(b);
     });
+    col.innerHTML = `<div id="cards"></div>
+      <p class="note">Same cards as the gallery. The map is a reference: coral on hover, click to open the tour sheet.</p>`;
     const box=document.getElementById("cards");
     TRIPS.forEach(t=>{
       if(!visible(t)) return;
       const d=document.createElement("div");
       d.className="tcard"+(hover===t.id?" hl":"");
       d.innerHTML=`<div class="ph" style="background-image:url('${t.photo}')"></div>
-        <div class="b"><div class="tn"><span class="badge ${t.kind==="route"?"route":""}">${t.num}</span>${t.name}
-        <span class="pills"><span class="dl dl${grade(t.km,t.asc)}">${DNAME[grade(t.km,t.asc)]}</span></span></div>
+        <div class="b"><div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
+        <span class="dl dl${grade(t.km,t.asc)}">${DNAME[grade(t.km,t.asc)]}</span></div>
         <div class="why">${t.why}</div><div class="tm">${t.sub} · ${t.km} km · ${t.asc.toLocaleString()} m · ~${t.daysN} days</div></div>`;
       d.onmouseenter=()=>setHover(t.id);
       d.onmouseleave=()=>setHover(null);
@@ -365,70 +352,58 @@ function side(){
   } else {
     const t=ride;
     const stops=t.stops||[];
-    el.innerHTML = `<button class="back" id="up">‹ All 5 trips on this mock</button>
-      <h1 id="titlebar"><span class="badge route">${t.num}</span> ${t.name} <span class="dl dl${grade(t.km,t.asc)}">${DNAME[grade(t.km,t.asc)]}</span></h1>
-      <p class="sub">${t.sub} · ${t.why}</p>
-      <div class="stats"><div><b>${stops.length||t.daysN}</b><span>days</span></div><div><b>${t.km}</b><span>km</span></div><div><b>${t.asc.toLocaleString()}</b><span>m climbed</span></div></div>
-      <div id="profwrap">${profileSVG(t)}</div>
-      ${friendHTML(t)}
-      <p class="kicker">Days — click one to zoom that stretch</p>
-      <div id="dayslist"></div>
-      ${day?`<button class="back" id="whole" style="margin-top:8px">Whole trip</button>`:""}
-      <p class="note">${day?"Day "+day+" is the section: the map zooms, gold on that stretch, photo chips on the line. The profile band matches.":"Coral line = the ride. The profile is coloured by computed days. Ghost dashes switch ride."}</p>`;
+    const sel=day && stops.find(s=>s.n===day);
+    head.innerHTML = `<button class="back" id="up">‹ All trips on this mock</button>
+      <p class="kicker">${day?"Day "+day+" of the ride":"Your tour, planned"}</p>
+      <div class="title-row"><h1>${t.name}</h1><span class="badge">${t.num}</span><span class="dl dl${grade(t.km,t.asc)}">${DNAME[grade(t.km,t.asc)]}</span></div>
+      <p class="lede">${t.sub} · ${t.why}</p>`;
     document.getElementById("up").onclick=goNetwork;
-    const whole=document.getElementById("whole");
-    if(whole) whole.onclick=()=>openDay(day);
-    el.querySelectorAll(".pband").forEach(r=>{
+    col.innerHTML = `
+      <div class="stats">
+        <div><b>${stops.length||t.daysN}</b><span>days</span></div>
+        <div><b>${t.km}</b><span>km</span></div>
+        <div><b>${t.asc.toLocaleString()}</b><span>m climbed</span></div>
+      </div>
+      <div class="block"><h3>Elevation</h3><div id="profwrap">${profileSVG(t)}</div></div>
+      ${friendHTML(t)}
+      <div class="block"><h3>Days</h3><div id="dayslist"></div></div>
+      ${sel?`<div class="block"><h3>On this day</h3>
+        ${sparkSVG(sel.elev, 320, 36)}
+        <div class="photos">${(sel.photos||[]).map(ph=>`<img src="${ph.src}" alt="${ph.label}"><span>${ph.label}</span>`).join("")}</div>
+        <p class="tm" style="margin-top:10px">Gold on the map is this stretch. Click the day again for the whole ride.</p>
+      </div>`:""}
+      <p class="note">${day?"The atlas stays a figure — gold marks the day, photos sit here beside it.":"Coral line = the ride. Click a day in the list or on the map. Ghost dashes switch ride."}</p>`;
+    col.querySelectorAll(".pband").forEach(r=>{
       r.addEventListener("click",e=>{ e.stopPropagation(); openDay(+r.dataset.day); });
     });
     const box=document.getElementById("dayslist");
     (stops.length?stops:[{n:1,name:t.sub,km:t.km,eff:t.eff,elev:t.elev}]).forEach(s=>{
       const d=document.createElement("div");
-      d.className="day"+(day===s.n?" on":"");
-      const maxE=Math.max.apply(null,(stops.length?stops:[{eff:s.eff}]).map(x=>x.eff||t.eff||1));
-      d.innerHTML=`<div class="n">${s.n}</div><div>${s.name}</div><div class="n">${s.km} km · ${s.eff||"–"} eff</div>
-        <div class="bar"><i style="width:${Math.round(100*(s.eff||0)/maxE)}%"></i></div>
-        ${sparkSVG(s.elev||t.elev, 220, 26)}`;
+      d.className="dayrow"+(day===s.n?" on":"");
+      const up=climb(s);
+      d.innerHTML=`<span class="n">${s.n}</span>
+        <div><div class="name">${s.name}</div><div class="meta">${up?up.toLocaleString()+" m ↑":""}</div></div>
+        <div class="km">${s.km} km</div>`;
       d.onclick=()=>openDay(s.n);
       box.appendChild(d);
     });
   }
-  const lg=document.getElementById("legend");
-  lg.innerHTML="";
-  if(mode==="network"){
-    [["crossing","crossings"],["route","routes"],["section","sections"]].forEach(([k,lab])=>{
-      const b=document.createElement("button"); b.className="chip"+(layers[k]?" on":""); b.textContent=lab;
-      b.onclick=()=>{ layers[k]=!layers[k]; draw(); }; lg.appendChild(b);
-    });
-  }
 }
-function hint(){
-  document.getElementById("hint").textContent =
-    mode==="network" ? "Hover a line to isolate it · click it (or its card) to ride it" :
-    mode==="day" ? "Photo chips are sights on this day · click the day again for the whole ride" :
-    "Click a numbered day to zoom that section · ghost lines switch ride";
-}
-function showPop(x,y,title,sub){
-  const pop=document.getElementById("pop"), st=document.getElementById("stage").getBoundingClientRect(), svg=document.getElementById("map").getBoundingClientRect();
+function showPop(x,y,title,sub,cta){
+  const pop=document.getElementById("pop"), st=document.getElementById("stage").getBoundingClientRect();
   pop.style.display="block";
-  pop.innerHTML=`<b>${title}</b><div class="sub" style="margin:0">${sub||""}</div><div class="cta">on the line ›</div>`;
-  pop.style.left=Math.min(st.width-250, 40+x*(svg.width/900))+"px";
-  pop.style.top=Math.max(8, y*(svg.height/640)-20)+"px";
+  pop.innerHTML=`<b>${title}</b><div class="tm" style="margin:0">${sub||""}</div><div class="cta">${cta||""}</div>`;
+  pop.style.left=Math.min(st.width-230, 24+x*(st.width/900))+"px";
+  pop.style.top=Math.max(8, y*(st.height/640)-20)+"px";
 }
 function pop(){
   const pop=document.getElementById("pop");
-  if(mode!=="network" || !hover){ if(mode!=="day") pop.style.display="none"; return; }
+  if(mode!=="network" || !hover){ pop.style.display="none"; return; }
   const t=trip(hover); if(!t) return;
   const pt=t.d.split(" ")[0].split(",");
-  showPop(+pt[0], +pt[1], t.num+" · "+t.name, t.sub+" · "+t.km+" km");
-  pop.querySelector(".cta").textContent="click to ride it ›";
+  showPop(+pt[0], +pt[1], t.num+" · "+t.name, t.sub+" · "+t.km+" km", "click to plan it ›");
 }
 
-document.getElementById("map").addEventListener("click",()=>{
-  if(mode==="day"){ openDay(day); }
-  else if(mode==="ride") goNetwork();
-  else setHover(null);
-});
 document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ if(day){ day=null; mode="ride"; location.hash="ride="+ride.id; draw(); } else if(mode!=="network") goNetwork(); }});
 
 (function start(){

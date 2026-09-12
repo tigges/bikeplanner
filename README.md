@@ -8,7 +8,7 @@ This repo holds the design plan and static previews.
 
 - [DESIGN.md](DESIGN.md) — **full design proposal** (plan only). One site, three rooms, one paper design.
 - [MAP.md](MAP.md) — schematic paper atlas; network → ride → day.
-- [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation stay in the planner sidebar, on paper.
+- [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation on the tour sheet, beside a map figure.
 - [preview/hub.html](preview/hub.html) — country hub.
 - [preview/switzerland.html](preview/switzerland.html) — trip gallery (photographs of places, no sparks).
-- [preview/map.html](preview/map.html) — paper planner: hover trips, click to ride, click a day to zoom.
+- [preview/map.html](preview/map.html) — tour sheet: elevation and days beside a labeled atlas.

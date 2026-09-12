@@ -19,9 +19,9 @@ HUB (paper)          Where to ride — three country photographs
    click a country
 GALLERY (paper)      Pick a trip — photograph + why + km
    click a trip
-PLANNER (paper)      The tool you already have, on the same page
+PLANNER (paper)      Tour sheet: elevation, days, map as a figure
    click a day
-DAY                  Zoom that overnight; photos in popup and day rail
+DAY                  Gold on that stretch; photos on the sheet
 ```
 
 Do **not** split Japan / Switzerland / Spain into separate sites. The data is already split (one 2–11 MB HTML page per graph). The product should not be.
@@ -79,7 +79,7 @@ The tool does not need new features. It needs a front that shows what is already
 - Land `#e7dfd2`, water `#c5d5de`, ghost network `#c4b8a8` dashed
 - The ride: coral `#f0713f`
 - Selected day: gold `#c9a227` on that stretch
-- Sidebar: cream cards, paper profile bands, the same difficulty pills as the gallery
+- Tour sheet: cream cards, paper profile, the same difficulty pills as the gallery. Map is a figure beside the diagrams.
 
 Tone, already in the data: everyday English, numbers not adjectives, local name next to English.
 
@@ -130,25 +130,21 @@ Layer chips on the map: **crossings · routes · sections**. They are the `kind`
 
 Spain, until it has trips: skip this room, open the planner, with a short photo strip of trunk towns (Creus, Girona, Burgos, León, Santiago, Fisterra).
 
-### Room 3 — Planner: the same paper, the same tool
+### Room 3 — Planner: a tour sheet, not a second app
 
-Do not redesign forks, effort slider, day splitter, vehicles, signed-route switch, GPX, hash.
+Same page frame as the hub and gallery: max-width, kicker, serif title, cream. Do not switch to a 340 px tool sidebar and a full-bleed GIS canvas.
 
-Restyle the chrome onto paper so it is the same product as the hub and gallery. Keep the Spain-style graph stack, on cream:
+Left: the Spain instruments, as diagrams on the sheet.
 
-- Stats (days, km, climb, % signed)
-- Whole-ride elevation, coloured by computed day
-- Friendliness strip + “colour the map line”
-- Folded Plan / Route
-- Days: `km · N eff`, relative bar, 26 px spark, shops · beds · baths · stations · longest gap
+- Stats (days, km, climb)
+- Whole-ride elevation, coloured by computed day (click a band to select that day)
+- Friendliness strip
+- Days as a numbered list (`km · climb`), coral discs — not stacked spark cards
+- On a selected day: that day’s spark and 1–3 photos sit **on the sheet**, not as chips on the map
 
-Add only:
+Right: the schematic map as a **figure** in a rounded paper card. Labeled towns, coral ride, gold on the selected day. The atlas does not zoom into a sausage; gold on the stretch is the reference.
 
-- A **trip hero** in the title strip, collapsed on scroll
-- **Town and sight photos** in the existing popup (next to “Pin in Google Maps”)
-- A **day rail**: 1–3 images for the day’s best sight/town, from `sight_list` after the same kind filter the map already uses
-
-Small improvement: click a profile day-band to zoom that day (the row already does this).
+Do not redesign forks, effort slider, day splitter, vehicles, signed-route switch, GPX, hash. Those stay in folded Plan / Route, same as today.
 
 ---
 
@@ -161,10 +157,10 @@ NETWORK     all trips on the country
    click a trip
 RIDE        one journey; days computed from effort
    click a day
-DAY         one overnight, zoomed
+DAY         one overnight, marked on the same atlas
 ```
 
-Hover never commits. Click goes one level in. **All trips**, empty-map click, or Escape goes one level out.
+Hover never commits. Click goes one level in. **All trips** or Escape goes one level out. Clicking a selected day again returns to the whole ride.
 
 **Words** (so “section” is not used two ways):
 
@@ -172,7 +168,7 @@ Hover never commits. Click goes one level in. **All trips**, empty-map click, or
 |---|---|---|
 | **Trip** | Catalogue card (`kind`: crossing / route / pass / section) | A line + badge on the network |
 | **Ride** | Loaded start→end + fork picks | The coral line |
-| **Day** | One computed overnight | Numbered dot; click zooms |
+| **Day** | One computed overnight | Numbered disc; gold on that stretch |
 | **Section** (catalogue) | A *kind* of trip — loop, lake circuit, pass day | Drawn quieter than numbered routes |
 
 A catalogue section (Three passes loop) is still a trip. Once you click it, it is the **ride**; its days are the **days**.
@@ -182,22 +178,22 @@ A catalogue section (Three passes loop) is still a trip. Once you click it, it i
 - Land `#e7dfd2`, water from `P.water` restyled to `#c5d5de`, ghost `#c4b8a8` dashed
 - Crossings dashed; national routes solid with a numbered pill; sections thinner until hover
 - The ride: coral `#f0713f`
-- Day ends: cream discs with ink numbers; selected day gold on the stretch
-- Towns named under ~300 km, sights under ~60 km (live rule)
+- Day ends: coral discs with white numbers; selected day gold on the stretch
+- Towns named on the ride sheet (Andermatt, Brig, Sion, Genève…)
 
-Photos are not on the map at network or ride. At day zoom they live in the popup and the day rail so the diagram stays tappable. Facilities stay as dots, from ride zoom onward.
+Photos are not on the map. They sit on the sheet under “On this day”. Facilities stay as dots from the ride onward.
 
 Ghost line click: “Rhine · click to switch ride” — new ride, days recompute. Forks stay in folded Route; they rewrite the coral line, they are not a fourth mode.
 
 Vehicle, signed-route, train hops, start/end: they rewrite the ride. The map stays at ride or day.
 
-**Phone:** map on top (~44vh, already the live split). Gallery: swipe cards, map highlights. Ride: the day list is the scroller.
+**Phone:** map figure on top (~42vh). Gallery: swipe cards. Ride: the day list is the scroller; gold on the atlas marks the day.
 
 ---
 
 ## 7. Difficulty, effort, elevation
 
-They are three instruments, not one chart. They live in the **planner sidebar**, restyled to paper. They do not go on gallery cards.
+They are three instruments, not one chart. They live on the **tour sheet**, beside the map figure. They do not go on gallery cards.
 
 | Instrument | What it is |
 |---|---|
@@ -256,7 +252,7 @@ images/{slug}.json
 
 **Phase B — Gallery photos.** `images/*.json` and a real photograph on each trip card. Switzerland and Japan become magazines. Spain unchanged. Keep filters, map hover, `#trip=`.
 
-**Phase C — Planner onto paper.** Same grid, same instruments. Paper land/water, cream sidebar, coral ride. Hero in the title, photo in the popup, 1–3 images on the day rail. Clickable profile bands.
+**Phase C — Planner onto the magazine sheet.** Same instruments, same page frame as the hub. Elevation and day list on the left; labeled atlas as a figure. Photos on the sheet for the selected day. Clickable profile bands.
 
 **Phase D — Spain trips.** Same format as `switzerland-trips.json`: the crossing, a Pyrenees week, a Camino-only week, Fisterra extra. Then Spain gets a gallery too.
 

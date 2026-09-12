@@ -146,6 +146,8 @@ body.planner .legend{margin:0 0 6px;font-size:10px}
 body.planner .mapcard{position:relative;top:0;height:100%;min-height:0}
 body.planner .tn h2{font-size:22px}
 body.planner .fold:not(.closed){min-height:0}
+body.planner #foldplan:not(.closed){flex:0 1 auto;max-height:40%;overflow:hidden;display:flex;flex-direction:column}
+body.planner #foldplan:not(.closed) .foldbody{flex:1;min-height:0;overflow:auto}
 body.planner #foldroute:not(.closed){flex:1 1 auto;max-height:38%;overflow:auto}
 body.planner .fold.grow:not(.closed){flex:1 1 140px;min-height:88px;display:flex;flex-direction:column;padding-bottom:0}
 body.planner .fold.grow:not(.closed) .foldbody{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column}
@@ -622,6 +624,18 @@ function travelEnds(){
   if(!segs.length) return {from:PLAN.startName, to:PLAN.endName, fromId:startId, toId:endId};
   return {from:showName(segs[0].frmName||segs[0].frm), to:showName(segs[segs.length-1].toName||segs[segs.length-1].to), fromId:segs[0].frm, toId:segs[segs.length-1].to};
 }
+function peekDir(rev){
+  if(rev===reversed){
+    const st=rideStats();
+    return {asc:st.asc, km:st.km, days:planDays().filter(d=>d.mode!=="train").length};
+  }
+  const keepR=reversed, keepC=skipCache, keepW=skipWarn;
+  reversed=rev; skipCache=null;
+  const st=rideStats();
+  const days=planDays().filter(d=>d.mode!=="train").length;
+  reversed=keepR; skipCache=keepC; skipWarn=keepW;
+  return {asc:st.asc, km:st.km, days};
+}
 function isSkipped(id){
   const st=skipState();
   return !!(st.on[id]||st.auto[id]);
@@ -1038,9 +1052,6 @@ function plannerSheet(t){
   const rideDays=days.filter(d=>d.mode!=="train");
   const ends=travelEnds();
   const rng=(PLAN.vehicles&&PLAN.vehicles.targetRange||{})[veh]||[55,300];
-  const dir=PLAN.dir||{};
-  const fw=dir.fw||{km:st.km,asc:st.asc};
-  const bk=dir.bk||{km:st.km,asc:st.asc};
   const kmDay=rideDays.length?Math.round(st.km/rideDays.length):st.km;
   document.getElementById("head").innerHTML="";
   col.className="sheet";
@@ -1148,19 +1159,17 @@ function plannerSheet(t){
     selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   const dirrow=document.getElementById("dirrow");
-  const sn=showName(townById(PLAN.start)||PLAN.startName);
-  const en=showName(townById(PLAN.end)||PLAN.endName);
-  const fwDays=!reversed?rideDays.length:Math.max(1, Math.round((fw.km+(fw.asc||0)/10)/effort));
-  const bkDays=reversed?rideDays.length:1;
-  [[false,sn,en,fw,fwDays],[true,en,sn,bk,bkDays]].forEach(row=>{
+  const off=peekDir(!reversed);
+  [[reversed, ends.from, ends.to, st.asc, rideDays.length], [!reversed, ends.to, ends.from, off.asc, off.days]].forEach(row=>{
     const b=document.createElement("button");
     b.type="button";
-    b.className="opt"+(reversed===row[0]?" on":"");
-    b.textContent=row[1]+" → "+row[2]+" · ↑"+Math.round(row[3].asc||0).toLocaleString()+" m · "+row[4]+" d";
-    b.title=row[0]?"ride it the other way":"the direction you are planning";
-    if(reversed!==row[0]) b.onclick=()=>{
+    const on=row[0];
+    b.className="opt"+(on?" on":"");
+    b.textContent=row[1]+" → "+row[2]+" · ↑"+Math.round(row[3]||0).toLocaleString()+" m · "+row[4]+" d";
+    b.title=on?"the direction you are planning":"ride it the other way";
+    if(!on) b.onclick=()=>{
       const tmp=startId; startId=endId; endId=tmp;
-      reversed=row[0]; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+      reversed=!reversed; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
     };
     dirrow.appendChild(b);
   });

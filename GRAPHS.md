@@ -2,6 +2,7 @@
 
 Plan only. These live on the **tour sheet**, beside a map figure.
 Same paper as the hub and gallery. They are not a gallery feature.
+The Spain screenshot of the old planner is the **instrument list** (what to measure), not the layout we ship.
 
 ---
 

@@ -1,12 +1,10 @@
-# Design proposal — visual front for the cycle-tour planners
+# Design proposal — one paper product, rebuilt here
 
-Plan only. Do not rebuild the live planners in this pass.
+This repo (`bikeplanner`) is the new site. Hub, country galleries, and the planner all live here, on one navigation, one layout, one colour system.
 
-Live site: [tigges.github.io/routeplanner](https://tigges.github.io/routeplanner/).  
-Source of truth: [tigges/routeplanner](https://github.com/tigges/routeplanner).  
-This repo (`bikeplanner`) is mocks and this proposal.
+[tigges/routeplanner](https://github.com/tigges/routeplanner) and the published pages at [tigges.github.io/routeplanner](https://tigges.github.io/routeplanner/) are the **input**: graphs, trip catalogues, computed days, forks, vehicles, GPX. They are **not** the result. Do not link a card, map line, or button into that dark planner. Do not reuse its 340 px sidebar, night canvas, or second atmosphere.
 
-Mocks: [preview/hub.html](preview/hub.html), [preview/switzerland.html](preview/switzerland.html), [preview/map.html](preview/map.html). Detail notes: [MAP.md](MAP.md), [GRAPHS.md](GRAPHS.md).
+Previews: [preview/hub.html](preview/hub.html), [preview/switzerland.html](preview/switzerland.html), [preview/map.html](preview/map.html). Detail notes: [MAP.md](MAP.md), [GRAPHS.md](GRAPHS.md).
 
 ---
 
@@ -30,31 +28,31 @@ Do **not** switch atmospheres. Hub, gallery, and planner share the same paper, i
 
 ---
 
-## 2. What the live site is
+## 2. What the live site is (input, not the UI we ship)
 
-Three self-contained cycle-tour planners behind a dark text list.
+Three self-contained cycle-tour planners behind a dark text list. Screenshot of that planner (navy sidebar, coloured GIS line, effort slider) is the **feature checklist**. The new page is paper, cream, serif titles, map as a figure.
 
 | Page | What it is | Size | Opens on |
 |---|---|---|---|
 | Hub `/` | Title, blurb, three links | 1 KB | Country list |
-| [Japan](https://tigges.github.io/routeplanner/japan/) | Cape Sōya → Cape Sata | 11 MB | Trip picker (19 trips) |
-| [Switzerland](https://tigges.github.io/routeplanner/switzerland/) | National routes, passes, loops; second graph at `/switzerland-north-south/` | 3.2 + 0.8 MB | Trip picker (29 trips, default `top`) |
-| [Spain](https://tigges.github.io/routeplanner/spain/) | Cap de Creus → Cabo Fisterra | 2.3 MB | Planner (no trips yet) |
+| Japan | Cape Sōya → Cape Sata | 12.2 MB | Trip picker (19 trips, Fuji-ichi Top 5) |
+| Switzerland | National routes, passes, loops; second graph off the hub | 3.3 + 0.8 MB | Trip picker (29 trips, default `top`) |
+| Spain | Cap de Creus → Cabo Fisterra | 2.4 MB | Trip picker (8 trips: Francés, Norte, …) |
 
 The planner is the product: pick start and end, choose at each fork, set daily effort, get **days computed not stored**. Elevation on every segment; shops, beds, baths, taps, stations within 2 km. Bicycle / e-bike / 45 km/h pedelec. Train hops. GPX / CSV / hash `#r=` / `#trip=`. Schematic SVG map, not OSM tiles.
 
-The problem is the **door**. Nothing on the hub says Shimanami, Furka, Camino, Biwaichi. Nothing shows a place. The planner chrome is a second, darker product.
+The problem is the **product surface**. Nothing on the hub says Shimanami, Furka, Camino, Biwaichi. Nothing shows a place. The planner chrome is a second, darker product. We keep the tool; we rebuild every page in this repo so that chrome never appears.
 
 ---
 
 ## 3. What the repository already has (the hub hides this)
 
-As of 2026-09-12 (`tigges/routeplanner` `3b29fae`, live hub still a dark 1 KB list):
+As of 2026-09-12 (`tigges/routeplanner` `ec8d68d`, live hub still a dark 1 KB list, pages last-modified 20:52 UTC):
 
 1. **Trip catalogues**
-   - Japan: 19 trips. Cape-to-cape plus Shimanami (Top 1), **Biwaichi (Top 2)**, Noto, **Ring-Ring Road (Top 4)** — Tsukuba → Tsuchiura, 110 km, 91 m climb, nearest to Tokyo. Ten have `top` + `why`.
-   - Switzerland: 29 trips. E–W and N–S crossings, national routes 1–9 and 99, pass days, loops. Fifteen ranked Top 5/10/15.
-   - Spain: **no trips file**. One crossing with forks. Next data job, not a new website.
+   - Japan: 19 trips. Cape-to-cape plus Shimanami (Top 1), **Biwaichi (Top 2)**, Noto, **Ring-Ring Road (Top 4)**, **Fuji-ichi (Top 5)** — Kawaguchiko loop, 130 km, five lakes. **Eleven** have `top` + `why`. New towns Motosu, Kawaguchiko, Yamanakako, Gotemba; Fuji Five Lakes forks (`fuji` / `fuji-lakes` / `fuji-south`).
+   - Switzerland: 29 trips. E–W and N–S crossings, national routes 1–9 and 99, pass days, loops. Fifteen ranked Top 5/10/15. Unchanged in this fetch.
+   - Spain: **8 trips** as of `5e90a38`. East–west crossing plus **Camino Francés (Top 1)**, **Camino del Norte (Top 2)**, Invierno, Fisterra, Pyrenees / Ebro / Barcelona sections. The live Spain page is now a picker, not a bare planner. Gallery here is still to build.
 
 2. **Guide copy** — `name`, `sub`, `note`, `why`, `tags`. Difficulty is computed (climb/km), never tagged. `geo` line so another page can draw the trip.
 
@@ -70,11 +68,11 @@ As of 2026-09-12 (`tigges/routeplanner` `3b29fae`, live hub still a dark 1 KB li
    - `entryTowns`: extra start/end towns (Nichinan, Wajima, Suzu, …) without being trunks.
    - Loop trips **keep their own fork picks** (Biwa east/west, Kasumigaura north/south). Needed for loops that close against the default shore.
 
-6. **Multi-page country, already solved** — Switzerland is two graphs; the picker jumps with `#trip=`. Architecture is one hub, several heavy pages.
+6. **Two Swiss graphs, one country** — Switzerland is two graphs; the old picker jumped to `/switzerland-north-south/`. Here that is still one country: one hub card, one gallery, the tour sheet loads the right graph later. Do not send N–S clicks to a second published page.
 
 7. **Not to merge** — `JAPMAP` / `JAPANRIDE` are separate experiments.
 
-The tool does not need new features. It needs a front that shows what is already there, and one visual system from the first photograph through the effort slider.
+The tool does not need new features. It needs every former routeplanner page rebuilt here, and one visual system from the first photograph through the effort slider.
 
 ---
 
@@ -97,25 +95,24 @@ Type: one serif for place names, system UI sans for controls. No icon font. Moti
 
 ## 5. The three rooms
 
-Internal URLs stay:
+Internal URLs in **this** product (not github.io):
 
 ```
 /                         visual hub
-/japan/                   gallery, then planner
+/japan/                   gallery, then paper planner
 /switzerland/             gallery (all 29, including N–S)
-/switzerland-north-south/  planner graph only (off the hub)
-/spain/                   planner today; gallery once trips exist
+/spain/                   gallery (8 trips), then paper planner
 ```
 
-Deep links stay: `#trip=shimanami`, `#r=…`, `#trip=r1&day=3`.
+Switzerland’s second graph stays data, not a second site. Deep links stay in-page: `#trip=shimanami`, `#r=…`, `#trip=r1&day=3`.
 
 ### Room 1 — Hub: “Where to ride”
 
 Three country cards, not a list.
 
-- **Japan** — Shimanami bridge or cape light. Overline: 19 trips · Biwaichi, Shimanami, cape to cape.
+- **Japan** — Shimanami bridge or cape light. Overline: 19 trips · Shimanami, Biwaichi, Fuji-ichi, cape to cape.
 - **Switzerland** — pass road or lake. Overline: 29 trips · national routes 1–9.
-- **Spain** — Fisterra. Overline: Cap de Creus to Fisterra.
+- **Spain** — Fisterra. Overline: 8 trips · Camino Francés, Norte, Cap de Creus to Fisterra.
 
 One line in the lede: days are computed, not stored. Footer stays the GitHub credit.
 
@@ -132,11 +129,11 @@ Same trips, same filters (days, easy / moderate / hard, top, tags). Each card:
 
 No elevation spark. No friendliness strip. No effort bar. The card is a place.
 
-The schematic map still sits beside or behind the cards so you can see how trips share a network. Hover a card or a line: that line goes coral. Click a **card** to open the tour sheet. Click a **line** (or the map popup) to open the published planner — a real URL such as `https://tigges.github.io/routeplanner/switzerland/#trip=r1`, not an in-page hash. North–South uses `/switzerland-north-south/#trip=ns`. Hover must not rebuild the SVG (that kills the click).
+The schematic map still sits beside or behind the cards so you can see how trips share a network. Hover a card or a line: that line goes coral. Click a **card, a line, or the popup** to open the **tour sheet on this page** (`#trip=r1`). Hover must not rebuild the SVG (that kills the click). Never navigate to `tigges.github.io/routeplanner`.
 
 Layer chips on the map: **crossings · routes · sections**. They are the `kind` field. Default: crossings + routes on; sections/passes muted so 29 Swiss trips do not become spaghetti.
 
-Spain, until it has trips: skip this room, open the planner, with a short photo strip of trunk towns (Creus, Girona, Burgos, León, Santiago, Fisterra).
+Spain now has trips: same gallery pattern as Switzerland (Francés, Norte, Fisterra, the crossing).
 
 ### Room 3 — Planner: a tour sheet, not a second app
 
@@ -248,7 +245,7 @@ images/{slug}.json
 
 - Day splitter, fork comparison, train hops, vehicles, signed-route switch, GPX / CSV, hash
 - Schematic map (clearer than tiles for a whole country)
-- Self-contained HTML publish path (`template.html` → `docs/<slug>/`)
+- Self-contained HTML publish path — rebuild the planner **in this repo**, on paper. Do not keep the dark `template.html` as a page people open.
 - “Days are computed, not stored”
 - The Spain-style graph stack (profile, strip, day sparks) — keep the instruments, restyle them onto paper
 
@@ -256,18 +253,18 @@ images/{slug}.json
 
 ## 10. Next steps
 
-Clean, bright, simple. One paper design. **Switzerland first** — the catalogue is complete.
+Clean, bright, simple. One paper design. **Switzerland first** — the catalogue is complete. Japan and Spain galleries follow the same rooms; the effort slider lands on the cream tour sheet, never on the old navy page.
 
 | # | What | Status |
 |---|---|---|
 | **CH** | Swiss gallery + paper atlas + tour sheet from the live 29-trip file | **this slice** |
-| **1. Hub** | Three country photo cards on `/` | Next |
-| **2. Japan gallery** | Same pattern as Switzerland | After CH |
-| **3. Japan atlas** | Coastline + lakes (Biwa, Kasumigaura) | After CH |
-| **4. Planner sheet** | Restyle `template.html` | After the door |
-| **5. Spain trips** | Catalogue the crossing | Data |
+| **1. Hub** | Three country photo cards on `/` — all stay in this site | Next |
+| **2. Japan gallery** | Same pattern as Switzerland (now includes Fuji-ichi) | After CH |
+| **3. Japan atlas** | Coastline + lakes (Biwa, Kasumigaura, Fuji Five Lakes) | After CH |
+| **4. Planner sheet** | Rebuild start/end, forks, effort, GPX as paper in this repo | After the door |
+| **5. Spain gallery** | 8 trips already in the live catalogue (Francés, Norte, …) | After JP |
 
-Do not start with 4. The live planner still works; the list on `/` does not say Shimanami.
+Do not start with 4. The door is still the problem. The old planner stays a reference until the paper sheet can compute days.
 
 ---
 

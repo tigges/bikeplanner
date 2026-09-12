@@ -44,11 +44,10 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 .plan{display:inline-block;margin-top:8px;color:var(--route);font-size:14px;text-decoration:none}
 .mapcard{background:#efe8dc;border:1px solid var(--line);border-radius:16px;overflow:hidden;position:sticky;top:16px;height:calc(100vh - 48px);min-height:520px}
 .mapcard svg{width:100%;height:100%;display:block}
-#pop{display:none;position:absolute;z-index:5;max-width:340px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(28,25,22,.12);text-decoration:none;color:inherit;cursor:pointer}
+#pop{display:none;position:absolute;z-index:5;max-width:240px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(28,25,22,.12);text-decoration:none;color:inherit;cursor:pointer}
 #pop:hover{border-color:var(--route)}
 #pop b{display:block}
-#pop .url{display:block;color:var(--route);margin-top:6px;font-size:11px;line-height:1.35;word-break:break-all}
-.plan-url{display:block;margin-top:6px;color:var(--route);font-size:12px;word-break:break-all;text-decoration:none}
+#pop .cta{color:var(--route);margin-top:4px;font-size:12px}
 .note{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
 footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
 @media(max-width:860px){
@@ -79,7 +78,7 @@ footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font
 const DNAME=["easy","moderate","hard","very hard"];
 function grade(km,asc){ if(!km) return 0; const r=asc/km; return r<8?0:r<14?1:r<20?2:3; }
 function topLabel(n){ if(n<=5) return "Top 5"; if(n<=10) return "Top 10"; if(n<=15) return "Top 15"; return "Top "+n; }
-function liveUrl(t){ const page=t.slug||"switzerland"; return "https://tigges.github.io/routeplanner/"+page+"/#trip="+t.id; }
+function tripHref(t){ return "#trip="+t.id; }
 
 const PHOTO = {
   r1:"img/furka.jpg", r9:"img/lucerne.jpg", r99:"img/lavaux.jpg", loop3:"img/gletsch.jpg",
@@ -182,7 +181,7 @@ function mkPoly(pts){
 }
 function linkWrap(t){
   const a=document.createElementNS("http://www.w3.org/2000/svg","a");
-  const url=liveUrl(t);
+  const url=tripHref(t);
   a.setAttribute("href", url);
   a.setAttributeNS("http://www.w3.org/1999/xlink","href", url);
   a.setAttribute("data-id", t.id);
@@ -237,7 +236,7 @@ function paintBadge(){
   if(!t || (t.kind!=="route" && t.kind!=="crossing")) return;
   const line=geo(t).line||[]; if(!line.length) return;
   const q=xy(line[0][0], line[0][1]);
-  const url=liveUrl(t);
+  const url=tripHref(t);
   const a=document.createElementNS("http://www.w3.org/2000/svg","a");
   a.setAttribute("href", url);
   a.setAttributeNS("http://www.w3.org/1999/xlink","href", url);
@@ -298,13 +297,32 @@ function setHover(id){
   hover=id;
   paint();
 }
-function openRide(id){
-  ride=TRIPS.find(t=>t.id===id); if(!ride) return;
-  mode="ride"; hover=null;
-  location.hash="trip="+id;
-  draw();
+function parseHash(){
+  const h=location.hash.replace(/^#/,"");
+  if(!h || h==="network") return {};
+  return Object.fromEntries(h.split("&").filter(Boolean).map(s=>{
+    const i=s.indexOf("=");
+    return i<0?[s,""]:[s.slice(0,i), decodeURIComponent(s.slice(i+1))];
+  }));
 }
-function goNetwork(){ mode="network"; ride=null; hover=null; location.hash="network"; draw(); }
+function applyHash(){
+  const p=parseHash();
+  if(p.trip && TRIPS.some(t=>t.id===p.trip)){
+    if(mode==="ride" && ride && ride.id===p.trip) return;
+    ride=TRIPS.find(t=>t.id===p.trip); mode="ride"; hover=null; draw();
+    return;
+  }
+  if(mode!=="network"){ mode="network"; ride=null; hover=null; draw(); }
+}
+function openRide(id){
+  if(!TRIPS.some(t=>t.id===id)) return;
+  if(location.hash!=="#trip="+id) location.hash="trip="+id;
+  else applyHash();
+}
+function goNetwork(){
+  if(location.hash!=="#network") location.hash="network";
+  else applyHash();
+}
 
 function sheet(){
   const head=document.getElementById("head");
@@ -314,7 +332,7 @@ function sheet(){
     head.innerHTML=`<a class="back" href="hub.html">‹ Where to ride</a>
       <p class="kicker">Switzerland · ${TRIPS.length} trips</p>
       <h1>Switzerland by bike</h1>
-      <p class="lede">National routes, pass days and lake loops. Hover a line or a card. Click a card for the tour sheet. Click a line to open the live planner. Days are computed from effort — the number is a default, not a timetable.</p>
+      <p class="lede">National routes, pass days and lake loops. Hover a line or a card. Click either to open the tour sheet on this page. Days are computed from effort — the number is a default, not a timetable.</p>
       <div class="chips" id="filters"></div>`;
     [["top","top"],["all","all 29"],["d3","up to 3 days"],["d6","4–6 days"],["d7","7+ days"],["easy","easy"],["alpine","alpine"],["lakes","lakes"]].forEach(([k,lab])=>{
       const b=document.createElement("button"); b.className="chip"+(filter===k?" on":""); b.textContent=lab;
@@ -322,7 +340,7 @@ function sheet(){
       document.getElementById("filters").appendChild(b);
     });
     col.innerHTML=`<p class="tm" style="margin:0 0 10px">${n} trip${n===1?"":"s"}</p><div id="cards"></div>
-      <p class="note">Same catalogue as the live picker. The map is a figure of the country — lakes and the line, not tiles.</p>`;
+      <p class="note">Same catalogue as the old picker. The map is a figure of the country — lakes and the line, not tiles. This page is the product, not a doorway to the dark planner.</p>`;
     const box=document.getElementById("cards");
     visible().sort((a,b)=>(a.top||99)-(b.top||99)).forEach(t=>{
       const g=geo(t), d=grade(g.km,g.asc);
@@ -355,9 +373,7 @@ function sheet(){
         <div><b>${(g.asc||0).toLocaleString()}</b><span>m climbed</span></div>
       </div>
       <p class="tm">${(t.tags||[]).join(" · ")}${t.note?" · "+t.note:""}</p>
-      <a class="plan" href="${liveUrl(t)}">Open in the live planner ›</a>
-      <a class="plan-url" href="${liveUrl(t)}">${liveUrl(t)}</a>
-      <p class="note">The atlas marks this ride. Days, forks and elevation come from the graph when you open the planner — they are computed, not stored here.</p>`;
+      <p class="note">The atlas marks this ride. Start/end, forks, daily effort and GPX stay on this paper sheet when that room is built — they are computed, not stored, and they are not the old navy planner.</p>`;
   }
 }
 function pop(){
@@ -368,13 +384,13 @@ function pop(){
     return;
   }
   const t=TRIPS.find(x=>x.id===hover); if(!t) return;
-  const url=liveUrl(t);
+  const url=tripHref(t);
   const line=geo(t).line||[]; const pt=line[0]||[46.8,8.2]; const q=xy(pt[0], pt[1]);
   const st=document.getElementById("stage").getBoundingClientRect();
   pop.href=url;
-  pop.innerHTML=`<b>${t.num} · ${t.name}</b><div class="tm" style="margin:0">${geo(t).km||""} km</div><span class="url">${url}</span>`;
+  pop.innerHTML=`<b>${t.num} · ${t.name}</b><div class="tm" style="margin:0">${geo(t).km||""} km</div><span class="cta">open the tour sheet ›</span>`;
   pop.style.display="block";
-  pop.style.left=Math.min(st.width-348, Math.max(8, q[0]*(st.width/W)-40))+"px";
+  pop.style.left=Math.min(st.width-250, Math.max(8, q[0]*(st.width/W)-40))+"px";
   pop.style.top=Math.max(8, q[1]*(st.height/H)-24)+"px";
 }
 
@@ -383,6 +399,7 @@ popEl.addEventListener("mouseenter",()=>{ if(hoverClear){ clearTimeout(hoverClea
 popEl.addEventListener("mouseleave",()=>setHover(null));
 
 document.addEventListener("keydown",e=>{ if(e.key==="Escape" && mode!=="network") goNetwork(); });
+window.addEventListener("hashchange", applyHash);
 
 Promise.all([
   fetch("data/switzerland-trips.json").then(r=>r.json()),
@@ -391,11 +408,8 @@ Promise.all([
 ]).then(([trips, land, water])=>{
   TRIPS=trips.trips||trips;
   drawBase(land, water);
-  const h=location.hash.replace("#","");
-  const p=Object.fromEntries(h.split("&").filter(Boolean).map(s=>s.split("=")));
-  if(p.trip && TRIPS.some(t=>t.id===p.trip)){ ride=TRIPS.find(t=>t.id===p.trip); mode="ride"; }
-  else mode="network";
-  draw();
+  applyHash();
+  if(mode==="network") draw();
 });
 </script>
 </body>

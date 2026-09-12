@@ -82,7 +82,7 @@ Published **today** (2026-09-12) and easy to miss from the hub:
 ---
 
 The map, and how a trip becomes a ride and a day, is in [MAP.md](MAP.md).
-Difficulty, effort and elevation — on cards vs on the ride — is in
+Difficulty, effort and elevation stay in the dark planner:
 [GRAPHS.md](GRAPHS.md). Clickable mock: [preview/map.html](preview/map.html).
 
 ---

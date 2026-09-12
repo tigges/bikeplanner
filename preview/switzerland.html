@@ -207,7 +207,7 @@ function draw(){
     p.addEventListener("mouseleave",()=>setHover(null));
     p.addEventListener("click",e=>{ e.stopPropagation(); openRide(t.id); });
     gL.appendChild(p);
-    if(mode==="network" && (t.kind==="route" || t.kind==="crossing")){
+    if(mode==="network" && hl && (t.kind==="route" || t.kind==="crossing")){
       const pt=line[0], q=xy(pt[0], pt[1]);
       const label=String(t.num||"");
       const w=Math.max(22, label.length*7+12);

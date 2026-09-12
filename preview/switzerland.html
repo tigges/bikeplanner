@@ -109,9 +109,12 @@ body.planner .stats4 b{font-size:22px}
 body.planner .profwrap svg{height:56px}
 body.planner .legend{margin:0 0 6px;font-size:10px}
 body.planner .mapcard{position:relative;top:0;height:100%;min-height:0}
-body.planner .fold.grow:not(.closed){flex:1 1 auto;min-height:0;display:flex;flex-direction:column;padding-bottom:0}
 body.planner .tn h2{font-size:22px}
+body.planner .fold:not(.closed){min-height:0}
+body.planner #foldroute:not(.closed){flex:1 1 auto;max-height:38%;overflow:auto}
+body.planner .fold.grow:not(.closed){flex:1 1 140px;min-height:88px;display:flex;flex-direction:column;padding-bottom:0}
 body.planner .fold.grow:not(.closed) .foldbody{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column}
+body.planner .export{flex:0 0 auto;background:var(--paper);z-index:1}
 @media(max-width:860px){
   .split{grid-template-columns:1fr}
   .mapcard{position:relative;top:0;height:42vh;min-height:280px;order:-1}
@@ -616,10 +619,12 @@ function paintRide(){
   if(mode!=="ride" || !PLAN || PLAN===false) return;
   const days=planDays();
   const labels=[];
-  const start=PLAN.towns && PLAN.towns[0];
-  if(start) labels.push({name:PLAN.startName, lat:start.lat, lon:start.lon});
-  days.forEach(d=>{ if(d.lat!=null) labels.push({name:niceName(d.to), lat:d.lat, lon:d.lon}); });
+  const segs=activeSegs();
+  const c0=segs[0]&&segs[0].cand&&segs[0].cand[0];
+  if(c0&&c0.lat!=null) labels.push({name:showName(townById(startId)||PLAN.startName), lat:c0.lat, lon:c0.lon});
+  days.forEach(d=>{ if(d.lat!=null) labels.push({name:d.to, lat:d.lat, lon:d.lon}); });
   labels.forEach(t=>{
+    if(t.lat==null || t.lon==null) return;
     const q=xy(t.lat,t.lon);
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
     tx.setAttribute("x", q[0]+8); tx.setAttribute("y", q[1]-8);

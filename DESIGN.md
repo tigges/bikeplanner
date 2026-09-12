@@ -126,11 +126,12 @@ Two atmospheres, one accent.
 one photograph per country and per trip. Short sentences. The existing coral
 `#f0713f` stays the route colour — it already means “the line you ride”.
 
-**The planner is the same paper atlas.** The schematic map needs a calm
-diagram, not a postcard and not the current night workshop. Photos attach
-*beside* the map (cards, popups, day-zoom chips). Elevation and effort stay
-in the sidebar — see [GRAPHS.md](GRAPHS.md) — they do not become a second
-map.
+**The planner stays a dark workshop.** The schematic map needs contrast; do not
+paste a postcard over it. The map is the identity of the tool. Photos attach
+*beside* the map (cards, popups, day list), they do not replace the line.
+Elevation, effort and the friendliness strip stay in that dark sidebar — they
+already look like the Spain screenshot. Do not restyle them onto paper or
+put them on the gallery cards.
 
 Tone of voice, already in the data: everyday English, numbers not adjectives,
 local name next to English. Keep that. The hub copy should be as short as the
@@ -141,8 +142,8 @@ trip `why` lines.
 - **Type:** one serif for titles (source of place-feeling), system UI sans for
   controls. No icon font, no illustration library.
 - **Colour:** paper `#f6f1ea`, ink `#1c1916`, mute `#6f675e`, route `#f0713f`,
-  map land `#e7dfd2`. Country tints only as photo grade, not as three palettes.
-  Difficulty and friendliness keep their traffic-light hues.
+  map night `#0a141b` (unchanged). Country tints only as photo grade, not as
+  three palettes.
 - **Layout:** full-bleed photo cards, 12-column-ish but really “one stack on
   the phone, three country cards on a desk”.
 - **Motion:** none except a slow image fade. The planner already pans/zooms.
@@ -163,8 +164,7 @@ Footer stays the GitHub credit. Add one line: days are computed, not stored.
 **2. Country gallery — “Pick a trip”**  
 This **replaces** the current picker sidebar list as the first impression.
 Same trips, same filters (days, easy/hard, top, tags), but each card is a
-photograph + the existing badge, name, `why`, difficulty pill, a whole-trip
-elevation spark, and km / climb / ~days.
+photograph + the existing badge, name, `why`, km / climb / days.
 
 The schematic map stays — it is how you see how trips share a network — but
 it sits as a stage behind or beside the cards, not as the only picture.

@@ -8,7 +8,7 @@ This repo holds the design plan and static previews.
 
 - [DESIGN.md](DESIGN.md) — analysis of the live site, new data already in the repo, and the plan for a photographic front (one site, not three).
 - [MAP.md](MAP.md) — how the atlas looks; network → ride → day.
-- [GRAPHS.md](GRAPHS.md) — difficulty pills, effort bars, elevation on cards vs ride.
+- [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation stay in the dark planner.
 - [preview/hub.html](preview/hub.html) — mock of the proposed country hub.
 - [preview/switzerland.html](preview/switzerland.html) — mock of a trip gallery using the existing Swiss catalogue.
 - [preview/map.html](preview/map.html) — clickable map: hover trips, click to ride, click a day to zoom.

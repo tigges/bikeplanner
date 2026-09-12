@@ -41,29 +41,32 @@ Stay **schematic**. Not Mapbox, not satellite, not a busy OSM tile. A whole
 country has to read as a diagram. The live page already has the right bones:
 country fill, lakes, rivers, ghost alternatives, one bright line.
 
-Visual pass — a **paper atlas**, not the current night workshop:
+Visual pass — keep the **night workshop**. Discovery is paper; this page is
+not. The live colours already work: land fill, water, ghost `#2a4150`,
+coral ride.
 
-- Land: warm paper `#e7dfd2`, edge `#b7aa98`
-- Water: `#c5d5de` (the lakes already in `P.water`)
-- Ghost network: hairline `#c9c0b6`, dashed
-- **Crossings** (E–W, N–S): dashed, a bit thicker, long-haul
-- **National routes** (1–9, 99): solid, numbered pill at the start
+- Land / coast: as today (`#13242f` fill where there is a border)
+- Water: the lakes already in `P.water`
+- Ghost network: `#2a4150`, dashed
+- **Crossings** (E–W, N–S): dashed, a bit thicker
+- **National routes** (1–9, 99): solid, numbered pill
 - **Pass days / sections**: thinner, muted, until hover
-- **The ride**: coral `#f0713f`, the only saturated line
-- **The selected day**: gold halo on that stretch, other days of the ride stay coral but quieter
-- Day ends: small numbered discs, ink on paper
-- Labels: towns only when zoomed (already the live rule: names under ~300 km, sights under ~60 km)
+- **The ride**: coral `#f0713f`
+- **The selected day**: brighter on that stretch (existing day dots; a gold
+  or coral halo is enough)
+- Day ends: the existing blue discs
+- Labels: towns when zoomed (names under ~300 km, sights under ~60 km)
 
 Photos do **not** become the map. They clip onto it:
 
-- Network: no photos on the map (photos live on the cards)
-- Ride: still no photos on the map — the line has to stay readable
-- Day: **photo chips** at 3–5 sights/towns on the zoomed stretch (the existing `sight_list`, filtered)
+- Network / gallery: no photos on the map (photos live on the paper cards)
+- Ride: still no photos on the map
+- Day: **photo chips** at 3–5 sights on the zoomed stretch, or in the
+  popup / day rail (the first design). Prefer the rail and popup so the
+  dark map stays a diagram.
 
-Friendliness colour (signed / mixed / busy) stays on the **strip** in the
-sidebar, and optionally on the ride line as a toggle — same as today. Default
-the ride to coral so the atlas stays calm; the strip already tells the road
-story.
+Friendliness colour stays on the **strip** in the sidebar, and optionally
+on the ride line as a toggle — same as today.
 
 ---
 
@@ -138,8 +141,9 @@ Photo chips only on day zoom, max three, so the line stays tappable.
 ## Keep from the live page
 
 The live interaction is already this model. Do not replace it with a
-story-slideshow or a tiled map. Change how it **looks** (paper, photo cards,
-line hierarchy, chips on day zoom) and how clearly the three levels are
-named. The graph, the day splitter, and the hash stay.
+story-slideshow or a tiled map. Discovery is paper; the planner stays the
+night workshop. Change how clearly the three levels are named, and add
+photos beside the line. The graph, the day splitter, and the hash stay.
 
-Difficulty pills, effort bars and elevation profiles: [GRAPHS.md](GRAPHS.md).
+Difficulty, effort and elevation stay in the dark sidebar:
+[GRAPHS.md](GRAPHS.md).

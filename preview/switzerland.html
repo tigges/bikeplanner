@@ -44,9 +44,11 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 .plan{display:inline-block;margin-top:8px;color:var(--route);font-size:14px;text-decoration:none}
 .mapcard{background:#efe8dc;border:1px solid var(--line);border-radius:16px;overflow:hidden;position:sticky;top:16px;height:calc(100vh - 48px);min-height:520px}
 .mapcard svg{width:100%;height:100%;display:block}
-#pop{display:none;position:absolute;z-index:5;max-width:220px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(28,25,22,.12)}
+#pop{display:none;position:absolute;z-index:5;max-width:340px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(28,25,22,.12);text-decoration:none;color:inherit;cursor:pointer}
+#pop:hover{border-color:var(--route)}
 #pop b{display:block}
-#pop .cta{color:var(--route);margin-top:4px;font-size:12px}
+#pop .url{display:block;color:var(--route);margin-top:6px;font-size:11px;line-height:1.35;word-break:break-all}
+.plan-url{display:block;margin-top:6px;color:var(--route);font-size:12px;word-break:break-all;text-decoration:none}
 .note{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
 footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
 @media(max-width:860px){
@@ -68,7 +70,7 @@ footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font
         <g id="lines"></g>
         <g id="badges"></g>
       </svg>
-      <div id="pop"></div>
+      <a id="pop" target="_self"></a>
     </aside>
   </div>
 </main>
@@ -170,71 +172,132 @@ function drawBase(land, water){
   });
 }
 
+function mkPoly(pts){
+  const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+  p.setAttribute("points", pts);
+  p.setAttribute("fill","none");
+  p.setAttribute("stroke-linecap","round");
+  p.setAttribute("stroke-linejoin","round");
+  return p;
+}
+function linkWrap(t){
+  const a=document.createElementNS("http://www.w3.org/2000/svg","a");
+  const url=liveUrl(t);
+  a.setAttribute("href", url);
+  a.setAttributeNS("http://www.w3.org/1999/xlink","href", url);
+  a.setAttribute("data-id", t.id);
+  a.style.cursor="pointer";
+  a.addEventListener("mouseenter",()=>setHover(t.id));
+  a.addEventListener("mouseleave",()=>setHover(null));
+  return a;
+}
+function addTrip(t, dest, role){
+  const line=geo(t).line; if(!line||line.length<2) return;
+  const pts=linePts(line);
+  const a=linkWrap(t);
+  a.setAttribute("data-role", role);
+  const hit=mkPoly(pts);
+  hit.setAttribute("stroke","rgba(0,0,0,0.01)");
+  hit.setAttribute("stroke-width","16");
+  hit.setAttribute("pointer-events","stroke");
+  const vis=mkPoly(pts);
+  vis.setAttribute("data-vis","1");
+  vis.setAttribute("pointer-events","none");
+  a.appendChild(hit);
+  a.appendChild(vis);
+  dest.appendChild(a);
+  styleVis(vis, t, role);
+}
+function styleVis(vis, t, role){
+  const active=hover || (ride && ride.id);
+  const isRide=ride && ride.id===t.id;
+  vis.removeAttribute("stroke-dasharray");
+  if(role==="off"){
+    vis.setAttribute("stroke","#d4c9ba"); vis.setAttribute("stroke-width","1"); vis.setAttribute("opacity",".35");
+    return;
+  }
+  if(role==="ghost"){
+    vis.setAttribute("stroke","#c4b8a8"); vis.setAttribute("stroke-width","1.4");
+    vis.setAttribute("stroke-dasharray","4 5"); vis.setAttribute("opacity",".55");
+    return;
+  }
+  const hl=(mode==="network" && t.id===active) || isRide;
+  const dim=mode==="network" && active && t.id!==active;
+  vis.setAttribute("stroke", hl?"#f0713f":(t.kind==="crossing"||t.kind==="route"?"#8a7f72":"#b8aea0"));
+  vis.setAttribute("stroke-width", hl?4.5:(t.kind==="section"||t.kind==="pass"?1.8:2.6));
+  if(t.kind==="crossing" && !hl) vis.setAttribute("stroke-dasharray","7 5");
+  vis.setAttribute("opacity", dim?".22":"1");
+}
+function paintBadge(){
+  const gB=document.getElementById("badges");
+  gB.innerHTML="";
+  const active=hover || (ride && ride.id);
+  if(mode!=="network" || !active) return;
+  const t=TRIPS.find(x=>x.id===active);
+  if(!t || (t.kind!=="route" && t.kind!=="crossing")) return;
+  const line=geo(t).line||[]; if(!line.length) return;
+  const q=xy(line[0][0], line[0][1]);
+  const url=liveUrl(t);
+  const a=document.createElementNS("http://www.w3.org/2000/svg","a");
+  a.setAttribute("href", url);
+  a.setAttributeNS("http://www.w3.org/1999/xlink","href", url);
+  a.style.cursor="pointer";
+  a.addEventListener("mouseenter",()=>setHover(t.id));
+  a.addEventListener("mouseleave",()=>setHover(null));
+  const label=String(t.num||"");
+  const w=Math.max(22, label.length*7+12);
+  const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
+  r.setAttribute("x", q[0]-w/2); r.setAttribute("y", q[1]-10);
+  r.setAttribute("width", w); r.setAttribute("height", 20); r.setAttribute("rx",10);
+  r.setAttribute("fill","#f0713f"); r.setAttribute("stroke","#f0713f");
+  const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
+  tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+4);
+  tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","11");
+  tx.setAttribute("font-weight","700"); tx.setAttribute("font-family","inherit");
+  tx.setAttribute("fill","#fff"); tx.setAttribute("pointer-events","none");
+  tx.textContent=label;
+  a.appendChild(r); a.appendChild(tx);
+  gB.appendChild(a);
+}
+function paint(){
+  document.querySelectorAll("#lines a[data-id], #ghost a[data-id]").forEach(a=>{
+    const t=TRIPS.find(x=>x.id===a.dataset.id); if(!t) return;
+    const vis=a.querySelector("polyline[data-vis]"); if(!vis) return;
+    styleVis(vis, t, a.dataset.role);
+  });
+  document.querySelectorAll(".tcard[data-id]").forEach(el=>{
+    el.classList.toggle("hl", hover===el.dataset.id);
+  });
+  paintBadge();
+  pop();
+}
 function draw(){
   const gG=document.getElementById("ghost"), gL=document.getElementById("lines"), gB=document.getElementById("badges");
   [gG,gL,gB].forEach(g=>g.innerHTML="");
-  const show=visible();
-  const showIds=new Set(show.map(t=>t.id));
-  const active=hover || (ride && ride.id);
+  const showIds=new Set(visible().map(t=>t.id));
   TRIPS.forEach(t=>{
     const line=geo(t).line; if(!line||line.length<2) return;
     const on=showIds.has(t.id);
     const isRide=ride && ride.id===t.id;
-    const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-    p.setAttribute("points", linePts(line));
-    p.setAttribute("fill","none");
-    p.setAttribute("stroke-linecap","round");
-    p.setAttribute("stroke-linejoin","round");
-    if(mode!=="network" && !isRide){
-      p.setAttribute("stroke","#c4b8a8"); p.setAttribute("stroke-width","1.4");
-      p.setAttribute("stroke-dasharray","4 5"); p.setAttribute("opacity",".55");
-      p.style.cursor="pointer";
-      p.addEventListener("click",e=>{ e.stopPropagation(); openRide(t.id); });
-      gG.appendChild(p); return;
-    }
-    if(!on){
-      p.setAttribute("stroke","#d4c9ba"); p.setAttribute("stroke-width","1"); p.setAttribute("opacity",".35");
-      gG.appendChild(p); return;
-    }
-    const hl=(mode==="network" && t.id===active) || isRide;
-    const dim=mode==="network" && active && t.id!==active;
-    p.setAttribute("stroke", hl?"#f0713f":(t.kind==="crossing"?"#8a7f72": t.kind==="route"?"#8a7f72":"#b8aea0"));
-    p.setAttribute("stroke-width", hl?4.5:(t.kind==="section"||t.kind==="pass"?1.8:2.6));
-    if(t.kind==="crossing" && !hl) p.setAttribute("stroke-dasharray","7 5");
-    p.setAttribute("opacity", dim?".22":"1");
-    p.style.cursor="pointer";
-    p.addEventListener("mouseenter",()=>setHover(t.id));
-    p.addEventListener("mouseleave",()=>setHover(null));
-    p.addEventListener("click",e=>{ e.stopPropagation(); openRide(t.id); });
-    gL.appendChild(p);
-    if(mode==="network" && hl && (t.kind==="route" || t.kind==="crossing")){
-      const pt=line[0], q=xy(pt[0], pt[1]);
-      const label=String(t.num||"");
-      const w=Math.max(22, label.length*7+12);
-      const g=document.createElementNS("http://www.w3.org/2000/svg","g");
-      const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
-      r.setAttribute("x", q[0]-w/2); r.setAttribute("y", q[1]-10);
-      r.setAttribute("width", w); r.setAttribute("height", 20); r.setAttribute("rx",10);
-      r.setAttribute("fill", hl?"#f0713f":"#fffdf8");
-      r.setAttribute("stroke", hl?"#f0713f":"#cbbfaf");
-      const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-      tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+4);
-      tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","11");
-      tx.setAttribute("font-weight","700"); tx.setAttribute("font-family","inherit");
-      tx.setAttribute("fill", hl?"#fff":"#1c1916");
-      tx.textContent=label;
-      g.appendChild(r); g.appendChild(tx);
-      g.style.cursor="pointer";
-      g.addEventListener("mouseenter",()=>setHover(t.id));
-      g.addEventListener("click",e=>{ e.stopPropagation(); openRide(t.id); });
-      gB.appendChild(g);
-    }
+    if(mode!=="network" && !isRide){ addTrip(t, gG, "ghost"); return; }
+    if(!on){ addTrip(t, gG, "off"); return; }
+    addTrip(t, gL, "live");
   });
   sheet();
-  pop();
+  paint();
 }
 
-function setHover(id){ hover=id; draw(); }
+let hoverClear=null;
+function setHover(id){
+  if(hoverClear){ clearTimeout(hoverClear); hoverClear=null; }
+  if(id==null){
+    hoverClear=setTimeout(()=>{ hover=null; paint(); }, 160);
+    return;
+  }
+  if(hover===id) return;
+  hover=id;
+  paint();
+}
 function openRide(id){
   ride=TRIPS.find(t=>t.id===id); if(!ride) return;
   mode="ride"; hover=null;
@@ -251,7 +314,7 @@ function sheet(){
     head.innerHTML=`<a class="back" href="hub.html">‹ Where to ride</a>
       <p class="kicker">Switzerland · ${TRIPS.length} trips</p>
       <h1>Switzerland by bike</h1>
-      <p class="lede">National routes, pass days and lake loops. Hover a line or a card. Click to see the ride. Days are computed from effort — the number is a default, not a timetable.</p>
+      <p class="lede">National routes, pass days and lake loops. Hover a line or a card. Click a card for the tour sheet. Click a line to open the live planner. Days are computed from effort — the number is a default, not a timetable.</p>
       <div class="chips" id="filters"></div>`;
     [["top","top"],["all","all 29"],["d3","up to 3 days"],["d6","4–6 days"],["d7","7+ days"],["easy","easy"],["alpine","alpine"],["lakes","lakes"]].forEach(([k,lab])=>{
       const b=document.createElement("button"); b.className="chip"+(filter===k?" on":""); b.textContent=lab;
@@ -265,6 +328,7 @@ function sheet(){
       const g=geo(t), d=grade(g.km,g.asc);
       const el=document.createElement("div");
       el.className="tcard"+(hover===t.id?" hl":"");
+      el.dataset.id=t.id;
       el.innerHTML=`<div class="ph" style="background-image:url('${photo(t)}')"></div>
         <div class="b"><div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
         <span class="dl dl${d}">${DNAME[d]}</span>${t.top?`<span class="top">${topLabel(t.top)}</span>`:""}</div>
@@ -292,23 +356,31 @@ function sheet(){
       </div>
       <p class="tm">${(t.tags||[]).join(" · ")}${t.note?" · "+t.note:""}</p>
       <a class="plan" href="${liveUrl(t)}">Open in the live planner ›</a>
+      <a class="plan-url" href="${liveUrl(t)}">${liveUrl(t)}</a>
       <p class="note">The atlas marks this ride. Days, forks and elevation come from the graph when you open the planner — they are computed, not stored here.</p>`;
   }
 }
-function showPop(x,y,title,sub){
-  const pop=document.getElementById("pop"), st=document.getElementById("stage").getBoundingClientRect();
-  pop.style.display="block";
-  pop.innerHTML=`<b>${title}</b><div class="tm" style="margin:0">${sub||""}</div><div class="cta">click to plan it ›</div>`;
-  pop.style.left=Math.min(st.width-230, Math.max(8, x*(st.width/W)-40))+"px";
-  pop.style.top=Math.max(8, y*(st.height/H)-24)+"px";
-}
 function pop(){
   const pop=document.getElementById("pop");
-  if(mode!=="network" || !hover){ pop.style.display="none"; return; }
+  if(mode!=="network" || !hover){
+    pop.style.display="none";
+    pop.removeAttribute("href");
+    return;
+  }
   const t=TRIPS.find(x=>x.id===hover); if(!t) return;
+  const url=liveUrl(t);
   const line=geo(t).line||[]; const pt=line[0]||[46.8,8.2]; const q=xy(pt[0], pt[1]);
-  showPop(q[0], q[1], t.num+" · "+t.name, (geo(t).km||"")+" km");
+  const st=document.getElementById("stage").getBoundingClientRect();
+  pop.href=url;
+  pop.innerHTML=`<b>${t.num} · ${t.name}</b><div class="tm" style="margin:0">${geo(t).km||""} km</div><span class="url">${url}</span>`;
+  pop.style.display="block";
+  pop.style.left=Math.min(st.width-348, Math.max(8, q[0]*(st.width/W)-40))+"px";
+  pop.style.top=Math.max(8, q[1]*(st.height/H)-24)+"px";
 }
+
+const popEl=document.getElementById("pop");
+popEl.addEventListener("mouseenter",()=>{ if(hoverClear){ clearTimeout(hoverClear); hoverClear=null; } });
+popEl.addEventListener("mouseleave",()=>setHover(null));
 
 document.addEventListener("keydown",e=>{ if(e.key==="Escape" && mode!=="network") goNetwork(); });
 

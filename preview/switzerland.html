@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Switzerland · pick a trip</title>
+<style>
+:root{--paper:#f6f1ea;--ink:#1c1916;--mute:#6f675e;--line:#ddd4c8;--route:#f0713f;--card:#fffdf8}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+header{padding:22px 24px 0;max-width:1120px;margin:0 auto}
+a.back{font-size:13px;color:var(--mute);text-decoration:none}
+h1{font-family:Georgia,"Iowan Old Style",serif;font-size:clamp(28px,4vw,40px);margin:10px 0 4px}
+.lede{color:var(--mute);margin:0 0 16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
+.chips span{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--mute)}
+.chips span.on{background:#1c1916;color:#fff;border-color:#1c1916}
+main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
+.list{display:flex;flex-direction:column;gap:12px}
+.tcard{display:grid;grid-template-columns:160px 1fr;gap:0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit}
+.photo{background:#cfc4b4 center/cover no-repeat;min-height:110px}
+.body{padding:12px 14px}
+.tn{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:var(--route);color:#fff;font-size:11px;font-weight:700}
+h2{font-family:Georgia,serif;font-size:18px;margin:0;font-weight:600}
+.why{font-size:13.5px;color:#3f3a34;margin:4px 0 0}
+.tm{font-size:12px;color:var(--mute);margin-top:6px}
+.top{font-size:10px;font-weight:600;color:#8a6a12;border:1px solid #d9c27a;border-radius:9px;padding:1px 6px}
+footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
+@media (max-width:640px){.tcard{grid-template-columns:1fr}.photo{min-height:150px}}
+</style>
+</head>
+<body>
+<header>
+<a class="back" href="hub.html">‹ Where to ride</a>
+<h1>Switzerland by bike</h1>
+<p class="lede">29 trips · national routes, pass days and lake loops. Same catalogue as the live picker — shown as places, not outline thumbs.</p>
+<div class="chips">
+  <span class="on">top</span><span>up to 3 days</span><span>4–6 days</span><span>7+ days</span><span>easy</span><span>alpine</span><span>lakes</span>
+</div>
+</header>
+<main>
+<div class="list">
+  <a class="tcard" href="https://tigges.github.io/routeplanner/switzerland/#trip=r1">
+    <div class="photo" style="background-image:url('img/furka.jpg')"></div>
+    <div class="body">
+      <div class="tn"><span class="badge">1</span><h2>Rhône</h2><span class="top">Top 5</span></div>
+      <p class="why">One of Switzerland’s most popular long-distance routes: glacier source, the Valais, the Lavaux vineyards.</p>
+      <p class="tm">Andermatt → Genève · 306 km · 1,888 m · mostly descending</p>
+    </div>
+  </a>
+  <a class="tcard" href="https://tigges.github.io/routeplanner/switzerland/#trip=r9">
+    <div class="photo" style="background-image:url('img/lucerne.jpg')"></div>
+    <div class="body">
+      <div class="tn"><span class="badge">9</span><h2>Lakes</h2><span class="top">Top 5</span></div>
+      <p class="why">The most accessible long-distance route for recreational cyclists: ten lakes, Luzern, Lavaux.</p>
+      <p class="tm">St. Gallen → Montreux · 362 km · 4,490 m</p>
+    </div>
+  </a>
+  <a class="tcard" href="https://tigges.github.io/routeplanner/switzerland/#trip=r99">
+    <div class="photo" style="background-image:url('img/lavaux.jpg')"></div>
+    <div class="body">
+      <div class="tn"><span class="badge">99</span><h2>Heart Route</h2><span class="top">Top 10</span></div>
+      <p class="why">The most-loved e-bike route in the country: 13 stages of quiet hills between Lake Constance and Lake Geneva.</p>
+      <p class="tm">Rorschach → Lausanne · 606 km · 9,206 m</p>
+    </div>
+  </a>
+  <a class="tcard" href="https://tigges.github.io/routeplanner/switzerland/#trip=loop3">
+    <div class="photo" style="background-image:url('img/gletsch.jpg')"></div>
+    <div class="body">
+      <div class="tn"><span class="badge">◆</span><h2>Three passes loop</h2><span class="top">Top 10</span></div>
+      <p class="why">Komoot’s top-rated road ride in Switzerland, “The High Triple”: Susten, Grimsel and Furka in one circuit.</p>
+      <p class="tm">Andermatt → Andermatt · 140 km · 4,416 m</p>
+    </div>
+  </a>
+</div>
+<p class="lede" style="margin-top:22px">Mock: a few cards only, with stand-in photos. The live picker already has all 29 trips, filters, map hover and `#trip=` links. Phase B is: keep that behaviour, put a real photo on each card.</p>
+</main>
+<footer>Design preview. Photos from Wikimedia Commons; trip copy from <code>switzerland-trips.json</code>.</footer>
+</body>
+</html>

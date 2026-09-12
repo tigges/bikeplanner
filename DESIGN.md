@@ -120,7 +120,7 @@ One line in the lede: days are computed, not stored. Footer stays the GitHub cre
 
 This **replaces** the current picker list as the first impression of a country.
 
-Same trips, same filters (days, easy / moderate / hard, top, tags). Each card:
+Same trips, same filters as the live picker — **top first**, then all, days (≤3 / 4–6 / 7+), easy / moderate / hard, then every catalogue tag. Each card:
 
 - Photograph of the thing the `why` names
 - Badge, name, small difficulty pill (already on the live picker)
@@ -139,17 +139,16 @@ Spain now has trips: same gallery pattern as Switzerland (Francés, Norte, Fiste
 
 Same page frame as the hub and gallery: max-width, kicker, serif title, cream. Do not switch to a 340 px tool sidebar and a full-bleed GIS canvas.
 
-Left: the Spain instruments, as diagrams on the sheet.
+Left: a compact tour sheet that should fit the viewport without a page scrollbar.
 
-- Stats (days, km, climb)
-- Whole-ride elevation, coloured by computed day (click a band to select that day)
-- Friendliness strip
-- Days as a numbered list (`km · climb`), coral discs — not stacked spark cards
-- On a selected day: that day’s spark and 1–3 photos sit **on the sheet**, not as chips on the map
+- Thin identity (badge, name, one-line sub) — the page header is gone in planner mode
+- Stats, whole-ride elevation, friendliness strip
+- Three collapsible sections: **Plan** (from / to + daily effort), **Route** (forks), **Days** (numbered list; selected day expands in place with spark and photos)
+- **Export** docked at the bottom of the left column: GPX, CSV, Print / PDF
 
-Right: the schematic map as a **figure** in a rounded paper card. Labeled towns, coral ride, gold on the selected day. The atlas does not zoom into a sausage; gold on the stretch is the reference.
+Right: the schematic map as a **figure** in a rounded paper card. Overlay on the map plane (not in the left column): zoom −/+, vehicle, English / Lokale Namen, Whole trip, and All trips. Labeled towns, coral ride, gold on the selected day. Modest zoom of the figure is allowed; the atlas still does not become a GIS canvas. Gold on the stretch is the day reference.
 
-Do not redesign forks, effort slider, day splitter, vehicles, signed-route switch, GPX, hash. Those stay in folded Plan / Route, same as today.
+Vehicle, language, and zoom live on the map so Plan / Route / Days have room. Forks stay in folded Route. GPX / CSV / print stay in the export dock, not in Plan.
 
 ---
 

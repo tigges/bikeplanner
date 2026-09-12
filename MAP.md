@@ -14,7 +14,7 @@ NETWORK     all trips on the country
    click a trip
 RIDE        one journey; days are computed
    click a day
-SECTION     one day’s stretch, zoomed; photos appear
+DAY         one day’s stretch, zoomed; photos appear
 ```
 
 Hover never commits. Click goes one level in. **All trips**, empty-map click,
@@ -27,7 +27,7 @@ Words (so “section” is not used two ways):
 |---|---|---|
 | **Trip** | A catalogue card (`kind`: crossing / route / pass / section) | A line + badge on the network |
 | **Ride** | The loaded start→end + fork picks; days computed from effort | The coral line you are on |
-| **Day** | One computed overnight stretch | Numbered dot; click = the section |
+| **Day** | One computed overnight stretch | Numbered dot; click = zoom that stretch |
 | **Section** (catalogue) | A *kind* of trip: a loop, lake circuit, pass day — not a national route | Drawn quieter than numbered routes |
 
 A catalogue **section** (Three passes loop, Léman circuit) is still a trip.
@@ -41,20 +41,18 @@ Stay **schematic**. Not Mapbox, not satellite, not a busy OSM tile. A whole
 country has to read as a diagram. The live page already has the right bones:
 country fill, lakes, rivers, ghost alternatives, one bright line.
 
-Visual pass — keep the **night workshop**. Discovery is paper; this page is
-not. The live colours already work: land fill, water, ghost `#2a4150`,
-coral ride.
+Visual pass — **paper throughout**, same tokens as the hub and gallery.
+The planner is not a second, darker product.
 
-- Land / coast: as today (`#13242f` fill where there is a border)
-- Water: the lakes already in `P.water`
-- Ghost network: `#2a4150`, dashed
+- Land / coast: `#e7dfd2` fill, hairline `#cbbfaf`
+- Water: lakes restyled to `#c5d5de`
+- Ghost network: `#c4b8a8`, dashed
 - **Crossings** (E–W, N–S): dashed, a bit thicker
 - **National routes** (1–9, 99): solid, numbered pill
 - **Pass days / sections**: thinner, muted, until hover
 - **The ride**: coral `#f0713f`
-- **The selected day**: brighter on that stretch (existing day dots; a gold
-  or coral halo is enough)
-- Day ends: the existing blue discs
+- **The selected day**: gold `#c9a227` on that stretch
+- Day ends: cream discs, ink numbers
 - Labels: towns when zoomed (names under ~300 km, sights under ~60 km)
 
 Photos do **not** become the map. They clip onto it:
@@ -62,8 +60,7 @@ Photos do **not** become the map. They clip onto it:
 - Network / gallery: no photos on the map (photos live on the paper cards)
 - Ride: still no photos on the map
 - Day: **photo chips** at 3–5 sights on the zoomed stretch, or in the
-  popup / day rail (the first design). Prefer the rail and popup so the
-  dark map stays a diagram.
+  popup / day rail. Prefer the rail and popup so the diagram stays tappable.
 
 Friendliness colour stays on the **strip** in the sidebar, and optionally
 on the ride line as a toggle — same as today.
@@ -86,16 +83,18 @@ They are the `kind` field. Turning “sections” off is how 29 Swiss trips stop
 looking like spaghetti. Default: crossings + routes on, sections/passes muted
 or off until you pick the “top” or “pass” chip.
 
-This is the live picker, with photos on cards and quieter line hierarchy.
+This is the live picker, with photos on cards and quieter line hierarchy,
+on the same paper as the magazine gallery.
 
 ### 2. Ride (you have committed to a trip)
 
 Sidebar swaps: back link, trip title, stats, effort slider (unchanged),
-**days as the section list**.
+**days as the stretch list**. Elevation profile, friendliness strip, and
+per-day sparks sit here — restyled to paper, not dumped onto gallery cards.
 
 Map: ghost the rest of the network (so you still see where you are in the
 country). The ride is the coral line. Day dots 1…n. Click a day in the list
-**or** on the map: that day becomes the section, map zooms to it.
+**or** on the map: that day becomes the zoom, map frames it.
 
 Clicking a ghost line pops “Rhine · click to switch ride” — you can jump
 without going back, but it is a new ride (days recompute).
@@ -103,7 +102,7 @@ without going back, but it is a new ride (days recompute).
 Forks stay in a folded “Route” panel. They change the ride line; they are
 not a fourth map mode.
 
-### 3. Day / section (one overnight)
+### 3. Day (one overnight)
 
 The map zooms to that stretch (~1.5× padding, same as today’s `zoomDay`).
 Gold on the day’s polyline. Photo chips at the best sights (peak, castle,
@@ -126,7 +125,7 @@ The clickable mock at `preview/map.html` does this loop (`#network`,
 - Facilities (shop/bed/bath/water/rail): still layer buttons. They are dots,
   not photos. They appear from ride zoom onward, same as now.
 - Spain with no trips: skip network, open as a ride (the full crossing). Days
-  are still the sections.
+  are still the stretches you zoom.
 
 ---
 
@@ -141,9 +140,9 @@ Photo chips only on day zoom, max three, so the line stays tappable.
 ## Keep from the live page
 
 The live interaction is already this model. Do not replace it with a
-story-slideshow or a tiled map. Discovery is paper; the planner stays the
-night workshop. Change how clearly the three levels are named, and add
+story-slideshow or a tiled map. Change the chrome to paper so the planner
+is the same product as the hub. Name the three levels clearly, and add
 photos beside the line. The graph, the day splitter, and the hash stay.
 
-Difficulty, effort and elevation stay in the dark sidebar:
+Difficulty, effort and elevation stay in the planner sidebar, on paper:
 [GRAPHS.md](GRAPHS.md).

@@ -12,21 +12,21 @@ Mocks: [preview/hub.html](preview/hub.html), [preview/switzerland.html](preview/
 
 ## 1. Verdict
 
-**One site, three rooms, two atmospheres.**
+**One site, three rooms, one paper design.**
 
 ```
 HUB (paper)          Where to ride — three country photographs
    click a country
 GALLERY (paper)      Pick a trip — photograph + why + km
    click a trip
-PLANNER (dark)       The tool you already have
+PLANNER (paper)      The tool you already have, on the same page
    click a day
 DAY                  Zoom that overnight; photos in popup and day rail
 ```
 
 Do **not** split Japan / Switzerland / Spain into separate sites. The data is already split (one 2–11 MB HTML page per graph). The product should not be.
 
-Do **not** turn the planner into a paper atlas or a tiled map. Discovery is light and photographic. The planner stays the night workshop.
+Do **not** switch atmospheres. Hub, gallery, and planner share the same paper, ink, mute, and coral. Discovery is photographic; the planner is still a schematic atlas, not tiles — but it sits on the same cream page.
 
 ---
 
@@ -43,7 +43,7 @@ Three self-contained cycle-tour planners behind a dark text list.
 
 The planner is the product: pick start and end, choose at each fork, set daily effort, get **days computed not stored**. Elevation on every segment; shops, beds, baths, taps, stations within 2 km. Bicycle / e-bike / 45 km/h pedelec. Train hops. GPX / CSV / hash `#r=` / `#trip=`. Schematic SVG map, not OSM tiles.
 
-The problem is the **door**. Nothing on the hub says Shimanami, Furka, Camino, Biwaichi. Nothing shows a place.
+The problem is the **door**. Nothing on the hub says Shimanami, Furka, Camino, Biwaichi. Nothing shows a place. The planner chrome is a second, darker product.
 
 ---
 
@@ -66,15 +66,20 @@ As of 2026-09-12 (`tigges/routeplanner` `65545da`):
 
 6. **Not to merge** — `JAPMAP` / `JAPANRIDE` are separate experiments.
 
-The tool does not need new features. It needs a front that shows what is already there.
+The tool does not need new features. It needs a front that shows what is already there, and one visual system from the first photograph through the effort slider.
 
 ---
 
-## 4. Two atmospheres, one accent
+## 4. One atmosphere, one accent
 
-**Discovery (hub + gallery)** — paper `#f6f1ea`, ink `#1c1916`, mute `#6f675e`. Serif titles, one photograph per country and per trip, short sentences. Coral `#f0713f` is the route colour everywhere.
+**Everywhere** — paper `#f6f1ea`, ink `#1c1916`, mute `#6f675e`, cream cards `#fffdf8`, hairline `#ddd4c8`. Serif titles, system UI sans for controls. Coral `#f0713f` is the route colour on cards, on the map, and on the elevation line.
 
-**Planner** — night `#0a141b`. Schematic map, coral ride, ghost network `#2a4150`, blue day dots. Elevation profile, effort bars, friendliness strip stay exactly as they are (the Spain sidebar). Photos attach *beside* the map (title, popup, day rail). They do not replace the line and they do not go on the gallery cards as charts.
+**Planner, same page** — schematic atlas on paper, not a night workshop and not OSM tiles.
+
+- Land `#e7dfd2`, water `#c5d5de`, ghost network `#c4b8a8` dashed
+- The ride: coral `#f0713f`
+- Selected day: gold `#c9a227` on that stretch
+- Sidebar: cream cards, paper profile bands, the same difficulty pills as the gallery
 
 Tone, already in the data: everyday English, numbers not adjectives, local name next to English.
 
@@ -125,17 +130,11 @@ Layer chips on the map: **crossings · routes · sections**. They are the `kind`
 
 Spain, until it has trips: skip this room, open the planner, with a short photo strip of trunk towns (Creus, Girona, Burgos, León, Santiago, Fisterra).
 
-### Room 3 — Planner: the tool, with a picture rail
+### Room 3 — Planner: the same paper, the same tool
 
 Do not redesign forks, effort slider, day splitter, vehicles, signed-route switch, GPX, hash.
 
-Add only:
-
-- A **trip hero** in the title strip, collapsed on scroll
-- **Town and sight photos** in the existing popup (next to “Pin in Google Maps”)
-- A **day rail**: 1–3 images for the day’s best sight/town, from `sight_list` after the same kind filter the map already uses
-
-The sidebar you already have, left as-is:
+Restyle the chrome onto paper so it is the same product as the hub and gallery. Keep the Spain-style graph stack, on cream:
 
 - Stats (days, km, climb, % signed)
 - Whole-ride elevation, coloured by computed day
@@ -143,13 +142,19 @@ The sidebar you already have, left as-is:
 - Folded Plan / Route
 - Days: `km · N eff`, relative bar, 26 px spark, shops · beds · baths · stations · longest gap
 
+Add only:
+
+- A **trip hero** in the title strip, collapsed on scroll
+- **Town and sight photos** in the existing popup (next to “Pin in Google Maps”)
+- A **day rail**: 1–3 images for the day’s best sight/town, from `sight_list` after the same kind filter the map already uses
+
 Small improvement: click a profile day-band to zoom that day (the row already does this).
 
 ---
 
 ## 6. Map: one schematic, three selection levels
 
-Do not invent a second map. One dark atlas.
+Do not invent a second map. One paper atlas.
 
 ```
 NETWORK     all trips on the country
@@ -172,12 +177,12 @@ Hover never commits. Click goes one level in. **All trips**, empty-map click, or
 
 A catalogue section (Three passes loop) is still a trip. Once you click it, it is the **ride**; its days are the **days**.
 
-**Look** — night workshop, not paper, not tiles:
+**Look** — paper atlas, not night, not tiles:
 
-- Land `#13242f`, water from `P.water`, ghost `#2a4150` dashed
+- Land `#e7dfd2`, water from `P.water` restyled to `#c5d5de`, ghost `#c4b8a8` dashed
 - Crossings dashed; national routes solid with a numbered pill; sections thinner until hover
 - The ride: coral `#f0713f`
-- Day ends: existing blue discs
+- Day ends: cream discs with ink numbers; selected day gold on the stretch
 - Towns named under ~300 km, sights under ~60 km (live rule)
 
 Photos are not on the map at network or ride. At day zoom they live in the popup and the day rail so the diagram stays tappable. Facilities stay as dots, from ride zoom onward.
@@ -192,7 +197,7 @@ Vehicle, signed-route, train hops, start/end: they rewrite the ride. The map sta
 
 ## 7. Difficulty, effort, elevation
 
-They are three instruments, not one chart. They live in the dark planner.
+They are three instruments, not one chart. They live in the **planner sidebar**, restyled to paper. They do not go on gallery cards.
 
 | Instrument | What it is |
 |---|---|
@@ -200,11 +205,11 @@ They are three instruments, not one chart. They live in the dark planner.
 | **Effort** | `km + climb/10` (e-bike: climb counts a third). Slider = daily budget. Days computed, not stored. |
 | **Elevation** | `SD[id].prof` on every segment. Whole-ride profile coloured by the split; each day inherits a spark. |
 
-There is no effort-over-distance line. Do not invent one. Do not put elevation on the map. Do not put sparks on gallery cards. Do not restyle the sidebar onto paper.
+There is no effort-over-distance line. Do not invent one. Do not put elevation on the map. Do not put sparks on gallery cards.
 
 Cape to cape is **easy** (7.4 m/km) and 3,500 km. Furka is **very hard** in 38 km. Show km and ~days next to the pill so grade is not mistaken for length.
 
-On the planner page, `tripStats`, `drawProfile`, `spark`, `diffPill`, `drawStrip` already exist. Gallery does not need `geo.prof`.
+On the planner page, `tripStats`, `drawProfile`, `spark`, `diffPill`, `drawStrip` already exist. Restyle their chrome (fills, bands, labels) onto paper. Gallery does not need `geo.prof`.
 
 ---
 
@@ -241,7 +246,7 @@ images/{slug}.json
 - Schematic map (clearer than tiles for a whole country)
 - Self-contained HTML publish path (`template.html` → `docs/<slug>/`)
 - “Days are computed, not stored”
-- The dark planner chrome and the Spain-style graph stack
+- The Spain-style graph stack (profile, strip, day sparks) — keep the instruments, restyle them onto paper
 
 ---
 
@@ -251,7 +256,7 @@ images/{slug}.json
 
 **Phase B — Gallery photos.** `images/*.json` and a real photograph on each trip card. Switzerland and Japan become magazines. Spain unchanged. Keep filters, map hover, `#trip=`.
 
-**Phase C — Planner pictures.** Hero in the title, photo in the popup, 1–3 images on the day rail. Clickable profile bands. Planner grid unchanged.
+**Phase C — Planner onto paper.** Same grid, same instruments. Paper land/water, cream sidebar, coral ride. Hero in the title, photo in the popup, 1–3 images on the day rail. Clickable profile bands.
 
 **Phase D — Spain trips.** Same format as `switzerland-trips.json`: the crossing, a Pyrenees week, a Camino-only week, Fisterra extra. Then Spain gets a gallery too.
 
@@ -259,4 +264,4 @@ images/{slug}.json
 
 ## 11. Success
 
-Someone who has never seen the tool opens the hub, knows the country from the picture, picks Biwaichi or the Rhône from a card that looks like a place, and only then hits the effort slider. The numbers stay honest. The pictures make the numbers mean a road.
+Someone who has never seen the tool opens the hub, knows the country from the picture, picks Biwaichi or the Rhône from a card that looks like a place, and only then hits the effort slider — still on the same cream page. The numbers stay honest. The pictures make the numbers mean a road.

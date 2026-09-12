@@ -7,5 +7,7 @@ The planners themselves live in [tigges/routeplanner](https://github.com/tigges/
 This repo holds the design plan and static previews.
 
 - [DESIGN.md](DESIGN.md) — analysis of the live site, new data already in the repo, and the plan for a photographic front (one site, not three).
+- [MAP.md](MAP.md) — how the atlas looks; network → ride → day.
 - [preview/hub.html](preview/hub.html) — mock of the proposed country hub.
 - [preview/switzerland.html](preview/switzerland.html) — mock of a trip gallery using the existing Swiss catalogue.
+- [preview/map.html](preview/map.html) — clickable map: hover trips, click to ride, click a day to zoom.

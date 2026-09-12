@@ -80,6 +80,11 @@ Published **today** (2026-09-12) and easy to miss from the hub:
 
 ---
 
+The map, and how a trip becomes a ride and a day, is in [MAP.md](MAP.md).
+A clickable mock: [preview/map.html](preview/map.html).
+
+---
+
 ## Verdict: one site, three rooms — do not split countries
 
 **Build one site with a visual front page.** Keep each country’s planner as its

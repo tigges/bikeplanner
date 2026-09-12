@@ -46,6 +46,23 @@ h1{font-family:Georgia,"Iowan Old Style",serif;font-size:26px;margin:18px 18px 4
 .chip-photo{stroke:#fff;stroke-width:2}
 #titlebar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .note{margin:14px 18px 0;font-size:12px;color:var(--mute);border-left:3px solid var(--route);padding-left:10px}
+.dl{font-size:10px;font-weight:600;border:1px solid;border-radius:9px;padding:1px 6px;white-space:nowrap}
+.dl0{color:#3d6b1e;border-color:#97C459;background:#f3f7ea}
+.dl1{color:#8a5a10;border-color:#EF9F27;background:#fbf3e4}
+.dl2{color:#c45a28;border-color:#f07d3f;background:#fff1ea}
+.dl3{color:#a32d2c;border-color:#E24B4A;background:#fbeeee}
+.spark{display:block;width:100%;height:28px;margin-top:6px}
+#profwrap{margin:4px 18px 8px}
+#profwrap svg{display:block;width:100%;height:56px;border-radius:6px;background:#efe8dd}
+#proflbl{display:flex;justify-content:space-between;font-size:10.5px;color:var(--mute);margin-top:3px}
+#strip{display:flex;height:14px;border-radius:3px;overflow:hidden;gap:1px;margin:0 18px}
+#friendleg{margin:4px 18px 12px;font-size:11px;color:var(--mute);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#friendleg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.bar{grid-column:2/4;height:3px;background:#ddd4c8;border-radius:2px}
+.bar i{display:block;height:100%;background:var(--route);border-radius:2px}
+.day{grid-template-columns:28px 1fr auto;grid-template-rows:auto auto auto auto}
+.day svg.spark{grid-column:2/4;height:26px;margin:0}
+.pills{margin-left:auto;display:flex;gap:4px;align-items:center}
 @media(max-width:760px){
   #app{grid-template-columns:1fr;grid-template-rows:42vh 1fr}
   #stage{order:0;border-bottom:1px solid var(--line)}#side{order:1;border-right:0}
@@ -80,40 +97,86 @@ const PH = {
   furka:"img/furka.jpg", lucerne:"img/lucerne.jpg", lavaux:"img/lavaux.jpg",
   gletsch:"img/gletsch.jpg", japan:"img/japan.jpg", fisterra:"img/fisterra.jpg"
 };
+const DNAME=["easy","moderate","hard","very hard"];
+function grade(km,asc){ const r=asc/km; return r<8?0:r<14?1:r<20?2:3; }
+function sparkPts(el,w,h){
+  const mx=Math.max.apply(null,el), mn=Math.min.apply(null,el), span=Math.max(mx-mn,120);
+  return el.map((z,i)=>(i/(el.length-1)*w).toFixed(1)+","+(h-3-(z-mn)/span*(h-8)).toFixed(1)).join(" ");
+}
+function sparkSVG(el,w,h){
+  if(!el||el.length<2) return "";
+  const pts=sparkPts(el,w,h);
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="0,${h} ${pts} ${w},${h}" fill="#f0713f" fill-opacity=".18" stroke="none"/><polyline points="${pts}" fill="none" stroke="#f0713f" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function profileSVG(t){
+  const stops=t.stops;
+  if(!stops||!stops.length){
+    const el=t.elev||[];
+    return sparkSVG(el,300,56)+`<div id="proflbl"><span>▲ ${(el.length?Math.max.apply(null,el):0).toLocaleString()} m</span><span>whole trip</span><span>▼ ${(el.length?Math.min.apply(null,el):0).toLocaleString()} m</span></div>`;
+  }
+  const W=300,H=56, tot=stops.reduce((a,s)=>a+s.km,0);
+  const all=stops.flatMap(s=>s.elev||[]);
+  const hi=Math.max.apply(null,all), lo=Math.min.apply(null,all), span=Math.max(hi-lo,150);
+  let off=0, pts=[], bands="";
+  stops.forEach(s=>{
+    const w=s.km/tot*W, sel=day===s.n;
+    bands+=`<rect class="pband" data-day="${s.n}" x="${off.toFixed(1)}" y="0" width="${w.toFixed(1)}" height="${H}" fill="${sel?"#f3d7a4":(s.n%2?"#efe8dd":"#e7dfd2")}" style="cursor:pointer"/>`;
+    if(w>18) bands+=`<text x="${(off+3).toFixed(1)}" y="${H-5}" font-size="9" fill="#6f675e" font-family="inherit" style="pointer-events:none">${s.n}</text>`;
+    (s.elev||[]).forEach((z,i,a)=>{
+      const x=off+(i/(Math.max(a.length-1,1)))*w, y=4+(1-(z-lo)/span)*(H-12);
+      pts.push(x.toFixed(1)+","+y.toFixed(1));
+    });
+    off+=w;
+  });
+  const d=pts.join(" ");
+  return `<svg id="prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${bands}<polyline points="0,${H} ${d} ${W},${H}" fill="#f0713f" fill-opacity=".2" stroke="none"/><polyline points="${d}" fill="none" stroke="#f0713f" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg>
+    <div id="proflbl"><span>▲ ${Math.round(hi).toLocaleString()} m</span><span>coloured by day</span><span>▼ ${Math.round(lo).toLocaleString()} m</span></div>`;
+}
+function friendHTML(t){
+  const s=t.friend; if(!s) return "";
+  const col={g:"#97C459",y:"#EF9F27",r:"#E24B4A"};
+  const cells=[...s].map(c=>`<div style="flex:1;background:${col[c]}"></div>`).join("");
+  return `<div id="strip">${cells}</div>
+    <div id="friendleg"><span><i style="background:#97C459"></i>signed / quiet</span><span><i style="background:#EF9F27"></i>minor / mixed</span><span><i style="background:#E24B4A"></i>busy road</span></div>`;
+}
 const TRIPS = [
   {id:"ew", num:"E–W", name:"East–West crossing", kind:"crossing",
-   sub:"Müstair → Genève", km:605, asc:4768, days:13,
+   sub:"Müstair → Genève", km:605, asc:4768, daysN:11, eff:1081,
    why:"The whole country, east to west.",
    d:"820,300 620,340 430,140 250,260 140,430 90,470",
-   photo:PH.fisterra},
+   photo:PH.fisterra,
+   elev:[1240,1480,1800,2113,1650,1100,720,430,375]},
   {id:"r1", num:"1", name:"Rhône", kind:"route",
-   sub:"Andermatt → Genève", km:306, asc:1888, daysN:8,
+   sub:"Andermatt → Genève", km:306, asc:1888, daysN:6, eff:493,
    why:"Glacier source, the Valais, the Lavaux vineyards.",
    d:"455,360 420,400 340,430 190,400 175,410 140,430 90,470",
-   photo:PH.furka,
+   photo:PH.furka, friend:"ggggggggggyggggggggg",
    stops:[
-     {n:1, name:"Andermatt → Oberwald", km:38, x:438, y:380, seg:"455,360 420,400", photos:[{src:PH.furka,label:"Furka"},{src:PH.gletsch,label:"Gletsch"}]},
-     {n:2, name:"Oberwald → Brig", km:44, x:380, y:415, seg:"420,400 340,430", photos:[{src:PH.gletsch,label:"Rhône valley"}]},
-     {n:3, name:"Brig → Sion", km:48, x:265, y:418, seg:"340,430 190,400", photos:[{src:PH.lavaux,label:"Valais vines"},{src:PH.lucerne,label:"Sion"}]},
-     {n:4, name:"Sion → Aigle", km:41, x:200, y:405, seg:"190,400 175,410", photos:[{src:PH.lavaux,label:"Aigle"}]},
-     {n:5, name:"Aigle → Lausanne", km:38, x:158, y:420, seg:"175,410 140,430", photos:[{src:PH.lavaux,label:"Lavaux"}]},
-     {n:6, name:"Lausanne → Genève", km:62, x:110, y:450, seg:"140,430 90,470", photos:[{src:PH.lavaux,label:"Lake Geneva"}]}
+     {n:1, name:"Andermatt → Oberwald", km:38, eff:148, x:438, y:380, seg:"455,360 420,400", elev:[1444,1880,2431,2100,1368], photos:[{src:PH.furka,label:"Furka"},{src:PH.gletsch,label:"Gletsch"}]},
+     {n:2, name:"Oberwald → Brig", km:44, eff:70, x:380, y:415, seg:"420,400 340,430", elev:[1368,1100,820,670], photos:[{src:PH.gletsch,label:"Rhône valley"}]},
+     {n:3, name:"Brig → Sion", km:48, eff:62, x:265, y:418, seg:"340,430 190,400", elev:[670,620,540,490], photos:[{src:PH.lavaux,label:"Valais vines"},{src:PH.lucerne,label:"Sion"}]},
+     {n:4, name:"Sion → Aigle", km:41, eff:55, x:200, y:405, seg:"190,400 175,410", elev:[490,530,430,420], photos:[{src:PH.lavaux,label:"Aigle"}]},
+     {n:5, name:"Aigle → Lausanne", km:38, eff:58, x:158, y:420, seg:"175,410 140,430", elev:[420,510,450,400], photos:[{src:PH.lavaux,label:"Lavaux"}]},
+     {n:6, name:"Lausanne → Genève", km:62, eff:70, x:110, y:450, seg:"140,430 90,470", elev:[400,390,380,375], photos:[{src:PH.lavaux,label:"Lake Geneva"}]}
    ]},
   {id:"r9", num:"9", name:"Lakes", kind:"route",
-   sub:"St. Gallen → Montreux", km:362, asc:4490, daysN:12,
+   sub:"St. Gallen → Montreux", km:362, asc:4490, daysN:8, eff:811,
    why:"Ten lakes, Luzern, Lavaux.",
    d:"620,120 430,140 402,268 320,340 210,380 175,410",
-   photo:PH.lucerne},
+   photo:PH.lucerne,
+   elev:[670,820,430,450,800,434,720,375]},
   {id:"r99", num:"99", name:"Heart Route", kind:"route",
-   sub:"Rorschach → Lausanne", km:606, asc:9206, daysN:13,
+   sub:"Rorschach → Lausanne", km:606, asc:9206, daysN:15, eff:1528,
    why:"Quiet hills, the e-bike classic.",
    d:"640,98 560,180 430,220 330,300 210,360 140,430",
-   photo:PH.lavaux},
+   photo:PH.lavaux,
+   elev:[400,720,540,980,610,1100,700,900,650,420]},
   {id:"loop3", num:"◆", name:"Three passes loop", kind:"section",
-   sub:"Andermatt → Andermatt", km:140, asc:4416, daysN:3,
+   sub:"Andermatt → Andermatt", km:140, asc:4416, daysN:6, eff:581,
    why:"Susten, Grimsel and Furka in one circuit.",
    d:"455,360 500,320 455,290 400,330 420,400 455,360",
-   photo:PH.gletsch}
+   photo:PH.gletsch,
+   elev:[1444,2224,1440,2164,1368,2431,1444]}
 ];
 
 let mode="network", ride=null, day=null, hover=null, layers={crossing:true, route:true, section:true};
@@ -289,8 +352,10 @@ function side(){
       const d=document.createElement("div");
       d.className="tcard"+(hover===t.id?" hl":"");
       d.innerHTML=`<div class="ph" style="background-image:url('${t.photo}')"></div>
-        <div class="b"><div class="tn"><span class="badge ${t.kind==="route"?"route":""}">${t.num}</span>${t.name}</div>
-        <div class="why">${t.why}</div><div class="tm">${t.sub} · ${t.km} km</div></div>`;
+        <div class="b"><div class="tn"><span class="badge ${t.kind==="route"?"route":""}">${t.num}</span>${t.name}
+        <span class="pills"><span class="dl dl${grade(t.km,t.asc)}">${DNAME[grade(t.km,t.asc)]}</span></span></div>
+        <div class="why">${t.why}</div><div class="tm">${t.sub} · ${t.km} km · ${t.asc.toLocaleString()} m · ~${t.daysN} days</div>
+        ${sparkSVG(t.elev || (t.stops||[]).flatMap(s=>s.elev), 220, 28)}</div>`;
       d.onmouseenter=()=>setHover(t.id);
       d.onmouseleave=()=>setHover(null);
       d.onclick=()=>openRide(t.id);
@@ -300,21 +365,29 @@ function side(){
     const t=ride;
     const stops=t.stops||[];
     el.innerHTML = `<button class="back" id="up">‹ All 5 trips on this mock</button>
-      <h1 id="titlebar"><span class="badge route">${t.num}</span> ${t.name}</h1>
+      <h1 id="titlebar"><span class="badge route">${t.num}</span> ${t.name} <span class="dl dl${grade(t.km,t.asc)}">${DNAME[grade(t.km,t.asc)]}</span></h1>
       <p class="sub">${t.sub} · ${t.why}</p>
       <div class="stats"><div><b>${stops.length||t.daysN}</b><span>days</span></div><div><b>${t.km}</b><span>km</span></div><div><b>${t.asc.toLocaleString()}</b><span>m climbed</span></div></div>
+      <div id="profwrap">${profileSVG(t)}</div>
+      ${friendHTML(t)}
       <p class="kicker">Days — click one to zoom that stretch</p>
       <div id="dayslist"></div>
       ${day?`<button class="back" id="whole" style="margin-top:8px">Whole trip</button>`:""}
-      <p class="note">${day?"Day "+day+" is the section: the map zooms, gold on that stretch, photo chips on the line.":"The coral line is the ride. Ghost dashes are other trips you could switch to."}</p>`;
+      <p class="note">${day?"Day "+day+" is the section: the map zooms, gold on that stretch, photo chips on the line. The profile band matches.":"Coral line = the ride. The profile is coloured by computed days. Ghost dashes switch ride."}</p>`;
     document.getElementById("up").onclick=goNetwork;
     const whole=document.getElementById("whole");
     if(whole) whole.onclick=()=>openDay(day);
+    el.querySelectorAll(".pband").forEach(r=>{
+      r.addEventListener("click",e=>{ e.stopPropagation(); openDay(+r.dataset.day); });
+    });
     const box=document.getElementById("dayslist");
-    (stops.length?stops:[{n:1,name:t.sub,km:t.km}]).forEach(s=>{
+    (stops.length?stops:[{n:1,name:t.sub,km:t.km,eff:t.eff,elev:t.elev}]).forEach(s=>{
       const d=document.createElement("div");
       d.className="day"+(day===s.n?" on":"");
-      d.innerHTML=`<div class="n">${s.n}</div><div>${s.name}</div><div class="n">${s.km} km</div>`;
+      const maxE=Math.max.apply(null,(stops.length?stops:[{eff:s.eff}]).map(x=>x.eff||t.eff||1));
+      d.innerHTML=`<div class="n">${s.n}</div><div>${s.name}</div><div class="n">${s.km} km · ${s.eff||"–"} eff</div>
+        <div class="bar"><i style="width:${Math.round(100*(s.eff||0)/maxE)}%"></i></div>
+        ${sparkSVG(s.elev||t.elev, 220, 26)}`;
       d.onclick=()=>openDay(s.n);
       box.appendChild(d);
     });

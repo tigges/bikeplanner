@@ -141,3 +141,5 @@ The live interaction is already this model. Do not replace it with a
 story-slideshow or a tiled map. Change how it **looks** (paper, photo cards,
 line hierarchy, chips on day zoom) and how clearly the three levels are
 named. The graph, the day splitter, and the hash stay.
+
+Difficulty pills, effort bars and elevation profiles: [GRAPHS.md](GRAPHS.md).

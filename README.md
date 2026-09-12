@@ -8,5 +8,5 @@ The new cycle-tour site: one hub, country galleries, and a paper planner.
 - [MAP.md](MAP.md) — schematic paper atlas; network → ride → day.
 - [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation on the tour sheet, beside a map figure.
 - [preview/hub.html](preview/hub.html) — country hub (Japan and Spain galleries next; they do not open the old planners).
-- [preview/switzerland.html](preview/switzerland.html) — Switzerland: 29 trips, filters, paper atlas. **Rhône** is a full planner example (computed days, elevation, friendliness, effort, GPX).
+- [preview/switzerland.html](preview/switzerland.html) — Switzerland: 29 trips, filters, paper atlas. Every trip opens a paper tour sheet from a **ride snapshot** (computed days, elevation, forks, GPX). That is not the full Swiss graph — forks rewrite with `alts[node:option]`, last non-default wins. Refresh snapshots with `node tools/extract_ride_snapshots.mjs`.
 - [preview/map.html](preview/map.html) — redirects into the Swiss page.

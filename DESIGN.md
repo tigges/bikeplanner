@@ -259,14 +259,14 @@ Clean, bright, simple. One paper design. **Switzerland first** — the catalogue
 
 | # | What | Status |
 |---|---|---|
-| **CH** | Swiss gallery + paper atlas + **Rhône planner example** (days, elevation, strip, effort, GPX) | **this slice** |
+| **CH** | Swiss gallery + paper atlas + **ride snapshots for all 29 trips** (days, elevation, strip, effort, forks, GPX). Not the full graph — each sheet is a thinned chain from the published Swiss pages. | **this slice** |
 | **1. Hub** | Three country photo cards on `/` — all stay in this site | Next |
 | **2. Japan gallery** | Same pattern as Switzerland (now includes Fuji-ichi) | After CH |
 | **3. Japan atlas** | Coastline + lakes (Biwa, Kasumigaura, Fuji Five Lakes) | After CH |
-| **4. Planner sheet** | Rebuild start/end, forks, effort, GPX as paper in this repo | After the door |
+| **4. Planner sheet** | Paper Plan / Route / Days on the Swiss snapshots | **done for CH** |
 | **5. Spain gallery** | 8 trips already in the live catalogue (Francés, Norte, …) | After JP |
 
-Do not start with 4. The door is still the problem. The old planner stays a reference until the paper sheet can compute days.
+Do not start Japan or Spain until asked. Hub country cards stay in this site; Japan and Spain galleries are still next. The old planner stays the graph source — snapshots here are not a second GIS.
 
 ---
 

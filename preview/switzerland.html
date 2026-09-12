@@ -876,13 +876,40 @@ function enrichDays(days){
 function dayPhotos(to){
   const m={
     Realp:["img/furka.jpg","img/gletsch.jpg"],
+    Oberwald:["img/gletsch.jpg","img/furka.jpg"],
+    Gletsch:["img/gletsch.jpg","img/furka.jpg"],
     Brig:["img/gletsch.jpg","img/furka.jpg"],
+    Andermatt:["img/furka.jpg","img/gotthard.jpg"],
     Martigny:["img/lavaux.jpg"],
+    Aigle:["img/chillon.jpg","img/lavaux.jpg"],
+    Montreux:["img/chillon.jpg","img/lavaux.jpg"],
     Lausanne:["img/lavaux.jpg","img/chillon.jpg"],
     Genève:["img/chillon.jpg","img/lavaux.jpg"],
-    Geneva:["img/chillon.jpg","img/lavaux.jpg"]
+    Geneva:["img/chillon.jpg","img/lavaux.jpg"],
+    Basel:["img/basel.jpg","img/rheinfall.jpg"],
+    Schaffhausen:["img/rheinfall.jpg","img/basel.jpg"],
+    "Rhine Falls":["img/rheinfall.jpg"],
+    Luzern:["img/lucerne.jpg"],
+    Lucerne:["img/lucerne.jpg"],
+    Interlaken:["img/lucerne.jpg","img/gletsch.jpg"],
+    Chur:["img/engadin.jpg"],
+    "St. Moritz":["img/engadin.jpg"],
+    Müstair:["img/engadin.jpg"],
+    Rorschach:["img/constance.jpg"],
+    Romanshorn:["img/constance.jpg"],
+    Murten:["img/murten.jpg"],
+    "Biel/Bienne":["img/murten.jpg"],
+    Biel:["img/murten.jpg"],
+    Lugano:["img/lugano.jpg"],
+    Chiasso:["img/lugano.jpg"],
+    Bellinzona:["img/lugano.jpg","img/gotthard.jpg"],
+    Airolo:["img/gotthard.jpg"],
+    Linthal:["img/klausen.jpg"],
+    "Flüelen":["img/klausen.jpg","img/lucerne.jpg"]
   };
-  return m[to]||["img/furka.jpg"];
+  if(m[to]) return m[to];
+  const src=ride && PHOTO[ride.id];
+  return src?[src]:[];
 }
 function niceName(label){
   if(!label) return label;
@@ -1244,7 +1271,7 @@ function plannerSheet(t){
       dot.style.background=BAND[o.band]||"#c4b8a8";
       b.appendChild(dot);
       b.appendChild(document.createTextNode(o.label));
-      if(live && onJourney && PLAN.alts[live.node+":"+o.id]){
+      if(live && onJourney && PLAN.alts && PLAN.alts[live.node+":"+o.id]){
         b.onclick=()=>{
           picks[nf.node]=o.id;
           const towns=chainTowns();
@@ -1252,7 +1279,7 @@ function plannerSheet(t){
           if(!towns.some(x=>x.id===endId)) endId=towns[towns.length-1]&&towns[towns.length-1].id;
           selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
         };
-      } else if(!live || !onJourney){
+      } else {
         b.disabled=true;
       }
       row.appendChild(b);
@@ -1341,7 +1368,7 @@ function sheet(){
       document.getElementById("filters").appendChild(b);
     });
     col.innerHTML=`<p class="tm" style="margin:0 0 10px">${n} trip${n===1?"":"s"}</p><div id="cards"></div>
-      <p class="note">Same catalogue as the old picker. The map is a figure of the country — lakes and the line, not tiles. This page is the product, not a doorway to the dark planner.</p>`;
+      <p class="note">Same catalogue as the old picker. Click a card or a line for a paper tour sheet — days computed from effort, from a snapshot of the Swiss graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.</p>`;
     const box=document.getElementById("cards");
     visible().sort((a,b)=>(a.top||99)-(b.top||99)).forEach(t=>{
       const g=geo(t), d=grade(g.km,g.asc);
@@ -1378,7 +1405,7 @@ function sheet(){
           <div><b>${(g.asc||0).toLocaleString()}</b><span>m climbed</span></div>
         </div>
         <p class="tm">${(t.tags||[]).join(" · ")}${t.note?" · "+t.note:""}</p>
-        <p class="note">The atlas marks this ride. The full planner example is on Rhône for now — days, elevation, forks and GPX from the Swiss graph.</p>`;
+        <p class="note">The atlas marks this ride. A full tour sheet needs a snapshot from the Swiss graph — this trip does not have one in the repo yet.</p>`;
     } else {
       col.className="";
       head.innerHTML=`<button class="back" id="up">‹ All trips</button>

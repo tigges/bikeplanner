@@ -1,7 +1,7 @@
 # Map look and the ride / section / map model
 
-Plan only. The live planner already has this loop; the visual pass makes
-it obvious. A clickable mock is at `preview/map.html`.
+Plan only. The live planner already has this loop (feature reference). The visual pass makes
+it obvious **in this repo**. A clickable mock is at `preview/map.html`. Click stays on our page.
 
 ---
 

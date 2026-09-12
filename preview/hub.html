@@ -19,7 +19,7 @@ h1{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:6
 .lede{color:var(--mute);max-width:42em;margin:0}
 main{max-width:1120px;margin:0 auto;padding:28px 24px 64px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-a.card{display:block;background:var(--card);border-radius:16px;overflow:hidden;
+a.card, .card{display:block;background:var(--card);border-radius:16px;overflow:hidden;
   text-decoration:none;color:inherit;border:1px solid var(--line);
   box-shadow:0 1px 0 rgba(28,25,22,.04)}
 a.card:hover{border-color:#cbbfaf}
@@ -46,17 +46,17 @@ footer a{color:var(--mute)}
 </header>
 <main>
 <div class="grid">
-  <a class="card" href="https://tigges.github.io/routeplanner/japan/">
+  <article class="card">
     <div class="photo" style="background-image:url('img/japan.jpg')">
       <span>Kurushima-Kaikyō Bridge · Commons</span>
     </div>
     <div class="body">
-      <p class="meta">Japan · 19 trips · Biwaichi now Top 2</p>
+      <p class="meta">Japan · 19 trips · Fuji-ichi now Top 5 · gallery next</p>
       <h2>Japan by bike</h2>
-      <p>Cape Sōya to Cape Sata, or a famous few days: Biwaichi around the lake, Shimanami bridges, the Noto coast.</p>
-      <div class="stat"><span><b>3,566</b> km crossing</span><span><b>signed</b> routes</span></div>
+      <p>Cape Sōya to Cape Sata, or a famous few days: Shimanami bridges, Biwaichi around the lake, Fuji-ichi, the Noto coast.</p>
+      <div class="stat"><span><b>3,549</b> km crossing</span><span><b>signed</b> routes</span></div>
     </div>
-  </a>
+  </article>
   <a class="card" href="switzerland.html">
     <div class="photo" style="background-image:url('img/furka.jpg')">
       <span>Furka, Hotel Belvédère · Commons</span>
@@ -68,20 +68,20 @@ footer a{color:var(--mute)}
       <div class="stat"><span><b>605</b> km east–west</span><span><b>lakes</b> &amp; passes</span></div>
     </div>
   </a>
-  <a class="card" href="https://tigges.github.io/routeplanner/spain/">
+  <article class="card">
     <div class="photo" style="background-image:url('img/fisterra.jpg')">
       <span>Cabo Fisterra · Commons</span>
     </div>
     <div class="body">
-      <p class="meta">Spain · one crossing · trips still to catalogue</p>
+      <p class="meta">Spain · 8 trips · Camino Francés Top 1 · gallery next</p>
       <h2>Across Spain</h2>
-      <p>Cap de Creus to Fisterra: Catalonia, the Ebro, the meseta and the Camino into Galicia.</p>
-      <div class="stat"><span><b>west</b> to the cape</span><span><b>forks</b> in the Pyrenees</span></div>
+      <p>Cap de Creus to Fisterra, or the caminos: Francés, Norte, Invierno, and on to the cape.</p>
+      <div class="stat"><span><b>1,435</b> km crossing</span><span><b>forks</b> in the Pyrenees</span></div>
     </div>
-  </a>
+  </article>
 </div>
-<p class="note">Switzerland is the first country built out: 29 trips, filters, paper atlas. Japan and Spain still open the live planners. See DESIGN.md.</p>
+<p class="note">Switzerland is built out in this preview. Japan and Spain use the same paper rooms next — they do not open the old dark planner.</p>
 </main>
-<footer>Built from the <a href="https://github.com/tigges/routeplanner">routeplanner</a> trip catalogues. This page is a design preview, not the published site.</footer>
+<footer>Trip catalogues from <a href="https://github.com/tigges/routeplanner">tigges/routeplanner</a>. This site is the rebuilt product, not a skin on the published planner.</footer>
 </body>
 </html>

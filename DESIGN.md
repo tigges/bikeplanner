@@ -142,11 +142,14 @@ Same page frame as the hub and gallery: max-width, kicker, serif title, cream. D
 Left: a compact tour sheet that should fit the viewport without a page scrollbar.
 
 - Thin identity (badge, name, one-line sub) — the page header is gone in planner mode
-- Stats, whole-ride elevation, friendliness strip
-- Three collapsible sections: **Plan** (from / to + daily effort), **Route** (forks), **Days** (numbered list; selected day expands in place with spark and photos)
-- **Export** docked at the bottom of the left column: GPX, CSV, Print / PDF
+- Stats, whole-ride elevation, friendliness strip, **colour the map line**, segment card (start here / end here)
+- Three collapsible sections, same contents as the live planner, mapped onto paper:
+  - **Plan** — From / To, direction chips (climb · days), daily effort, **Days I have**, proposed **train hops**
+  - **Route** — all network forks with friendliness dots; on-journey forks rewrite the coral line; others say **not on the current journey**
+  - **Days** — every day has effort bar, elevation spark, shops / beds / baths / stations / longest gap; click zooms the figure to that stretch; selected day also shows photos
+- **Export** docked at the bottom of the left column: GPX, CSV, Print / PDF, Copy link
 
-Right: the schematic map as a **figure** in a rounded paper card. Overlay on the map plane (not in the left column): zoom −/+, vehicle, English / Lokale Namen, Whole trip, and All trips. Labeled towns, coral ride, gold on the selected day. Modest zoom of the figure is allowed; the atlas still does not become a GIS canvas. Gold on the stretch is the day reference.
+Right: the schematic map as a **figure** in a rounded paper card. Overlay on the map plane (not in the left column): zoom −/+, vehicle, English / Lokale Namen, Whole trip, All trips, and the vertical facility layers (shops, beds, baths, stations, drinking water). Opening a ride **fits that journey** in the figure; clicking a day (or a strip segment) **fits that stretch** with padding. Whole trip returns to the ride fit. Modest auto-fit only — the atlas still does not become a GIS canvas. Coral ride; gold on the selected day. Facility dots use paper-mapped colours (shop gold, stay blue, bath purple, rail ink, water teal).
 
 Vehicle, language, and zoom live on the map so Plan / Route / Days have room. Forks stay in folded Route. GPX / CSV / print stay in the export dock, not in Plan.
 

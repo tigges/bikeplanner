@@ -8,7 +8,8 @@ Local copies of Wikimedia Commons photos for the design mock only.
 | lucerne.jpg | Chapel Bridge Lucerne.jpg | Lakes / Pre-Alps |
 | lavaux.jpg | Lavaux vineyards.jpg | Heart Route |
 | gletsch.jpg | Furka Blick auf Gletsch.JPG | Three passes, Furka, Grimsel |
-| rheinfall.jpg | Rheinfall Panorama revised.jpg | Rhine |
+| rheinfall.jpg | Neuhausen am Rheinfall.jpg | Rhine |
+| gotthard.jpg | Historische Reisepostkutsche am St. Gotthardpass.jpg | Gotthard passes |
 | jura.jpg | Creux du Van.jpg | Jura |
 | klausen.jpg | Klausenpass Passhoehe.jpg | Klausen pass |
 | murten.jpg | Murtensee im Herbst.jpg | Three Lakes loop |

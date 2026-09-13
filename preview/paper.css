@@ -223,12 +223,32 @@ body.planner #maplayers{left:auto;right:12px;top:56px}
   body.planner .film-track .tile{width:180px}
   #minimap{width:112px;height:56px;right:12px;bottom:8px}
 }
+#printsheet{display:none}
 @media print{
-  html,body{height:auto;overflow:visible;background:#fff}
-  header,footer,#mapback,#maptools,#maplayers,.export,.chips,.filmwrap,.daybar,#minimap{display:none!important}
-  body.planner main{height:auto;padding:0}
-  .split{display:block}
-  .mapcard{height:420px;position:relative;break-inside:avoid}
-  #col.sheet{position:static;height:auto;overflow:visible;pointer-events:auto}
-  body.planner .ctx-card{position:static;max-height:none;width:100%;box-shadow:none}
+  @page{margin:14mm}
+  html,html.planner,body,body.planner{
+    height:auto!important;overflow:visible!important;background:#fff!important;color:#1c1916
+  }
+  body.planner header,body.planner footer,body.planner main,
+  #stage,#col,#mapback,#maptools,#maplayers,#place,#pop,#minimap,.filmwrap,.daybar,.export,.chips{
+    display:none!important
+  }
+  #printsheet{
+    display:block!important;position:static;inset:auto;width:auto;max-width:none;
+    background:#fff;color:#1c1916;box-shadow:none;border:0;padding:0;overflow:visible
+  }
+  #printsheet .print-kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6f675e;margin:0 0 6px}
+  #printsheet h1{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:600;font-size:26px;margin:0 0 6px;line-height:1.15}
+  #printsheet .print-meta{color:#6f675e;margin:0 0 10px;font-size:13px}
+  #printsheet .print-facts{display:flex;flex-wrap:wrap;gap:22px;margin:10px 0 12px}
+  #printsheet .print-facts b{display:block;font-family:Georgia,serif;font-size:22px;font-weight:600;line-height:1.1}
+  #printsheet .print-facts span{font-size:11px;color:#6f675e}
+  #printsheet .print-prof{width:100%;height:72px;display:block;background:#efe8dc;border-radius:8px;margin:8px 0 4px}
+  #printsheet .print-hi{font-size:11px;color:#6f675e;margin:0 0 10px}
+  #printsheet .print-fig{width:100%;height:200px;display:block;background:#efe8dc;border-radius:8px;margin:10px 0 14px}
+  #printsheet .print-photos{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
+  #printsheet .print-photos img{width:160px;height:104px;object-fit:cover;border-radius:6px}
+  #printsheet .print-days{padding:0;margin:12px 0 0;list-style:none}
+  #printsheet .print-days li{display:grid;grid-template-columns:2.4em 1fr auto;gap:8px;padding:5px 0;border-bottom:1px solid #ddd4c8;font-size:13px}
+  #printsheet .print-days .n{font-weight:700;color:#f0713f}
 }

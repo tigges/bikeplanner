@@ -1015,8 +1015,10 @@ function enrichDays(days){
       }
       k+=s.km;
     });
-    d.shop=Math.round(shop); d.stay=Math.round(stay); d.bath=Math.round(bath);
-    d.rail=Math.round(rail); d.water=Math.round(water);
+    if(d.shop==null){
+      d.shop=Math.round(shop); d.stay=Math.round(stay); d.bath=Math.round(bath);
+      d.rail=Math.round(rail); d.water=Math.round(water);
+    }
     d.line=sliceLine(segs, dayOff, dayOff+d.km);
     if(!d.prof||!d.prof.length){
       const prof=[];

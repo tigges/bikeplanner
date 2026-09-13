@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Japan by bike</title>
-<link rel="stylesheet" href="paper.css?v=14">
+<link rel="stylesheet" href="paper.css?v=15">
 </head>
 <body>
 <header id="head"></header>
@@ -54,9 +54,9 @@ window.PAPER={
   country:"Japan",
   localLabel:"日本語",
   kicker:n=>"Japan · "+n+" trips",
-  lede:"Cape Sōya to Cape Sata, or a famous few days: Shimanami bridges, Biwaichi around the lake, Fuji-ichi, the Noto coast. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort.",
-  note:"Same catalogue as the old picker, including the 2026 Fuji-ichi, Awaji, Yamanami and Pacific Cycling Road trips. Snapshots of the Japan graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
-  footer:"Japan · 24 trips. Photos Wikimedia Commons. Days are computed, not stored.",
+  lede:"Cape Sōya to Cape Sata, or a famous few days: Shimanami bridges, Biwaichi, Fuji-ichi, the Noto coast, Tokapuchi 400. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort.",
+  note:"Same catalogue as the old picker, including Tokapuchi 400, Amaichi, the Okhotsk coast, Fuji-ichi, Awaji, Yamanami and the Pacific Cycling Road. Snapshots of the Japan graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
+  footer:"Japan · 29 trips. Photos Wikimedia Commons. Days are computed, not stored.",
   backAll:n=>"‹ All "+n+" trips",
   tripsUrl:"data/japan-trips.json",
   landUrl:null,
@@ -66,7 +66,7 @@ window.PAPER={
   photosUrl:"data/photos.json",
   landFilter:null,
   landMode:"coast",
-  bbox:{lon0:129.4, lon1:142.3, lat0:30.9, lat1:45.7},
+  bbox:{lon0:129.4, lon1:146.0, lat0:30.9, lat1:45.7},
   photos:{
     ns:"img/japan.jpg", shimanami:"img/japan.jpg", biwaichi:"img/biwa.jpg",
     fujiichi:"img/fuji.jpg", noto:"img/noto.jpg", rinrin:"img/kasumigaura.jpg",
@@ -75,7 +75,9 @@ window.PAPER={
     kibi:"img/kibi.jpg", tottori:"img/tottori.jpg", toyama:"img/toyama.jpg",
     hamadori:"img/matsushima.jpg", yuyake:"img/japan.jpg", boso:"img/choshi.jpg",
     hamana:"img/hamana.jpg", matsushima:"img/matsushima.jpg", hokkaido:"img/wakkanai.jpg",
-    tohoku:"img/matsushima.jpg", kansai:"img/japan.jpg", kyushu:"img/aso.jpg"
+    tohoku:"img/matsushima.jpg", kansai:"img/japan.jpg", kyushu:"img/aso.jpg",
+    tokapuchi:"img/tokachi.jpg", okhotsk:"img/okhotsk.jpg", amaichi:"img/amaichi.jpg",
+    "sapporo-tokachi":"img/tokachi.jpg", "tokachi-okhotsk":"img/okhotsk.jpg"
   },
   places:{
     Onomichi:["img/japan.jpg"], Imabari:["img/japan.jpg"],
@@ -93,12 +95,17 @@ window.PAPER={
     Choshi:["img/choshi.jpg"], Chōshi:["img/choshi.jpg"],
     Sumoto:["img/naruto.jpg"], Fukura:["img/naruto.jpg"],
     Okayama:["img/kibi.jpg"],
-    Toyama:["img/toyama.jpg"]
+    Toyama:["img/toyama.jpg"],
+    Obihiro:["img/tokachi.jpg"], Ashoro:["img/tokachi.jpg"], Ikeda:["img/tokachi.jpg"],
+    Abashiri:["img/okhotsk.jpg"], Monbetsu:["img/okhotsk.jpg"],
+    Furano:["img/tokachi.jpg"], Shintoku:["img/tokachi.jpg"],
+    Misumi:["img/amaichi.jpg"], Ushibuka:["img/amaichi.jpg"],
+    Uwajima:["img/japan.jpg"]
   },
   en:{},
   photoFallback:"img/japan.jpg"
 };
 </script>
-<script src="paper.js?v=14"></script>
+<script src="paper.js?v=15"></script>
 </body>
 </html>

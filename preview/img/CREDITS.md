@@ -49,5 +49,8 @@ Local copies of Wikimedia Commons photos for the design mock only.
 | pyrenees.jpg | Pyrenees.jpg | Pyrenean foothills |
 | girona.jpg | Girona.jpg | Ebro / Girona |
 | barcelona.jpg | Sagrada Familia Barcelona.jpg | Via Barcelona |
+| tokachi.jpg | Tokachi Plain aerial view near Obihiro Hokkaido.jpg | Tokapuchi 400 / Sapporo–Tokachi |
+| okhotsk.jpg | Lake Saroma.jpg | Okhotsk Cycling Road |
+| amaichi.jpg | SakitsuCatholicChurch.jpg | Amaichi / Amakusa |
 
 See each file’s Commons page for author and license (typically CC BY / CC BY-SA / PD).

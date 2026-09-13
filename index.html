@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Where to ride — journey planners</title>
+<title>Your Bike Route Planners by CT</title>
 <style>
 :root{
   --paper:#f6f1ea; --ink:#1c1916; --mute:#6f675e; --line:#ddd4c8;
@@ -16,6 +16,8 @@ header{padding:28px 24px 8px;max-width:1120px;margin:0 auto}
 .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
 h1{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:600;
   font-size:clamp(32px,5vw,52px);letter-spacing:-.02em;margin:0 0 8px;line-height:1.1}
+h1 .by{font-size:.42em;font-weight:500;letter-spacing:0;color:var(--mute);
+  font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;margin-left:.28em}
 .lede{color:var(--mute);max-width:42em;margin:0}
 main{max-width:1120px;margin:0 auto;padding:28px 24px 64px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
@@ -40,8 +42,8 @@ footer a{color:var(--mute)}
 </head>
 <body>
 <header>
-<p class="kicker">Cycle-tour planners</p>
-<h1>Where to ride</h1>
+<p class="kicker">Britain · Japan · Switzerland · Spain</p>
+<h1>Your Bike Route Planners <span class="by">by CT</span></h1>
 <p class="lede">Pick a country, then a trip. Days are computed from daily effort — not a fixed itinerary. Elevation, shops, beds and sights sit on every stretch.</p>
 </header>
 <main>
@@ -51,10 +53,10 @@ footer a{color:var(--mute)}
       <span>Land's End · Commons</span>
     </div>
     <div class="body">
-      <p class="meta">Britain · 18 trips · Land's End to Edinburgh</p>
+      <p class="meta">Britain · 18 trips · Land's End → Edinburgh</p>
       <h2>Britain by bike</h2>
-      <p>The west-side crossing, or via London; then the London and Ealing rides — Richmond Park, the Thames, Box Hill, Brighton.</p>
-      <div class="stat"><span><b>1,133</b> km west crossing</span><span><b>two</b> graphs</span></div>
+      <p>The west-side crossing, or via London. Then the London and Ealing days: Richmond Park, the Thames, Box Hill, Brighton.</p>
+      <div class="stat"><span><b>1,133</b> km west crossing</span><span><b>1,372</b> km via London</span></div>
     </div>
   </a>
   <a class="card" href="japan.html">
@@ -62,10 +64,10 @@ footer a{color:var(--mute)}
       <span>Kurushima-Kaikyō Bridge · Commons</span>
     </div>
     <div class="body">
-      <p class="meta">Japan · 29 trips · Shimanami, Biwaichi, Tokapuchi 400</p>
+      <p class="meta">Japan · 29 trips · Shimanami · Biwaichi · Fuji-ichi</p>
       <h2>Japan by bike</h2>
-      <p>Cape Sōya to Cape Sata, or a famous few days: Shimanami bridges, Biwaichi around the lake, Fuji-ichi, Tokapuchi 400.</p>
-      <div class="stat"><span><b>3,550</b> km crossing</span><span><b>signed</b> routes</span></div>
+      <p>Cape Sōya to Cape Sata, or a famous few days: Shimanami bridges, Biwaichi around the lake, Fuji-ichi, Noto, Tokapuchi 400.</p>
+      <div class="stat"><span><b>3,550</b> km cape to cape</span><span><b>15</b> national routes</span></div>
     </div>
   </a>
   <a class="card" href="switzerland.html">
@@ -73,10 +75,10 @@ footer a{color:var(--mute)}
       <span>Furka, Hotel Belvédère · Commons</span>
     </div>
     <div class="body">
-      <p class="meta">Switzerland · 29 trips · Top 15 from the guides</p>
+      <p class="meta">Switzerland · 29 trips · Rhône · Lakes · Heart Route</p>
       <h2>Switzerland by bike</h2>
-      <p>National routes, pass days and lake loops. Rhône downhill, the Heart Route, three passes from Andermatt.</p>
-      <div class="stat"><span><b>605</b> km east–west</span><span><b>lakes</b> &amp; passes</span></div>
+      <p>National routes 1–9 and 99, pass days from Andermatt, lake loops. Rhône downhill, three passes, Furka.</p>
+      <div class="stat"><span><b>605</b> km east–west</span><span><b>343</b> km north–south</span></div>
     </div>
   </a>
   <a class="card" href="spain.html">
@@ -84,14 +86,14 @@ footer a{color:var(--mute)}
       <span>Cabo Fisterra · Commons</span>
     </div>
     <div class="body">
-      <p class="meta">Spain · 8 trips · Camino Francés Top 1</p>
+      <p class="meta">Spain · 8 trips · Camino Francés · Norte · Fisterra</p>
       <h2>Across Spain</h2>
       <p>Cap de Creus to Fisterra, or the caminos: Francés, Norte, Invierno, and on to the cape.</p>
-      <div class="stat"><span><b>1,435</b> km crossing</span><span><b>forks</b> in the Pyrenees</span></div>
+      <div class="stat"><span><b>1,435</b> km east–west</span><span><b>4</b> caminos</span></div>
     </div>
   </a>
 </div>
-<p class="note">One paper site: hub, four country galleries, a tour sheet on the same page. Days are computed from effort. The old dark planner is input only — nothing here links there.</p>
+<p class="note">Four country galleries and a tour sheet on the same page. Days are computed from effort. The old dark planner is input only — nothing here links there.</p>
 </main>
 <footer>Trip catalogues from <a href="https://github.com/tigges/routeplanner">tigges/routeplanner</a>. This site is the rebuilt product, not a skin on the published planner.</footer>
 </body>

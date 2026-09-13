@@ -452,8 +452,9 @@ function pickedIds(){
   if(!PLAN.alts) return segs.map(s=>s.id);
   const forks=PLAN.forks||[];
   for(let i=forks.length-1;i>=0;i--){
-    const f=forks[i], def=f.options[0]&&f.options[0].id, p=picks[f.node]||f.pick||def;
-    if(p && p!==def && PLAN.alts[f.node+":"+p]) return PLAN.alts[f.node+":"+p].ids;
+    const f=forks[i], stored=f.pick, def=f.options[0]&&f.options[0].id;
+    const p=picks[f.node]||stored||def;
+    if(p && stored && p!==stored && PLAN.alts[f.node+":"+p]) return PLAN.alts[f.node+":"+p].ids;
   }
   return segs.map(s=>s.id);
 }
@@ -525,6 +526,17 @@ function flipSeg(s){
   return {...s, frm:s.to, to:s.frm, frmName:s.toName, toName:s.frmName,
     ascent, descent, effort, effortR:effortOf(s,false), line, cand, prof};
 }
+function orientWalk(segs, fromId){
+  if(!segs.length) return segs;
+  const out=[];
+  let at=fromId||segs[0].frm;
+  segs.forEach(s=>{
+    const cur=(at && s.frm!==at && s.to===at) ? flipSeg(s) : s;
+    out.push(cur);
+    at=cur.to;
+  });
+  return out;
+}
 function chainSegs(){
   if(!PLAN || PLAN===false) return [];
   const book=segBook();
@@ -543,6 +555,7 @@ function chainSegs(){
         line:a.line||s.line, cand:a.cand&&a.cand.length?a.cand:s.cand, prof:a.prof||s.prof, signedGeom:true};
     });
   }
+  segs=orientWalk(segs, PLAN.start||(segs[0]&&segs[0].frm));
   if(reversed) segs=segs.slice().reverse().map(flipSeg);
   return segs;
 }
@@ -1270,13 +1283,14 @@ function plannerSheet(t){
   if(selSeg) renderSegCard(activeSegs().find(s=>s.id===selSeg));
   const towns=chainTowns();
   const startSel=document.getElementById("start"), endSel=document.getElementById("end");
+  const loop=!!PLAN && PLAN.start===PLAN.end;
   towns.forEach((tn,i)=>{
     const o=document.createElement("option"); o.value=tn.id; o.textContent=showName(tn);
     if(tn.id===startId) o.selected=true;
-    if(i<towns.length-1) startSel.appendChild(o);
+    if(i<towns.length-1 || loop) startSel.appendChild(o);
   });
   towns.forEach((tn,i)=>{
-    if(i===0) return;
+    if(i===0 && !loop) return;
     const o=document.createElement("option"); o.value=tn.id; o.textContent=showName(tn);
     if(tn.id===endId) o.selected=true;
     endSel.appendChild(o);
@@ -1284,13 +1298,13 @@ function plannerSheet(t){
   startSel.onchange=()=>{
     startId=startSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
-    if(i1<=i0) endId=towns[towns.length-1].id;
+    if(i1<i0 || (i1===i0 && !loop)) endId=towns[towns.length-1].id;
     selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   endSel.onchange=()=>{
     endId=endSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
-    if(i1<=i0) startId=towns[0].id;
+    if(i1<i0 || (i1===i0 && !loop)) startId=towns[0].id;
     selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   const dirrow=document.getElementById("dirrow");

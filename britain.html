@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Britain by bike</title>
-<link rel="stylesheet" href="paper.css?v=22">
+<link rel="stylesheet" href="paper.css?v=23">
 </head>
 <body>
 <header id="head"></header>
@@ -25,6 +25,7 @@
       <svg id="map" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet">
         <g id="land"></g>
         <g id="water"></g>
+        <g id="tiles" pointer-events="none"></g>
         <g id="ghost"></g>
         <g id="lines"></g>
         <g id="ride"></g>
@@ -102,6 +103,6 @@ window.PAPER={
   photoFallback:"img/landsend.jpg"
 };
 </script>
-<script src="paper.js?v=22"></script>
+<script src="paper.js?v=23"></script>
 </body>
 </html>

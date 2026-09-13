@@ -24,7 +24,7 @@ DAY                  Gold on that stretch; photos on the sheet
 
 Do **not** split Japan / Switzerland / Spain / Britain into separate sites. The data is already split (one HTML page per graph). The product should not be.
 
-Do **not** switch atmospheres. Hub, gallery, and planner share the same paper, ink, mute, and coral. Discovery is photographic; the planner is still a schematic atlas, not tiles — but it sits on the same cream page.
+Do **not** switch atmospheres. Hub, gallery, and planner share the same paper, ink, mute, and coral. Discovery is photographic. The country gallery stays a schematic atlas; a ride or day lays a quiet online map under the same coral/gold line.
 
 ---
 
@@ -40,7 +40,7 @@ Three self-contained cycle-tour planners behind a dark text list. Screenshot of 
 | Switzerland | National routes, passes, loops; second graph off the hub | 3.3 + 0.8 MB | Trip picker (29 trips, default `top`) |
 | Spain | Cap de Creus → Cabo Fisterra | 2.4 MB | Trip picker (8 trips: Francés, Norte, …) |
 
-The planner is the product: pick start and end, choose at each fork, set daily effort, get **days computed not stored**. Elevation on every segment; shops, beds, baths, taps, stations within 2 km. Bicycle / e-bike / 45 km/h pedelec. Train hops. GPX / CSV / hash `#r=` / `#trip=`. Schematic SVG map, not OSM tiles.
+The planner is the product: pick start and end, choose at each fork, set daily effort, get **days computed not stored**. Elevation on every segment; shops, beds, baths, taps, stations within 2 km. Bicycle / e-bike / 45 km/h pedelec. Train hops. GPX / CSV / hash `#r=` / `#trip=`. Gallery map is schematic SVG. A ride or day lays Esri / CyclOSM tiles under the line.
 
 The problem is the **product surface**. Nothing on the hub says Shimanami, Furka, Camino, Biwaichi. Nothing shows a place. The planner chrome is a second, darker product. We keep the tool; we rebuild every page in this repo so that chrome never appears.
 
@@ -270,6 +270,7 @@ Clean, bright, simple. One paper design. **All four countries** now have a galle
 | **Print** | Day and tour sheets print a dedicated article (`#printsheet`), not the overlay chrome | **done** |
 | **Planner sheet** | Wider left column, one scrollbar, slim export; Plan / Route / Days still mapped from the live planner | **done** |
 | **Place card** | Town / facility tap on the tour sheet: paper card, OpenStreetMap outbound — not Google, not tiles | **done** |
+| **Basemap** | Gallery stays schematic. Ride/day: Web Mercator, Esri grey then CyclOSM from z10, under coral/gold. No navy switcher. | **this slice** |
 
 Snapshots are not the full graph — forks rewrite with `alts[node:option]`, last non-default wins. The old planner stays the graph source. Do not link into it.
 

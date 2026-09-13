@@ -39,9 +39,7 @@ Once you click it, it becomes the **ride**, and its days are the **days**.
 
 ## How the map looks
 
-Stay **schematic**. Not Mapbox, not satellite, not a busy OSM tile. A whole
-country has to read as a diagram. The live page already has the right bones:
-country fill, lakes, rivers, ghost alternatives, one bright line.
+Stay **schematic on the country gallery**. A whole country has to read as a diagram: land, lakes, ghost alternatives, one bright line. Opening a ride or a day switches the same figure to Web Mercator and lays Esri grey (then CyclOSM from about zoom 10) **under** the coral/gold line. Coast and lakes stay as the offline fallback. No tile switcher, no satellite, no second atmosphere. Print still uses the dedicated sheet, not the tiled canvas.
 
 Visual pass — **paper throughout**, same tokens as the hub and gallery.
 The planner is not a second, darker product.

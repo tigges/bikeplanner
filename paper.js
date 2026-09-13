@@ -1037,22 +1037,34 @@ function enrichDays(days){
   });
   return days;
 }
-function dayPhotos(to){
+function placePhotos(name){
   const places=PAPER.places||{};
-  const hit=places[to];
+  if(!name) return [];
+  const hit=places[name];
   if(hit) return Array.isArray(hit)?hit:[hit];
-  const low=String(to||"").toLowerCase();
-  if(low){
-    for(const k of Object.keys(places)){
-      const kl=k.toLowerCase();
-      if(low===kl || low.indexOf(kl)>=0 || kl.indexOf(low)>=0){
-        const v=places[k];
-        return Array.isArray(v)?v:[v];
-      }
+  const low=String(name).toLowerCase();
+  let fuzzy=null;
+  for(const k of Object.keys(places)){
+    const kl=k.toLowerCase();
+    const alias=String((PAPER.en&&PAPER.en[k])||"").toLowerCase();
+    if(low===kl || (alias && low===alias)){
+      const v=places[k];
+      return Array.isArray(v)?v:[v];
+    }
+    const shorter=Math.min(low.length, kl.length);
+    if(k.length>=5 && shorter>=5 && (low.indexOf(kl)>=0 || kl.indexOf(low)>=0)){
+      const score=Math.abs(k.length-String(name).length);
+      if(!fuzzy || score<fuzzy.score) fuzzy={score, v:places[k]};
     }
   }
-  const src=ride && PHOTO[ride.id];
-  return src?[src]:[];
+  if(!fuzzy) return [];
+  const v=fuzzy.v;
+  return Array.isArray(v)?v:[v];
+}
+function dayGapLine(today){
+  if(!today) return "";
+  const gapKm=today.gap!=null?Math.round(today.gap):null;
+  return `${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> bath${(today.bath||0)===1?"":"s"} · <b>${today.rail||0}</b> station${(today.rail||0)===1?"":"s"}${today.water?` · <b>${today.water}</b> water`:""}`;
 }
 function rideDayCount(){
   return planDays().filter(d=>d.mode!=="train").length;
@@ -1154,18 +1166,13 @@ function dayPhotoItems(stops, today){
   const items=[];
   const add=stop=>{
     if(!stop) return;
-    const src=(dayPhotos(stop.name)||[])[0];
+    const src=(placePhotos(stop.name)||[])[0];
     if(!src) return;
     if(items.some(p=>p.src===src)) return;
     items.push({src, name:stop.name, stop});
   };
   if(selStop) add(selStop);
   (stops||[]).forEach(add);
-  if(!items.length && today){
-    (dayPhotos(today.to)||[]).forEach(src=>{
-      if(!items.some(p=>p.src===src)) items.push({src, name:today.to, stop:(stops||[]).find(s=>s.role==="end")});
-    });
-  }
   return items.slice(0,6);
 }
 function selectStop(stop){
@@ -1184,7 +1191,7 @@ function selectStop(stop){
   }
   hidePlaceCard();
   selStop={name:stop.name, lat:stop.lat, lon:stop.lon, km:stop.km, role:stop.role,
-    photo:(dayPhotos(stop.name)||[])[0]||null};
+    photo:(placePhotos(stop.name)||[])[0]||null};
   paint();
   syncDayOverlay();
 }
@@ -1543,7 +1550,6 @@ function plannerSheet(t){
   const phItems=onDay&&today?dayPhotoItems(stops, today):[];
   const daySegs=onDay&&today?segsOnDay(today, days):[];
   const forkNote=onDay&&today?dayForkNote(today, days):"";
-  const gapKm=today&&today.gap!=null?Math.round(today.gap):null;
   const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
       <span class="tile-n">${d.n}</span>
       <span class="tile-who">${d.frm} → ${d.to}</span>
@@ -1570,9 +1576,9 @@ function plannerSheet(t){
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="dayfacts">${today?`${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> bath${(today.bath||0)===1?"":"s"} · <b>${today.rail||0}</b> station${(today.rail||0)===1?"":"s"}${today.water?` · <b>${today.water}</b> water`:""}`:""}</div>
+      <div class="dayfacts">${today?dayGapLine(today):""}</div>
       <div class="strip daystrip" id="daystrip" title="Friendliness on today's legs">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}" title="${esc(showName(seg.frmName)+" → "+showName(seg.toName))}"></i>`).join("")}</div>
-      <div class="phs" id="dayph">${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
+      <div class="phs" id="dayph"${phItems.length?"":" hidden"}>${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
       ${vias.length?`<div class="wayhead">On the way</div><div class="waylist">${vias.map(s=>`<button type="button" class="way${stopEq(selStop,s)?" on":""}" data-km="${s.km}">${esc(s.name)}</button>`).join("")}</div>`:""}
       <button type="button" class="sleep${selStop&&selStop.role==="end"?" on":""}" id="daysleep">Sleep: ${esc(today?today.to:"")} · ${today?today.stay||0:0} beds</button>
       ${forkNote?`<p class="forkline">${esc(forkNote)}</p>`:""}
@@ -1970,20 +1976,62 @@ function printProfSvg(days, gold){
 function printDayFig(d){
   const line=d&&d.line||[];
   if(line.length<2) return "";
+  const days=planDays();
+  const stops=dayStops(d, days);
   let minLat=Infinity,maxLat=-Infinity,minLon=Infinity,maxLon=-Infinity;
-  line.forEach(p=>{
-    const lat=p[0], lon=p[1];
+  const bump=(lat, lon)=>{
+    if(lat==null || lon==null) return;
     if(lat<minLat) minLat=lat; if(lat>maxLat) maxLat=lat;
     if(lon<minLon) minLon=lon; if(lon>maxLon) maxLon=lon;
-  });
+  };
+  line.forEach(p=>bump(p[0], p[1]));
+  stops.forEach(s=>bump(s.lat, s.lon));
   const W=560, H=200;
   const dx=Math.max(maxLon-minLon, 0.01), dy=Math.max(maxLat-minLat, 0.01);
-  const pad=0.08;
+  const pad=0.12;
   const x=lon=> ((lon-(minLon-dx*pad))/((dx*(1+2*pad))||1))*W;
   const y=lat=> ((maxLat+dy*pad-lat)/((dy*(1+2*pad))||1))*H;
   const pts=line.map(p=>x(p[1]).toFixed(1)+","+y(p[0]).toFixed(1)).join(" ");
+  const boxes=[];
+  const overlap=(a,b)=>!(a.x+a.w+6<b.x || b.x+b.w+6<a.x || a.y+a.h+4<b.y || b.y+b.h+4<a.y);
+  const labelBits=[];
+  const discBits=[];
+  const addLabel=(stop, px, py, always)=>{
+    const text=shortStop(stop.name);
+    const fs=(stop.role==="start"||stop.role==="end")?12:11;
+    const tw=Math.max(24, text.length*fs*0.58);
+    const th=fs+3;
+    let lx=px+7, ly=py-7;
+    if(lx+tw>W-4) lx=Math.max(4, px-tw-7);
+    if(ly-th<4) ly=py+th+4;
+    const box={x:lx, y:ly-th, w:tw, h:th};
+    if(!always && boxes.some(b=>overlap(b, box))) return;
+    if(lx<2 || lx+tw>W+8 || ly>H+8) { if(!always) return; }
+    boxes.push(box);
+    const fill=always?"#1c1916":"#6f675e";
+    const wt=always?"700":"600";
+    labelBits.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs}" font-weight="${wt}" fill="${fill}" font-family="Georgia,'Iowan Old Style',serif" stroke="#fffdf8" stroke-width="3.2" paint-order="stroke" stroke-linejoin="round">${esc(text)}</text>`);
+  };
+  stops.forEach(s=>{
+    if(s.lat==null || s.lon==null) return;
+    const px=x(s.lon), py=y(s.lat);
+    const end=s.role==="start"||s.role==="end";
+    const r=end?5.6:4.1;
+    discBits.push(`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${r}" fill="#fffdf8" stroke="#c9a227" stroke-width="${end?1.8:1.3}"/>`);
+  });
+  stops.filter(s=>s.role==="start"||s.role==="end").forEach(s=>{
+    if(s.lat==null || s.lon==null) return;
+    addLabel(s, x(s.lon), y(s.lat), true);
+  });
+  stops.filter(s=>s.role==="via").forEach(s=>{
+    if(s.lat==null || s.lon==null) return;
+    addLabel(s, x(s.lon), y(s.lat), false);
+  });
   return `<svg class="print-fig" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <rect width="${W}" height="${H}" fill="#fffdf8"/>
     <polyline points="${pts}" fill="none" stroke="#c9a227" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    ${discBits.join("")}
+    ${labelBits.join("")}
   </svg>`;
 }
 function fillPrintSheet(){
@@ -2000,21 +2048,28 @@ function fillPrintSheet(){
   const today=selDay?rideDays.find(d=>d.n===selDay):null;
   const ends=travelEnds();
   if(today){
-    const ph=dayPhotos(today.to)||[];
-    const climb=Math.round(today.climb||today.eff||0);
+    const stops=dayStops(today, days);
+    const vias=stops.filter(s=>s.role==="via");
+    const phItems=dayPhotoItems(stops, today);
+    const daySegs=segsOnDay(today, days);
+    const forkNote=dayForkNote(today, days);
+    const eff=Math.round(today.eff||0);
     ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)} · ${esc(t.name)}</p>
       <h1>Day ${today.n}: ${esc(today.frm)} → ${esc(today.to)}</h1>
-      <p class="print-meta">${rideDays.length} days · ${esc(ends.from)} → ${esc(ends.to)}</p>
       <div class="print-facts">
-        <div><b>${today.km}</b><span>km today</span></div>
-        <div><b>${climb.toLocaleString()}</b><span>m / effort</span></div>
+        <div><b>${today.km}</b><span>km</span></div>
+        <div><b>${eff.toLocaleString()}</b><span>effort</span></div>
         <div><b>${today.shop||0}</b><span>shops</span></div>
         <div><b>${today.stay||0}</b><span>beds</span></div>
       </div>
       ${printProfSvg([today], true)}
+      <p class="print-gap">${dayGapLine(today)}</p>
+      <div class="print-strip">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}"></i>`).join("")}</div>
       ${printDayFig(today)}
-      <div class="print-photos">${ph.slice(0,6).map(src=>`<img src="${esc(src)}" alt="">`).join("")}</div>
-      <p class="print-meta">${today.shop||0} shops · ${today.stay||0} beds · ${today.bath||0} baths · ${today.rail||0} stations</p>`;
+      ${vias.length?`<div class="print-wayhead">On the way</div><div class="print-way">${vias.map(s=>`<span>${esc(s.name)}</span>`).join("")}</div>`:""}
+      <p class="print-sleep">Sleep: ${esc(today.to)} · ${today.stay||0} beds</p>
+      ${phItems.length?`<div class="print-photos">${phItems.map(p=>`<img src="${esc(p.src)}" alt="${esc(p.name)}">`).join("")}</div>`:""}
+      ${forkNote?`<p class="print-fork">${esc(forkNote)}</p>`:""}`;
     return;
   }
   ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)}</p>
@@ -2133,7 +2188,7 @@ function renderPlaceCard(){
   const lat=+p.lat, lon=+p.lon;
   const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
   const osmSearch="https://www.openstreetmap.org/search?query="+encodeURIComponent(p.nameLocal||p.name||"");
-  const ph=p.kind==="town"?(dayPhotos(p.name)||[])[0]:"";
+  const ph=p.kind==="town"?(placePhotos(p.name)||[])[0]:"";
   el.hidden=false;
   el.innerHTML=
     '<button type="button" class="scx" id="placex" title="close">×</button>'+

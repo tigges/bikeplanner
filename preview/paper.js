@@ -3,8 +3,8 @@ const PAPER=Object.assign({
   title:"Switzerland by bike",
   country:"Switzerland",
   kicker:n=>"Switzerland · "+n+" trips",
-  lede:"National routes, pass days and lake loops. Hover a line or a card. Click either to open the tour sheet on this page. Days are computed from effort — the number is a default, not a timetable.",
-  note:"Same catalogue as the old picker. Click a card or a line for a paper tour sheet — days computed from effort, from a snapshot of the graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
+  lede:"National routes, pass days and lake loops. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort — the number is a default, not a timetable.",
+  note:"Same catalogue as the old picker. Scroll or use the arrows to walk the list. Open a tour for a paper sheet — days computed from effort, from a snapshot of the graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
   footer:"Photos Wikimedia Commons. Days are computed, not stored.",
   backAll:n=>"‹ All "+n+" trips",
   tripsUrl:"data/switzerland-trips.json",
@@ -98,8 +98,8 @@ const VEH_ORDER=["bike","ebike","opium"];
 const VEH_LABEL={bike:"Bicycle",ebike:"E-bike",opium:"45 km/h"};
 const VB0="0 0 900 640";
 
-let TRIPS=[], mode="network", ride=null, hover=null, filter="top";
-let PLAN=null, effort=100, veh="bike", selDay=null;
+let TRIPS=[], mode="network", ride=null, hover=null, pick=null, filter="top";
+let PLAN=null, effort=100, veh="bike", selDay=null, filmFocus=1;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
 let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
@@ -142,6 +142,27 @@ function filterChips(){
   ];
 }
 function visible(){ return TRIPS.filter(matches); }
+function galleryList(){
+  return visible().slice().sort((a,b)=>(a.top||99)-(b.top||99));
+}
+function focusTrip(id){
+  if(!id) return;
+  pick=id;
+  hover=id;
+  if(hoverClear){ clearTimeout(hoverClear); hoverClear=null; }
+  paint();
+  const card=document.querySelector('.tcard[data-id="'+id+'"]');
+  if(card) card.scrollIntoView({block:"nearest", behavior:"smooth"});
+}
+function cycleGallery(dir){
+  const list=galleryList();
+  if(!list.length) return;
+  const cur=pick||hover;
+  let i=list.findIndex(t=>t.id===cur);
+  if(i<0) i=dir>0?-1:0;
+  i=(i+dir+list.length)%list.length;
+  focusTrip(list[i].id);
+}
 
 function drawGeom(feat, dest, fill, stroke, sw){
   const geom=feat.geometry; if(!geom) return;
@@ -220,6 +241,12 @@ function linkWrap(t){
   a.style.cursor="pointer";
   a.addEventListener("mouseenter",()=>setHover(t.id));
   a.addEventListener("mouseleave",()=>setHover(null));
+  a.addEventListener("click", e=>{
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button) return;
+    e.preventDefault();
+    if(mode==="network"){ focusTrip(t.id); return; }
+    openRide(t.id);
+  });
   return a;
 }
 function addTrip(t, dest, role){
@@ -240,7 +267,7 @@ function addTrip(t, dest, role){
   styleVis(vis, t, role);
 }
 function styleVis(vis, t, role){
-  const active=hover || (ride && ride.id);
+  const active=hover || pick || (ride && ride.id);
   const isRide=ride && ride.id===t.id;
   vis.removeAttribute("stroke-dasharray");
   if(role==="off"){
@@ -262,8 +289,7 @@ function styleVis(vis, t, role){
 function paintBadge(){
   const gB=document.getElementById("badges");
   gB.innerHTML="";
-  const active=hover || (ride && ride.id);
-  if(mode!=="network" || !active) return;
+  const active=pick || hover || (ride && ride.id);
   const t=TRIPS.find(x=>x.id===active);
   if(!t || (t.kind!=="route" && t.kind!=="crossing")) return;
   const line=geo(t).line||[]; if(!line.length) return;
@@ -275,6 +301,12 @@ function paintBadge(){
   a.style.cursor="pointer";
   a.addEventListener("mouseenter",()=>setHover(t.id));
   a.addEventListener("mouseleave",()=>setHover(null));
+  a.addEventListener("click", e=>{
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button) return;
+    e.preventDefault();
+    if(mode==="network"){ focusTrip(t.id); return; }
+    openRide(t.id);
+  });
   const label=String(t.num||"");
   const w=Math.max(22, label.length*7+12);
   const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
@@ -297,12 +329,13 @@ function paint(){
     styleVis(vis, t, a.dataset.role);
   });
   document.querySelectorAll(".tcard[data-id]").forEach(el=>{
-    el.classList.toggle("hl", hover===el.dataset.id);
+    el.classList.toggle("hl", (hover||pick)===el.dataset.id);
   });
   paintBadge();
   pop();
   applyView();
   paintRide();
+  paintMini();
   syncMapTools();
 }
 function draw(){
@@ -355,12 +388,13 @@ function applyHash(){
     if(!(mode==="ride" && ride && ride.id===p.trip)){
       if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; }
       ride=TRIPS.find(t=>t.id===p.trip); mode="ride"; hover=null;
+      filmFocus=day||1;
       ensurePlan(p.trip);
-    }
+    } else if(day) filmFocus=day;
     draw();
     return;
   }
-  if(mode!=="network"){ mode="network"; ride=null; hover=null; selDay=null; draw(); }
+  if(mode!=="network"){ if(ride) pick=ride.id; mode="network"; ride=null; hover=null; selDay=null; draw(); }
 }
 function openRide(id, day){
   if(!TRIPS.some(t=>t.id===id)) return;
@@ -369,6 +403,7 @@ function openRide(id, day){
   else applyHash();
 }
 function goNetwork(){
+  if(ride) pick=ride.id;
   zoom=1; vbManual=false; selDay=null; selSeg=null;
   applyView();
   if(location.hash!=="#network") location.hash="network";
@@ -651,6 +686,7 @@ function bumpZoom(f){
   vbManual=true;
   zoom=Math.max(1, +(W/w).toFixed(2));
   svg.setAttribute("viewBox", (cx-w/2).toFixed(1)+" "+(cy-h/2).toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
+  paintMini();
 }
 function syncMapTools(){
   const back=document.getElementById("mapback");
@@ -938,6 +974,75 @@ function paintRide(){
     });
   });
 }
+function paintMini(){
+  const mini=document.getElementById("minimap");
+  if(!mini) return;
+  const on=mode==="ride" && PLAN && PLAN!==false && !!selDay;
+  mini.hidden=!on;
+  if(!on){ mini.innerHTML=""; mini.onclick=null; return; }
+  const days=planDays();
+  const today=days.find(d=>d.n===selDay);
+  const segs=activeSegs().filter(s=>!isSkipped(s.id));
+  const all=[];
+  segs.forEach(s=>(s.line||[]).forEach(p=>all.push(p)));
+  if(all.length<2){ mini.hidden=true; mini.innerHTML=""; return; }
+  const xypts=all.map(p=>xy(p[0],p[1]));
+  let x0=Math.min(...xypts.map(p=>p[0])), x1=Math.max(...xypts.map(p=>p[0]));
+  let y0=Math.min(...xypts.map(p=>p[1])), y1=Math.max(...xypts.map(p=>p[1]));
+  let w=Math.max(x1-x0, 12), h=Math.max(y1-y0, 12);
+  const ar=180/120;
+  if(w/h<ar) w=h*ar; else h=w/ar;
+  const pad=Math.max(w,h)*0.08;
+  w+=pad*2; h+=pad*2;
+  const cx=(x0+x1)/2, cy=(y0+y1)/2;
+  const vb=[cx-w/2, cy-h/2, w, h];
+  mini.setAttribute("viewBox", vb.map(n=>n.toFixed(1)).join(" "));
+  mini.innerHTML="";
+  const bg=document.createElementNS("http://www.w3.org/2000/svg","rect");
+  bg.setAttribute("x", vb[0].toFixed(1)); bg.setAttribute("y", vb[1].toFixed(1));
+  bg.setAttribute("width", vb[2].toFixed(1)); bg.setAttribute("height", vb[3].toFixed(1));
+  bg.setAttribute("fill", "#efe8dc");
+  mini.appendChild(bg);
+  const sw=Math.max(vb[2], vb[3])/90;
+  segs.forEach(seg=>{
+    if(!seg.line||seg.line.length<2) return;
+    const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+    p.setAttribute("points", linePts(seg.line));
+    p.setAttribute("fill","none"); p.setAttribute("stroke","#f0713f");
+    p.setAttribute("stroke-width", sw.toFixed(2));
+    p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
+    p.setAttribute("pointer-events","none");
+    mini.appendChild(p);
+  });
+  let dayLine=today && today.line;
+  if((!dayLine||dayLine.length<2) && today){
+    let k0=0,k1=0;
+    days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
+    dayLine=sliceLine(segs, k0, k1);
+  }
+  if(dayLine&&dayLine.length>1){
+    const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+    p.setAttribute("points", linePts(dayLine));
+    p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
+    p.setAttribute("stroke-width", (sw*1.8).toFixed(2));
+    p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
+    p.setAttribute("pointer-events","none");
+    mini.appendChild(p);
+  }
+  const map=document.getElementById("map");
+  const mvb=(map&&map.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
+  if(mvb.length===4 && mvb[2]>0 && mvb[3]>0){
+    const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
+    r.setAttribute("x", mvb[0]); r.setAttribute("y", mvb[1]);
+    r.setAttribute("width", mvb[2]); r.setAttribute("height", mvb[3]);
+    r.setAttribute("fill","none"); r.setAttribute("stroke","#1c1916");
+    r.setAttribute("stroke-width", (sw*0.7).toFixed(2));
+    r.setAttribute("stroke-opacity",".55");
+    r.setAttribute("pointer-events","none");
+    mini.appendChild(r);
+  }
+  mini.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, null); };
+}
 function gpxFor(days){
   let g='<?xml version="1.0" encoding="UTF-8"?><gpx version="1.1" creator="bikeplanner"><metadata><name>'+PLAN.name+'</name></metadata>';
   let off=0;
@@ -1111,7 +1216,11 @@ function plannerSheet(t){
         <span class="ghost" id="expnote"></span>
       </div></div>
     </aside>
-    <div class="film hit" id="film">${filmHtml}</div>
+    <div class="filmwrap hit" id="filmwrap">
+      <button type="button" class="film-nav" id="filmprev" aria-label="Previous day">‹</button>
+      <div class="film-track" id="film">${filmHtml}</div>
+      <button type="button" class="film-nav" id="filmnext" aria-label="Next day">›</button>
+    </div>
     <div id="days" hidden></div>`;
     drawProfile(onDay && today ? [today] : rideDays);
   const strip=document.getElementById("strip");
@@ -1282,6 +1391,12 @@ function plannerSheet(t){
     film.querySelectorAll(".tile").forEach(btn=>{
       btn.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, Number(btn.dataset.day)); };
     });
+    const prev=document.getElementById("filmprev");
+    const next=document.getElementById("filmnext");
+    if(prev) prev.onclick=()=>filmStep(-1);
+    if(next) next.onclick=()=>filmStep(1);
+    filmFocus=Math.min(Math.max(1, filmFocus||1), rideDays.length||1);
+    syncFilm();
   }
   const alldays=document.getElementById("alldays");
   if(alldays) alldays.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, null); };
@@ -1314,6 +1429,35 @@ function renderSegCard(s){
   c.querySelector("#sHere").onclick=()=>{ startId=s.frm; selSeg=null; selDay=null; vbManual=false; skipCache=null; draw(); };
   c.querySelector("#eHere").onclick=()=>{ endId=s.to; selSeg=null; selDay=null; vbManual=false; skipCache=null; draw(); };
 }
+function filmStep(dir){
+  const n=planDays().filter(d=>d.mode!=="train").length;
+  if(!n) return;
+  const next=Math.min(Math.max(1, (filmFocus||1)+dir), n);
+  if(next===filmFocus) return;
+  filmFocus=next;
+  syncFilm();
+}
+function syncFilm(){
+  const film=document.getElementById("film");
+  if(!film) return;
+  const n=planDays().filter(d=>d.mode!=="train").length;
+  filmFocus=Math.min(Math.max(1, filmFocus||1), n||1);
+  let on=null;
+  film.querySelectorAll(".tile").forEach(b=>{
+    const num=+b.dataset.day;
+    const is=!!n && num===filmFocus;
+    b.classList.toggle("on", is);
+    if(is) on=b;
+  });
+  if(on){
+    const left=on.offsetLeft-(film.clientWidth-on.offsetWidth)/2;
+    film.scrollTo({left:Math.max(0,left), behavior:"smooth"});
+  }
+  const prev=document.getElementById("filmprev");
+  const next=document.getElementById("filmnext");
+  if(prev) prev.disabled=filmFocus<=1;
+  if(next) next.disabled=!n || filmFocus>=n;
+}
 function sparkPoly(d){
   if(!d.prof||d.prof.length<2||!d.km) return "";
   const W=300,H=26, mx=Math.max.apply(null,d.prof.map(p=>p[1])), top=Math.max(100,mx);
@@ -1339,7 +1483,7 @@ function sheet(){
       <div class="chips" id="filters"></div>`;
     filterChips().forEach(([k,lab])=>{
       const b=document.createElement("button"); b.className="chip"+(filter===k?" on":""); b.textContent=lab;
-      b.onclick=()=>{ filter=k; draw(); };
+      b.onclick=()=>{ filter=k; if(pick && !visible().some(t=>t.id===pick)) pick=null; draw(); };
       document.getElementById("filters").appendChild(b);
     });
     col.innerHTML=`<p class="tm" style="margin:0 0 10px">${n} trip${n===1?"":"s"}</p><div id="cards"></div>
@@ -1348,16 +1492,22 @@ function sheet(){
     visible().sort((a,b)=>(a.top||99)-(b.top||99)).forEach(t=>{
       const g=geo(t), d=grade(g.km,g.asc);
       const el=document.createElement("div");
-      el.className="tcard"+(hover===t.id?" hl":"");
+      el.className="tcard"+((hover||pick)===t.id?" hl":"");
       el.dataset.id=t.id;
       el.innerHTML=`<div class="ph" style="background-image:url('${photo(t)}')"></div>
         <div class="b"><div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
         <span class="dl dl${d}">${DNAME[d]}</span>${t.top?`<span class="top">${topLabel(t.top)}</span>`:""}</div>
         ${t.why?`<div class="why">${t.why}</div>`:""}
-        <div class="tm">${t.sub} · ${g.km||"—"} km · ${(g.asc||0).toLocaleString()} m · ~${daysEst(g)} days</div></div>`;
+        <div class="tm">${t.sub} · ${g.km||"—"} km · ${(g.asc||0).toLocaleString()} m · ~${daysEst(g)} days</div>
+        <button type="button" class="open-tour">Open tour</button></div>`;
       el.onmouseenter=()=>setHover(t.id);
       el.onmouseleave=()=>setHover(null);
-      el.onclick=()=>openRide(t.id);
+      el.onclick=e=>{
+        if(e.target.closest(".open-tour")) return;
+        focusTrip(t.id);
+      };
+      el.ondblclick=()=>openRide(t.id);
+      el.querySelector(".open-tour").onclick=e=>{ e.stopPropagation(); openRide(t.id); };
       box.appendChild(el);
     });
   } else {
@@ -1394,17 +1544,18 @@ function sheet(){
 }
 function pop(){
   const pop=document.getElementById("pop");
-  if(mode!=="network" || !hover){
+  const id=hover||pick;
+  if(mode!=="network" || !id){
     pop.style.display="none";
     pop.removeAttribute("href");
     return;
   }
-  const t=TRIPS.find(x=>x.id===hover); if(!t) return;
+  const t=TRIPS.find(x=>x.id===id); if(!t) return;
   const url=tripHref(t);
   const line=geo(t).line||[]; const pt=line[0]||[46.8,8.2]; const q=xy(pt[0], pt[1]);
   const st=document.getElementById("stage").getBoundingClientRect();
   pop.href=url;
-  pop.innerHTML=`<b>${t.num} · ${t.name}</b><div class="tm" style="margin:0">${geo(t).km||""} km</div><span class="cta">open the tour sheet ›</span>`;
+  pop.innerHTML=`<b>${t.num} · ${t.name}</b><div class="tm" style="margin:0">${geo(t).km||""} km · scroll to browse</div><span class="cta">Open the sheet →</span>`;
   pop.style.display="block";
   pop.style.left=Math.min(st.width-250, Math.max(8, q[0]*(st.width/W)-40))+"px";
   pop.style.top=Math.max(8, q[1]*(st.height/H)-24)+"px";
@@ -1433,11 +1584,55 @@ document.getElementById("maplayers").addEventListener("click", e=>{
   paint();
 });
 
-document.addEventListener("keydown",e=>{
-  if(e.key!=="Escape" || mode==="network") return;
+function typingIn(e){
+  const t=e.target;
+  if(!t) return false;
+  const tag=(t.tagName||"").toLowerCase();
+  return tag==="input"||tag==="select"||tag==="textarea"||t.isContentEditable;
+}
+let wheelLock=0;
+document.getElementById("stage").addEventListener("wheel", e=>{
+  if(mode!=="network") return;
+  if(Math.abs(e.deltaY)<2 && Math.abs(e.deltaX)<2) return;
   e.preventDefault();
-  if(selDay && ride) openRide(ride.id, null);
-  else goNetwork();
+  if(Date.now()<wheelLock) return;
+  wheelLock=Date.now()+160;
+  const d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;
+  cycleGallery(d>0?1:-1);
+}, {passive:false});
+document.addEventListener("keydown",e=>{
+  if(typingIn(e)) return;
+  if(e.key==="Escape"){
+    if(mode==="network") return;
+    e.preventDefault();
+    if(selDay && ride) openRide(ride.id, null);
+    else goNetwork();
+    return;
+  }
+  if(mode==="network"){
+    if(e.key==="ArrowUp"){ e.preventDefault(); cycleGallery(-1); }
+    else if(e.key==="ArrowDown"){ e.preventDefault(); cycleGallery(1); }
+    else if(e.key==="Enter"){
+      const tag=(e.target.tagName||"").toLowerCase();
+      if(tag==="button"||tag==="a"||tag==="summary") return;
+      const id=hover||pick;
+      if(id){ e.preventDefault(); openRide(id); }
+    }
+    return;
+  }
+  if(mode==="ride" && PLAN && PLAN!==false){
+    if(e.key==="ArrowLeft"){
+      e.preventDefault();
+      if(selDay){ if(selDay>1){ vbManual=false; selSeg=null; openRide(ride.id, selDay-1); } }
+      else filmStep(-1);
+    } else if(e.key==="ArrowRight"){
+      e.preventDefault();
+      if(selDay){
+        const n=planDays().filter(d=>d.mode!=="train").length;
+        if(selDay<n){ vbManual=false; selSeg=null; openRide(ride.id, selDay+1); }
+      } else filmStep(1);
+    }
+  }
 });
 window.addEventListener("hashchange", applyHash);
 

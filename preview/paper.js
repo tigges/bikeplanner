@@ -144,7 +144,10 @@ function matches(t){
   return tags.includes(filter);
 }
 function filterChips(){
-  const tags=[...new Set(TRIPS.flatMap(t=>t.tags||[]))].sort();
+  const reserved=new Set(["top","all","d3","d46","d6","d7","e0","easy","e1","e2","moderate","hard"]);
+  const tags=[...new Set(TRIPS.flatMap(t=>t.tags||[]))]
+    .filter(t=>t && !reserved.has(String(t).toLowerCase()))
+    .sort();
   return [
     ["top","top"],["all","all "+TRIPS.length],
     ["d3","up to 3 days"],["d46","4–6 days"],["d7","7+ days"],
@@ -1410,7 +1413,7 @@ function plannerSheet(t){
   };
   const csvBtn=document.getElementById("csv");
   if(csvBtn) csvBtn.onclick=()=>{ download((PLAN.id||"ride")+"-days.csv", csvFor(days), "text/csv"); document.getElementById("expnote").textContent="CSV downloaded."; };
-  document.getElementById("pdf").onclick=()=>window.print();
+  document.getElementById("pdf").onclick=()=>{ fillPrintSheet(); window.print(); };
   document.getElementById("copylink").onclick=()=>{
     const url=location.href;
     const done=()=>{ document.getElementById("expnote").textContent="Link copied."; };

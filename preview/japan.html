@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Japan by bike</title>
+<link rel="stylesheet" href="paper.css?v=9">
+</head>
+<body>
+<header id="head"></header>
+<main>
+  <div class="split">
+    <div id="col"></div>
+    <aside class="mapcard" id="stage">
+      <button type="button" id="mapback" hidden>‹ All trips</button>
+      <div id="maptools" hidden>
+        <div class="zoompair">
+          <button type="button" id="zout" title="Zoom out">−</button>
+          <button type="button" id="zin" title="Zoom in">+</button>
+        </div>
+        <button type="button" id="vehbtn" title="Switch vehicle">Bicycle</button>
+        <button type="button" id="langbtn" title="Place names">English names</button>
+        <button type="button" id="fitbtn" title="Show the whole trip">Whole trip</button>
+      </div>
+      <svg id="map" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet">
+        <g id="land"></g>
+        <g id="water"></g>
+        <g id="ghost"></g>
+        <g id="lines"></g>
+        <g id="ride"></g>
+        <g id="gold"></g>
+        <g id="fac"></g>
+        <g id="towns"></g>
+        <g id="discs"></g>
+        <g id="badges"></g>
+      </svg>
+      <div id="maplayers" hidden>
+        <button type="button" data-l="shop" title="Shops"><svg viewBox="0 0 20 20"><path d="M3 7h14l-1.2 9.5H4.2z"/><path d="M7 7V5a3 3 0 0 1 6 0v2"/></svg></button>
+        <button type="button" data-l="stay" title="Beds"><svg viewBox="0 0 20 20"><path d="M2 15V8h16v7"/><path d="M2 12h16"/><path d="M4 8V5h5v3"/></svg></button>
+        <button type="button" data-l="bath" title="Baths and hot springs"><svg viewBox="0 0 20 20"><path d="M3 10h14v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M5 10V5a2 2 0 0 1 4 0"/></svg></button>
+        <button type="button" data-l="rail" title="Stations"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="11" rx="2.5"/><path d="M4 9h12M7 17l1-3M13 17l-1-3"/><circle cx="7.5" cy="11.5" r=".6"/><circle cx="12.5" cy="11.5" r=".6"/></svg></button>
+        <button type="button" data-l="water" title="Drinking water"><svg viewBox="0 0 20 20"><path d="M10 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9z"/></svg></button>
+      </div>
+      <a id="pop" target="_self"></a>
+    </aside>
+  </div>
+</main>
+<footer></footer>
+<script>
+window.PAPER={
+  id:"japan",
+  title:"Japan by bike",
+  country:"Japan",
+  localLabel:"日本語",
+  kicker:n=>"Japan · "+n+" trips",
+  lede:"Cape Sōya to Cape Sata, or a famous few days: Shimanami bridges, Biwaichi around the lake, Fuji-ichi, the Noto coast. Hover a line or a card. Click either to open the tour sheet on this page. Days are computed from effort.",
+  note:"Same catalogue as the old picker, including the 2026 Fuji-ichi, Awaji, Yamanami and Pacific Cycling Road trips. Snapshots of the Japan graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
+  footer:"Japan · 24 trips. Photos Wikimedia Commons. Days are computed, not stored.",
+  backAll:n=>"‹ All "+n+" trips",
+  tripsUrl:"data/japan-trips.json",
+  landUrl:null,
+  waterUrl:"data/japan_water.geojson",
+  atlasUrl:"data/japan_atlas.geojson",
+  ridesUrl:"data/rides/japan/",
+  photosUrl:"data/photos.json",
+  landFilter:null,
+  landMode:"coast",
+  bbox:{lon0:129.4, lon1:142.3, lat0:30.9, lat1:45.7},
+  photos:{
+    ns:"img/japan.jpg", shimanami:"img/japan.jpg", biwaichi:"img/biwa.jpg",
+    fujiichi:"img/fuji.jpg", noto:"img/noto.jpg", rinrin:"img/kasumigaura.jpg",
+    yamanami:"img/aso.jpg", pacific:"img/choshi.jpg", awaichi:"img/naruto.jpg",
+    keinawa:"img/nara.jpg", tobishima:"img/japan.jpg", nichinan:"img/nichinan.jpg",
+    kibi:"img/kibi.jpg", tottori:"img/tottori.jpg", toyama:"img/toyama.jpg",
+    hamadori:"img/matsushima.jpg", yuyake:"img/japan.jpg", boso:"img/choshi.jpg",
+    hamana:"img/hamana.jpg", matsushima:"img/matsushima.jpg", hokkaido:"img/wakkanai.jpg",
+    tohoku:"img/matsushima.jpg", kansai:"img/japan.jpg", kyushu:"img/aso.jpg"
+  },
+  places:{
+    Onomichi:["img/japan.jpg"], Imabari:["img/japan.jpg"],
+    Hikone:["img/biwa.jpg"], Nagahama:["img/biwa.jpg"], Makino:["img/biwa.jpg"],
+    Otsu:["img/biwa.jpg"],
+    Kawaguchiko:["img/fuji.jpg"], Motosu:["img/fuji.jpg"], Gotemba:["img/fuji.jpg"], Yamanakako:["img/fuji.jpg"],
+    Wajima:["img/noto.jpg"], Suzu:["img/noto.jpg"], Chirihama:["img/noto.jpg"],
+    Tsuchiura:["img/kasumigaura.jpg"], Itako:["img/kasumigaura.jpg"],
+    Beppu:["img/aso.jpg"], Aso:["img/aso.jpg"], Yufuin:["img/aso.jpg"], Takachiho:["img/aso.jpg"],
+    Wakkanai:["img/wakkanai.jpg"], Sapporo:["img/wakkanai.jpg"], Hakodate:["img/wakkanai.jpg"],
+    Nara:["img/nara.jpg"], Kyoto:["img/nara.jpg"],
+    Matsushima:["img/matsushima.jpg"],
+    Tottori:["img/tottori.jpg"],
+    Nichinan:["img/nichinan.jpg"], Kushima:["img/nichinan.jpg"],
+    Choshi:["img/choshi.jpg"], Chōshi:["img/choshi.jpg"],
+    Sumoto:["img/naruto.jpg"], Fukura:["img/naruto.jpg"],
+    Okayama:["img/kibi.jpg"],
+    Toyama:["img/toyama.jpg"]
+  },
+  en:{},
+  photoFallback:"img/japan.jpg"
+};
+</script>
+<script src="paper.js?v=9"></script>
+</body>
+</html>

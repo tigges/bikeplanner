@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Switzerland by bike</title>
+<title>Across Spain</title>
 <link rel="stylesheet" href="paper.css?v=9">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <div class="split">
     <div id="col"></div>
     <aside class="mapcard" id="stage">
-      <button type="button" id="mapback" hidden>‹ All 29 trips</button>
+      <button type="button" id="mapback" hidden>‹ All trips</button>
       <div id="maptools" hidden>
         <div class="zoompair">
           <button type="button" id="zout" title="Zoom out">−</button>
@@ -46,6 +46,47 @@
   </div>
 </main>
 <footer></footer>
+<script>
+window.PAPER={
+  id:"spain",
+  title:"Across Spain",
+  country:"Spain",
+  localLabel:"nombres locales",
+  kicker:n=>"Spain · "+n+" trips",
+  lede:"Cap de Creus to Fisterra, or the caminos: Francés, Norte, Invierno, and on to the cape. Hover a line or a card. Click either to open the tour sheet on this page. Days are computed from effort.",
+  note:"Eight trips from the live catalogue. Snapshots of the Spain graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
+  footer:"Spain · 8 trips. Photos Wikimedia Commons. Days are computed, not stored.",
+  backAll:n=>"‹ All "+n+" trips",
+  tripsUrl:"data/spain-trips.json",
+  landUrl:"data/spain_outline.geojson",
+  waterUrl:"data/spain_water.geojson",
+  atlasUrl:null,
+  ridesUrl:"data/rides/spain/",
+  photosUrl:"data/photos.json",
+  landFilter:"Spain (mainland)",
+  landMode:"fill",
+  bbox:{lon0:-9.55, lon1:3.55, lat0:40.95, lat1:43.85},
+  photos:{
+    ew:"img/creus.jpg", frances:"img/santiago.jpg", norte:"img/sansebastian.jpg",
+    invierno:"img/ponferrada.jpg", fisterra:"img/fisterra.jpg",
+    pyrenees:"img/pyrenees.jpg", ebro:"img/girona.jpg", barcelona:"img/barcelona.jpg"
+  },
+  places:{
+    "Santiago de Compostela":["img/santiago.jpg"],
+    Fisterra:["img/fisterra.jpg"],
+    "Santiago":["img/santiago.jpg"],
+    Girona:["img/girona.jpg"],
+    Barcelona:["img/barcelona.jpg"],
+    León:["img/santiago.jpg"],
+    Burgos:["img/santiago.jpg"],
+    Zaragoza:["img/girona.jpg"],
+    "San Sebastián":["img/sansebastian.jpg"],
+    "Donostia":["img/sansebastian.jpg"]
+  },
+  en:{"Donostia":"San Sebastián","A Coruña":"Corunna","Girona":"Gerona"},
+  photoFallback:"img/fisterra.jpg"
+};
+</script>
 <script src="paper.js?v=9"></script>
 </body>
 </html>

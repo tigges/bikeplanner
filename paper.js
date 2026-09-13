@@ -682,8 +682,9 @@ function flipSeg(s){
   const line=(s.line||[]).slice().reverse();
   const cand=flipCand(s, effort);
   const prof=(s.prof||[]).slice().reverse().map(p=>[+(s.km-(p[0]||0)).toFixed(1), p[1]]);
+  const poi=(s.poi||[]).map(p=>({...p, km:+((s.km-(p.km||0)).toFixed(1))}));
   return {...s, frm:s.to, to:s.frm, frmName:s.toName, toName:s.frmName,
-    ascent, descent, effort, effortR:effortOf(s,false), line, cand, prof};
+    ascent, descent, effort, effortR:effortOf(s,false), line, cand, prof, poi};
 }
 function orientWalk(segs, fromId){
   if(!segs.length) return segs;
@@ -1103,9 +1104,26 @@ function stopEq(a, b){
 function shortStop(name){
   const s=String(name||"");
   if(s.length<=22) return s;
-  const m=s.match(/\(([^)]+)\)\s*$/);
-  if(m && m[1] && m[1].length>=3 && m[1].length<s.length) return m[1];
+  const m=s.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  if(m && m[1] && m[1].length>=8 && m[1].length<s.length) return m[1];
+  if(m && m[2] && m[2].length>=3 && m[2].length<s.length) return m[2];
   return s;
+}
+function mapStopLabel(name, others){
+  const full=String(name||"");
+  const short=shortStop(full);
+  if(short!==full && (others||[]).some(o=>o!==full && (o===short || shortStop(o)===short))){
+    const head=full.replace(/\s*\([^)]+\)\s*$/,"").trim();
+    return head || short;
+  }
+  return short;
+}
+function mapSightLabel(p){
+  let n=String((p&&p.name)||"");
+  if((p&&p.kind)==="mne"){
+    n=n.replace(/^michi[- ]?no[- ]?eki\s*/i,"").replace(/^[「"'“‘（(]+/,"").replace(/[」"'”’）)]+$/,"").trim();
+  }
+  return shortStop(n) || shortStop(p&&p.name);
 }
 function dayStops(today, days){
   if(!today) return [];
@@ -1146,6 +1164,68 @@ function dayStops(today, days){
     vias=picked;
   }
   return start.concat(vias).concat(end);
+}
+const SIGHT_KIND={
+  mne:"road station", castle:"castle", waterfall:"waterfall", cape:"cape", peak:"peak",
+  viewpoint:"viewpoint", attraction:"sight", museum:"museum", ruins:"ruins", beach:"beach"
+};
+function daySights(today, days){
+  if(!today) return [];
+  const segs=activeSegs().filter(s=>!isSkipped(s.id));
+  const [k0, k1]=dayKmRange(days, today.n);
+  const stops=dayStops(today, days);
+  const raw=[];
+  let k=0;
+  segs.forEach(s=>{
+    (s.poi||[]).forEach(p=>{
+      const km=k+(p.km||0);
+      if(km<k0+0.4 || km>k1-0.4) return;
+      if(p.lat==null || p.lon==null || !p.name) return;
+      if(stops.some(t=>Math.abs((t.km||0)-km)<3) && !/^(mne|cape|peak|castle|waterfall)$/.test(p.kind||"")) return;
+      raw.push({name:p.name, nameLocal:p.nameLocal||"", kind:p.kind||"attraction",
+        off:p.off, lat:p.lat, lon:p.lon, km:+(+km).toFixed(1)});
+    });
+    k+=s.km||0;
+  });
+  const seen={};
+  const uniq=raw.filter(p=>{
+    const key=String(p.name||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+    if(!key || seen[key]) return false;
+    seen[key]=1;
+    return true;
+  });
+  uniq.sort((a,b)=>{
+    if(a.kind==="mne" && b.kind!=="mne") return -1;
+    if(b.kind==="mne" && a.kind!=="mne") return 1;
+    return (a.off||0)-(b.off||0);
+  });
+  const max=10;
+  const minKm=Math.max(5, (today.km||40)/12);
+  const picked=[];
+  uniq.forEach(p=>{
+    if(picked.length>=max) return;
+    if(p.kind!=="mne" && picked.filter(q=>q.kind!=="mne").some(q=>{
+      const gap=/^(cape|peak|castle|waterfall)$/.test(p.kind)?1.4:minKm;
+      return Math.abs(q.km-p.km)<gap;
+    })) return;
+    picked.push(p);
+  });
+  return picked.sort((a,b)=>a.km-b.km);
+}
+function mapLabelPack(){
+  const boxes=[];
+  const hits=(a,b)=>!(a.x+a.w+ink(3)<b.x || b.x+b.w+ink(3)<a.x || a.y+a.h+ink(2)<b.y || b.y+b.h+ink(2)<a.y);
+  return {
+    take(x, y, text, fs, always){
+      const w=Math.max(ink(16), String(text).length*fs*0.56);
+      const h=fs*1.35;
+      const lx=x+ink(8), ly=y-ink(7);
+      const box={x:lx, y:ly-h, w, h};
+      if(!always && boxes.some(b=>hits(b, box))) return null;
+      boxes.push(box);
+      return {x:lx, y:ly};
+    }
+  };
 }
 function dayForkNote(today, days){
   if(!today || !PLAN) return "";
@@ -1288,6 +1368,7 @@ function paintRide(){
   const today=selDay?days.find(x=>x.n===selDay):null;
   const stops=today?dayStops(today, days):[];
   if(selDay && today){
+    const pack=mapLabelPack();
     stops.forEach(s=>{
       const q=xy(s.lat, s.lon);
       if(q[0]==null) return;
@@ -1302,10 +1383,14 @@ function paintRide(){
       disc.style.cursor="pointer";
       disc.addEventListener("click",e=>{ e.stopPropagation(); selectStop(s); });
       gT.appendChild(disc);
-      const showLab=s.role==="start" || s.role==="end" || (on && !stops.some(o=>o!==s && (o.role==="start"||o.role==="end") && Math.abs((o.km||0)-(s.km||0))<4));
-      if(!showLab) return;
+      const always=s.role==="start" || s.role==="end" || on;
+      const nearEnd=!always && stops.some(o=>(o.role==="start"||o.role==="end") && Math.abs((o.km||0)-(s.km||0))<4);
+      if(nearEnd) return;
+      const lab=mapStopLabel(s.name, stops.map(o=>o.name));
+      const pos=pack.take(q[0], q[1], lab, ink(on?9:8), always);
+      if(!pos) return;
       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-      tx.setAttribute("x", q[0]+ink(8)); tx.setAttribute("y", q[1]-ink(8));
+      tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
       tx.setAttribute("pointer-events","none");
       tx.setAttribute("font-size", ink(on?9:8));
       tx.setAttribute("font-weight", on?"700":"600");
@@ -1314,7 +1399,42 @@ function paintRide(){
       tx.setAttribute("stroke-width", ink(2.2));
       tx.setAttribute("paint-order", "stroke");
       tx.setAttribute("stroke-linejoin", "round");
-      tx.textContent=shortStop(s.name);
+      tx.textContent=lab;
+      gT.appendChild(tx);
+    });
+    daySights(today, days).forEach(p=>{
+      const q=xy(p.lat, p.lon);
+      if(q[0]==null) return;
+      const kindLab=SIGHT_KIND[p.kind]||String(p.kind||"sight").replace(/_/g," ");
+      const nm=p.name;
+      const hit={kind:p.kind, name:nm, nameLocal:p.nameLocal||"", lat:p.lat, lon:p.lon,
+        sub:kindLab+(p.off!=null?" · "+p.off+" km off the road":""), x:q[0], y:q[1]};
+      placeHits.push(hit);
+      const mne=p.kind==="mne";
+      const disc=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]);
+      disc.setAttribute("r", ink(3.2));
+      disc.setAttribute("fill", mne?"#97C459":"#6f675e");
+      disc.setAttribute("stroke", "#fffdf8");
+      disc.setAttribute("stroke-width", ink(0.6));
+      disc.style.cursor="pointer";
+      disc.addEventListener("click",e=>{ e.stopPropagation(); showPlaceCard(hit); });
+      gT.appendChild(disc);
+      const lab=mapSightLabel(p);
+      const pos=pack.take(q[0], q[1], lab, ink(7.2), false);
+      if(!pos) return;
+      const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
+      tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
+      tx.setAttribute("pointer-events","none");
+      tx.setAttribute("font-size", ink(7.2));
+      tx.setAttribute("font-style", mne?"normal":"italic");
+      tx.setAttribute("font-weight", "500");
+      tx.setAttribute("fill", mne?"#3d6b1e":"#6f675e");
+      tx.setAttribute("stroke", "#fffdf8");
+      tx.setAttribute("stroke-width", ink(2));
+      tx.setAttribute("paint-order", "stroke");
+      tx.setAttribute("stroke-linejoin", "round");
+      tx.textContent=lab;
       gT.appendChild(tx);
     });
   } else {
@@ -1986,6 +2106,7 @@ function printDayFig(d){
   };
   line.forEach(p=>bump(p[0], p[1]));
   stops.forEach(s=>bump(s.lat, s.lon));
+  daySights(d, days).forEach(p=>bump(p.lat, p.lon));
   const W=560, H=200;
   const dx=Math.max(maxLon-minLon, 0.01), dy=Math.max(maxLat-minLat, 0.01);
   const pad=0.12;
@@ -1997,7 +2118,7 @@ function printDayFig(d){
   const labelBits=[];
   const discBits=[];
   const addLabel=(stop, px, py, always)=>{
-    const text=shortStop(stop.name);
+    const text=mapStopLabel(stop.name, stops.map(o=>o.name));
     const fs=(stop.role==="start"||stop.role==="end")?12:11;
     const tw=Math.max(24, text.length*fs*0.58);
     const th=fs+3;
@@ -2026,6 +2147,22 @@ function printDayFig(d){
   stops.filter(s=>s.role==="via").forEach(s=>{
     if(s.lat==null || s.lon==null) return;
     addLabel(s, x(s.lon), y(s.lat), false);
+  });
+  daySights(d, days).forEach(p=>{
+    if(p.lat==null || p.lon==null) return;
+    const px=x(p.lon), py=y(p.lat);
+    const mne=p.kind==="mne";
+    discBits.push(`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="2.6" fill="${mne?"#97C459":"#6f675e"}" stroke="#fffdf8" stroke-width="0.6"/>`);
+    const text=mapSightLabel(p);
+    const fs=10;
+    const tw=Math.max(24, text.length*fs*0.55);
+    const th=fs+2;
+    let lx=px+6, ly=py-5;
+    if(lx+tw>W-4) lx=Math.max(4, px-tw-6);
+    const box={x:lx, y:ly-th, w:tw, h:th};
+    if(boxes.some(b=>overlap(b, box))) return;
+    boxes.push(box);
+    labelBits.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs}" font-style="${mne?"normal":"italic"}" font-weight="500" fill="${mne?"#3d6b1e":"#6f675e"}" font-family="Georgia,'Iowan Old Style',serif" stroke="#fffdf8" stroke-width="2.6" paint-order="stroke" stroke-linejoin="round">${esc(text)}</text>`);
   });
   return `<svg class="print-fig" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
     <rect width="${W}" height="${H}" fill="#fffdf8"/>
@@ -2267,8 +2404,14 @@ function tapMap(e){
     const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
     const pinSlop=18*vb[2]/Math.max(r.width,1);
     const stop=nearestStopHit(pt[0], pt[1], pinSlop);
-    if(stop){ selectStop(stop); return; }
     const fac=nearestPlace(pt[0], pt[1]);
+    if(stop && fac && fac.kind && fac.kind!=="town"){
+      const sh=stopHits.find(h=>h.stop===stop);
+      const dStop=sh?Math.hypot(sh.x-pt[0], sh.y-pt[1]):Infinity;
+      const dFac=Math.hypot(fac.x-pt[0], fac.y-pt[1]);
+      if(dFac<=dStop){ showPlaceCard(fac); return; }
+    }
+    if(stop){ selectStop(stop); return; }
     if(fac && fac.kind && fac.kind!=="town"){ showPlaceCard(fac); return; }
     const days=planDays();
     const d=days.find(x=>x.n===selDay);

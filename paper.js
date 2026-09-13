@@ -127,6 +127,7 @@ let placeOpen=null, placeHits=[], stopHits=[];
 let PLAN=null, effort=100, veh="bike", selDay=null, selStop=null, filmFocus=1;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
+let editOpen=false, netForksOpen=false;
 let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, preferSigned=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
 try{
   ["plan","days"].forEach(k=>{
@@ -547,7 +548,7 @@ function applyHash(){
     selDay=day||null;
     vbManual=false;
     if(!(mode==="ride" && ride && ride.id===p.trip)){
-      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; selStop=null; }
+      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; editOpen=false; netForksOpen=false; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; selStop=null; }
       ride=TRIPS.find(t=>t.id===p.trip); mode="ride"; hover=null;
       filmFocus=day||1;
       ensurePlan(p.trip);
@@ -682,8 +683,9 @@ function flipSeg(s){
   const line=(s.line||[]).slice().reverse();
   const cand=flipCand(s, effort);
   const prof=(s.prof||[]).slice().reverse().map(p=>[+(s.km-(p[0]||0)).toFixed(1), p[1]]);
+  const poi=(s.poi||[]).map(p=>({...p, km:+((s.km-(p.km||0)).toFixed(1))}));
   return {...s, frm:s.to, to:s.frm, frmName:s.toName, toName:s.frmName,
-    ascent, descent, effort, effortR:effortOf(s,false), line, cand, prof};
+    ascent, descent, effort, effortR:effortOf(s,false), line, cand, prof, poi};
 }
 function orientWalk(segs, fromId){
   if(!segs.length) return segs;
@@ -976,7 +978,7 @@ function planDays(){
   const defaultPick=(PLAN.forks||[]).every(f=>(picks[f.node]||f.pick)===f.pick);
   const full=!reversed && startId===PLAN.start && endId===PLAN.end && !skipped && defaultPick
     && veh==="bike" && effort===PLAN.effort && PLAN.days;
-  if(full) return PLAN.days.map(d=>({...d, mode:"ride", frm:showName(d.frm), to:showName(d.to)}));
+  if(full) return enrichDays(PLAN.days.map(d=>({...d, mode:"ride", frm:showName(d.frm), to:showName(d.to)})));
   const days=[];
   let buf=[];
   const flush=()=>{
@@ -1014,9 +1016,11 @@ function enrichDays(days){
       }
       k+=s.km;
     });
-    d.shop=Math.round(shop); d.stay=Math.round(stay); d.bath=Math.round(bath);
-    d.rail=Math.round(rail); d.water=Math.round(water);
-    if(!d.line||d.line.length<2) d.line=sliceLine(segs, dayOff, dayOff+d.km);
+    if(d.shop==null){
+      d.shop=Math.round(shop); d.stay=Math.round(stay); d.bath=Math.round(bath);
+      d.rail=Math.round(rail); d.water=Math.round(water);
+    }
+    d.line=sliceLine(segs, dayOff, dayOff+d.km);
     if(!d.prof||!d.prof.length){
       const prof=[];
       let k=0;
@@ -1029,7 +1033,7 @@ function enrichDays(days){
       });
       d.prof=prof;
     }
-    if(d.lat==null && d.line&&d.line.length){
+    if(d.line&&d.line.length){
       const last=d.line[d.line.length-1];
       d.lat=last[0]; d.lon=last[1];
     }
@@ -1037,22 +1041,34 @@ function enrichDays(days){
   });
   return days;
 }
-function dayPhotos(to){
+function placePhotos(name){
   const places=PAPER.places||{};
-  const hit=places[to];
+  if(!name) return [];
+  const hit=places[name];
   if(hit) return Array.isArray(hit)?hit:[hit];
-  const low=String(to||"").toLowerCase();
-  if(low){
-    for(const k of Object.keys(places)){
-      const kl=k.toLowerCase();
-      if(low===kl || low.indexOf(kl)>=0 || kl.indexOf(low)>=0){
-        const v=places[k];
-        return Array.isArray(v)?v:[v];
-      }
+  const low=String(name).toLowerCase();
+  let fuzzy=null;
+  for(const k of Object.keys(places)){
+    const kl=k.toLowerCase();
+    const alias=String((PAPER.en&&PAPER.en[k])||"").toLowerCase();
+    if(low===kl || (alias && low===alias)){
+      const v=places[k];
+      return Array.isArray(v)?v:[v];
+    }
+    const shorter=Math.min(low.length, kl.length);
+    if(k.length>=5 && shorter>=5 && (low.indexOf(kl)>=0 || kl.indexOf(low)>=0)){
+      const score=Math.abs(k.length-String(name).length);
+      if(!fuzzy || score<fuzzy.score) fuzzy={score, v:places[k]};
     }
   }
-  const src=ride && PHOTO[ride.id];
-  return src?[src]:[];
+  if(!fuzzy) return [];
+  const v=fuzzy.v;
+  return Array.isArray(v)?v:[v];
+}
+function dayGapLine(today){
+  if(!today) return "";
+  const gapKm=today.gap!=null?Math.round(today.gap):null;
+  return `${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> bath${(today.bath||0)===1?"":"s"} · <b>${today.rail||0}</b> station${(today.rail||0)===1?"":"s"}${today.water?` · <b>${today.water}</b> water`:""}`;
 }
 function rideDayCount(){
   return planDays().filter(d=>d.mode!=="train").length;
@@ -1091,9 +1107,27 @@ function stopEq(a, b){
 function shortStop(name){
   const s=String(name||"");
   if(s.length<=22) return s;
-  const m=s.match(/\(([^)]+)\)\s*$/);
-  if(m && m[1] && m[1].length>=3 && m[1].length<s.length) return m[1];
+  const m=s.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  if(m && m[1] && m[1].length>=8 && m[1].length<s.length) return m[1];
+  if(m && m[2] && m[2].length>=3 && m[2].length<s.length) return m[2];
   return s;
+}
+function mapStopLabel(name, others){
+  const full=String(name||"");
+  const short=shortStop(full);
+  if(short!==full && (others||[]).some(o=>o!==full && (o===short || shortStop(o)===short))){
+    const head=full.replace(/\s*\([^)]+\)\s*$/,"").trim();
+    return head || short;
+  }
+  return short;
+}
+function mapSightLabel(p){
+  let n=String((p&&p.name)||"");
+  if((p&&p.kind)==="mne"){
+    n=n.replace(/^michi[- ]?no[- ]?eki\s*/i,"").replace(/^[「"'“‘（(]+/,"").replace(/[」"'”’）)]+$/,"").trim();
+  }
+  if(n && n[0]>="a" && n[0]<="z") n=n[0].toUpperCase()+n.slice(1);
+  return shortStop(n) || shortStop(p&&p.name);
 }
 function dayStops(today, days){
   if(!today) return [];
@@ -1135,6 +1169,80 @@ function dayStops(today, days){
   }
   return start.concat(vias).concat(end);
 }
+const SIGHT_KIND={
+  mne:"road station", castle:"castle", waterfall:"waterfall", cape:"cape", peak:"peak",
+  viewpoint:"viewpoint", attraction:"sight", museum:"museum", ruins:"ruins", beach:"beach"
+};
+function daySights(today, days){
+  if(!today) return [];
+  const segs=activeSegs().filter(s=>!isSkipped(s.id));
+  const [k0, k1]=dayKmRange(days, today.n);
+  const stops=dayStops(today, days);
+  const raw=[];
+  let k=0;
+  segs.forEach(s=>{
+    (s.poi||[]).forEach(p=>{
+      const km=k+(p.km||0);
+      if(km<k0+0.4 || km>k1-0.4) return;
+      if(p.lat==null || p.lon==null || !p.name) return;
+      if(stops.some(t=>Math.abs((t.km||0)-km)<3) && !/^(mne|cape|peak|castle|waterfall)$/.test(p.kind||"")) return;
+      raw.push({name:p.name, nameLocal:p.nameLocal||"", kind:p.kind||"attraction",
+        off:p.off, lat:p.lat, lon:p.lon, km:+(+km).toFixed(1)});
+    });
+    k+=s.km||0;
+  });
+  const seen={};
+  const uniq=raw.filter(p=>{
+    const key=String(p.name||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+    if(!key || seen[key]) return false;
+    seen[key]=1;
+    return true;
+  });
+  uniq.sort((a,b)=>{
+    if(a.kind==="mne" && b.kind!=="mne") return -1;
+    if(b.kind==="mne" && a.kind!=="mne") return 1;
+    return (a.off||0)-(b.off||0);
+  });
+  const max=10;
+  const minKm=Math.max(5, (today.km||40)/12);
+  const picked=[];
+  uniq.forEach(p=>{
+    if(picked.length>=max) return;
+    if(p.kind!=="mne" && picked.filter(q=>q.kind!=="mne").some(q=>{
+      const gap=/^(cape|peak|castle|waterfall)$/.test(p.kind)?1.4:minKm;
+      return Math.abs(q.km-p.km)<gap;
+    })) return;
+    picked.push(p);
+  });
+  return picked.sort((a,b)=>a.km-b.km);
+}
+function mapLabelPack(){
+  const boxes=[];
+  const hits=(a,b)=>!(a.x+a.w+ink(3)<b.x || b.x+b.w+ink(3)<a.x || a.y+a.h+ink(2)<b.y || b.y+b.h+ink(2)<a.y);
+  return {
+    take(x, y, text, fs, always){
+      const w=Math.max(ink(16), String(text).length*fs*0.56);
+      const h=fs*1.35;
+      const cands=[
+        [x+ink(8), y-ink(7)],
+        [x+ink(8), y+ink(h+2)],
+        [x-w-ink(6), y-ink(7)],
+        [x-w-ink(6), y+ink(h+2)]
+      ];
+      for(let i=0;i<cands.length;i++){
+        const lx=cands[i][0], ly=cands[i][1];
+        const box={x:lx, y:ly-h, w, h};
+        if(boxes.some(b=>hits(b, box))) continue;
+        boxes.push(box);
+        return {x:lx, y:ly};
+      }
+      if(!always) return null;
+      const lx=cands[0][0], ly=cands[0][1];
+      boxes.push({x:lx, y:ly-h, w, h});
+      return {x:lx, y:ly};
+    }
+  };
+}
 function dayForkNote(today, days){
   if(!today || !PLAN) return "";
   const on=new Set();
@@ -1154,18 +1262,13 @@ function dayPhotoItems(stops, today){
   const items=[];
   const add=stop=>{
     if(!stop) return;
-    const src=(dayPhotos(stop.name)||[])[0];
+    const src=(placePhotos(stop.name)||[])[0];
     if(!src) return;
     if(items.some(p=>p.src===src)) return;
     items.push({src, name:stop.name, stop});
   };
   if(selStop) add(selStop);
   (stops||[]).forEach(add);
-  if(!items.length && today){
-    (dayPhotos(today.to)||[]).forEach(src=>{
-      if(!items.some(p=>p.src===src)) items.push({src, name:today.to, stop:(stops||[]).find(s=>s.role==="end")});
-    });
-  }
   return items.slice(0,6);
 }
 function selectStop(stop){
@@ -1184,7 +1287,7 @@ function selectStop(stop){
   }
   hidePlaceCard();
   selStop={name:stop.name, lat:stop.lat, lon:stop.lon, km:stop.km, role:stop.role,
-    photo:(dayPhotos(stop.name)||[])[0]||null};
+    photo:(placePhotos(stop.name)||[])[0]||null};
   paint();
   syncDayOverlay();
 }
@@ -1281,6 +1384,7 @@ function paintRide(){
   const today=selDay?days.find(x=>x.n===selDay):null;
   const stops=today?dayStops(today, days):[];
   if(selDay && today){
+    const pack=mapLabelPack();
     stops.forEach(s=>{
       const q=xy(s.lat, s.lon);
       if(q[0]==null) return;
@@ -1295,10 +1399,14 @@ function paintRide(){
       disc.style.cursor="pointer";
       disc.addEventListener("click",e=>{ e.stopPropagation(); selectStop(s); });
       gT.appendChild(disc);
-      const showLab=s.role==="start" || s.role==="end" || (on && !stops.some(o=>o!==s && (o.role==="start"||o.role==="end") && Math.abs((o.km||0)-(s.km||0))<4));
-      if(!showLab) return;
+      const always=s.role==="start" || s.role==="end" || on;
+      const nearEnd=!always && stops.some(o=>(o.role==="start"||o.role==="end") && Math.abs((o.km||0)-(s.km||0))<4);
+      if(nearEnd) return;
+      const lab=mapStopLabel(s.name, stops.map(o=>o.name));
+      const pos=pack.take(q[0], q[1], lab, ink(on?9:8), always);
+      if(!pos) return;
       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-      tx.setAttribute("x", q[0]+ink(8)); tx.setAttribute("y", q[1]-ink(8));
+      tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
       tx.setAttribute("pointer-events","none");
       tx.setAttribute("font-size", ink(on?9:8));
       tx.setAttribute("font-weight", on?"700":"600");
@@ -1307,7 +1415,42 @@ function paintRide(){
       tx.setAttribute("stroke-width", ink(2.2));
       tx.setAttribute("paint-order", "stroke");
       tx.setAttribute("stroke-linejoin", "round");
-      tx.textContent=shortStop(s.name);
+      tx.textContent=lab;
+      gT.appendChild(tx);
+    });
+    daySights(today, days).forEach(p=>{
+      const q=xy(p.lat, p.lon);
+      if(q[0]==null) return;
+      const kindLab=SIGHT_KIND[p.kind]||String(p.kind||"sight").replace(/_/g," ");
+      const nm=p.name;
+      const hit={kind:p.kind, name:nm, nameLocal:p.nameLocal||"", lat:p.lat, lon:p.lon,
+        sub:kindLab+(p.off!=null?" · "+p.off+" km off the road":""), x:q[0], y:q[1]};
+      placeHits.push(hit);
+      const mne=p.kind==="mne";
+      const disc=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]);
+      disc.setAttribute("r", ink(3.2));
+      disc.setAttribute("fill", mne?"#97C459":"#6f675e");
+      disc.setAttribute("stroke", "#fffdf8");
+      disc.setAttribute("stroke-width", ink(0.6));
+      disc.style.cursor="pointer";
+      disc.addEventListener("click",e=>{ e.stopPropagation(); showPlaceCard(hit); });
+      gT.appendChild(disc);
+      const lab=mapSightLabel(p);
+      const pos=pack.take(q[0], q[1], lab, ink(7.2), false);
+      if(!pos) return;
+      const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
+      tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
+      tx.setAttribute("pointer-events","none");
+      tx.setAttribute("font-size", ink(7.2));
+      tx.setAttribute("font-style", mne?"normal":"italic");
+      tx.setAttribute("font-weight", "500");
+      tx.setAttribute("fill", mne?"#3d6b1e":"#6f675e");
+      tx.setAttribute("stroke", "#fffdf8");
+      tx.setAttribute("stroke-width", ink(2));
+      tx.setAttribute("paint-order", "stroke");
+      tx.setAttribute("stroke-linejoin", "round");
+      tx.textContent=lab;
       gT.appendChild(tx);
     });
   } else {
@@ -1543,7 +1686,6 @@ function plannerSheet(t){
   const phItems=onDay&&today?dayPhotoItems(stops, today):[];
   const daySegs=onDay&&today?segsOnDay(today, days):[];
   const forkNote=onDay&&today?dayForkNote(today, days):"";
-  const gapKm=today&&today.gap!=null?Math.round(today.gap):null;
   const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
       <span class="tile-n">${d.n}</span>
       <span class="tile-who">${d.frm} → ${d.to}</span>
@@ -1570,9 +1712,9 @@ function plannerSheet(t){
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="dayfacts">${today?`${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> bath${(today.bath||0)===1?"":"s"} · <b>${today.rail||0}</b> station${(today.rail||0)===1?"":"s"}${today.water?` · <b>${today.water}</b> water`:""}`:""}</div>
+      <div class="dayfacts">${today?dayGapLine(today):""}</div>
       <div class="strip daystrip" id="daystrip" title="Friendliness on today's legs">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}" title="${esc(showName(seg.frmName)+" → "+showName(seg.toName))}"></i>`).join("")}</div>
-      <div class="phs" id="dayph">${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
+      <div class="phs" id="dayph"${phItems.length?"":" hidden"}>${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
       ${vias.length?`<div class="wayhead">On the way</div><div class="waylist">${vias.map(s=>`<button type="button" class="way${stopEq(selStop,s)?" on":""}" data-km="${s.km}">${esc(s.name)}</button>`).join("")}</div>`:""}
       <button type="button" class="sleep${selStop&&selStop.role==="end"?" on":""}" id="daysleep">Sleep: ${esc(today?today.to:"")} · ${today?today.stay||0:0} beds</button>
       ${forkNote?`<p class="forkline">${esc(forkNote)}</p>`:""}
@@ -1641,6 +1783,14 @@ function plannerSheet(t){
     ${filmBlock}
     <div id="days" hidden></div>`;
     drawProfile(onDay && today ? [today] : rideDays);
+  const edit=document.querySelector("details.edittrip");
+  if(edit){
+    edit.open=!!editOpen;
+    edit.addEventListener("toggle",()=>{
+      editOpen=edit.open;
+      document.body.classList.toggle("editing", !selDay && edit.open);
+    });
+  }
   const strip=document.getElementById("strip");
   if(strip && !strip.hidden){
     activeSegs().forEach(s=>{
@@ -1818,7 +1968,13 @@ function plannerSheet(t){
     }
   });
   const net=document.getElementById("netforks");
-  if(net){ net.hidden=onDay || !offN; }
+  if(net){
+    net.hidden=onDay || !offN;
+    if(!net.hidden){
+      net.open=!!netForksOpen;
+      net.addEventListener("toggle",()=>{ netForksOpen=net.open; });
+    }
+  }
   const film=document.getElementById("film");
   if(film){
     film.querySelectorAll(".tile").forEach(btn=>{
@@ -1970,20 +2126,79 @@ function printProfSvg(days, gold){
 function printDayFig(d){
   const line=d&&d.line||[];
   if(line.length<2) return "";
+  const days=planDays();
+  const stops=dayStops(d, days);
   let minLat=Infinity,maxLat=-Infinity,minLon=Infinity,maxLon=-Infinity;
-  line.forEach(p=>{
-    const lat=p[0], lon=p[1];
+  const bump=(lat, lon)=>{
+    if(lat==null || lon==null) return;
     if(lat<minLat) minLat=lat; if(lat>maxLat) maxLat=lat;
     if(lon<minLon) minLon=lon; if(lon>maxLon) maxLon=lon;
-  });
+  };
+  line.forEach(p=>bump(p[0], p[1]));
+  stops.forEach(s=>bump(s.lat, s.lon));
+  daySights(d, days).forEach(p=>bump(p.lat, p.lon));
   const W=560, H=200;
   const dx=Math.max(maxLon-minLon, 0.01), dy=Math.max(maxLat-minLat, 0.01);
-  const pad=0.08;
+  const pad=0.12;
   const x=lon=> ((lon-(minLon-dx*pad))/((dx*(1+2*pad))||1))*W;
   const y=lat=> ((maxLat+dy*pad-lat)/((dy*(1+2*pad))||1))*H;
   const pts=line.map(p=>x(p[1]).toFixed(1)+","+y(p[0]).toFixed(1)).join(" ");
+  const boxes=[];
+  const overlap=(a,b)=>!(a.x+a.w+6<b.x || b.x+b.w+6<a.x || a.y+a.h+4<b.y || b.y+b.h+4<a.y);
+  const labelBits=[];
+  const discBits=[];
+  const addLabel=(stop, px, py, always)=>{
+    const text=mapStopLabel(stop.name, stops.map(o=>o.name));
+    const fs=(stop.role==="start"||stop.role==="end")?12:11;
+    const tw=Math.max(24, text.length*fs*0.58);
+    const th=fs+3;
+    let lx=px+7, ly=py-7;
+    if(lx+tw>W-4) lx=Math.max(4, px-tw-7);
+    if(ly-th<4) ly=py+th+4;
+    const box={x:lx, y:ly-th, w:tw, h:th};
+    if(!always && boxes.some(b=>overlap(b, box))) return;
+    if(lx<2 || lx+tw>W+8 || ly>H+8) { if(!always) return; }
+    boxes.push(box);
+    const fill=always?"#1c1916":"#6f675e";
+    const wt=always?"700":"600";
+    labelBits.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs}" font-weight="${wt}" fill="${fill}" font-family="Georgia,'Iowan Old Style',serif" stroke="#fffdf8" stroke-width="3.2" paint-order="stroke" stroke-linejoin="round">${esc(text)}</text>`);
+  };
+  stops.forEach(s=>{
+    if(s.lat==null || s.lon==null) return;
+    const px=x(s.lon), py=y(s.lat);
+    const end=s.role==="start"||s.role==="end";
+    const r=end?5.6:4.1;
+    discBits.push(`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${r}" fill="#fffdf8" stroke="#c9a227" stroke-width="${end?1.8:1.3}"/>`);
+  });
+  stops.filter(s=>s.role==="start"||s.role==="end").forEach(s=>{
+    if(s.lat==null || s.lon==null) return;
+    addLabel(s, x(s.lon), y(s.lat), true);
+  });
+  stops.filter(s=>s.role==="via").forEach(s=>{
+    if(s.lat==null || s.lon==null) return;
+    addLabel(s, x(s.lon), y(s.lat), false);
+  });
+  daySights(d, days).forEach(p=>{
+    if(p.lat==null || p.lon==null) return;
+    const px=x(p.lon), py=y(p.lat);
+    const mne=p.kind==="mne";
+    discBits.push(`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="2.6" fill="${mne?"#97C459":"#6f675e"}" stroke="#fffdf8" stroke-width="0.6"/>`);
+    const text=mapSightLabel(p);
+    const fs=10;
+    const tw=Math.max(24, text.length*fs*0.55);
+    const th=fs+2;
+    let lx=px+6, ly=py-5;
+    if(lx+tw>W-4) lx=Math.max(4, px-tw-6);
+    const box={x:lx, y:ly-th, w:tw, h:th};
+    if(boxes.some(b=>overlap(b, box))) return;
+    boxes.push(box);
+    labelBits.push(`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="${fs}" font-style="${mne?"normal":"italic"}" font-weight="500" fill="${mne?"#3d6b1e":"#6f675e"}" font-family="Georgia,'Iowan Old Style',serif" stroke="#fffdf8" stroke-width="2.6" paint-order="stroke" stroke-linejoin="round">${esc(text)}</text>`);
+  });
   return `<svg class="print-fig" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <rect width="${W}" height="${H}" fill="#fffdf8"/>
     <polyline points="${pts}" fill="none" stroke="#c9a227" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    ${discBits.join("")}
+    ${labelBits.join("")}
   </svg>`;
 }
 function fillPrintSheet(){
@@ -2000,21 +2215,28 @@ function fillPrintSheet(){
   const today=selDay?rideDays.find(d=>d.n===selDay):null;
   const ends=travelEnds();
   if(today){
-    const ph=dayPhotos(today.to)||[];
-    const climb=Math.round(today.climb||today.eff||0);
+    const stops=dayStops(today, days);
+    const vias=stops.filter(s=>s.role==="via");
+    const phItems=dayPhotoItems(stops, today);
+    const daySegs=segsOnDay(today, days);
+    const forkNote=dayForkNote(today, days);
+    const eff=Math.round(today.eff||0);
     ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)} · ${esc(t.name)}</p>
       <h1>Day ${today.n}: ${esc(today.frm)} → ${esc(today.to)}</h1>
-      <p class="print-meta">${rideDays.length} days · ${esc(ends.from)} → ${esc(ends.to)}</p>
       <div class="print-facts">
-        <div><b>${today.km}</b><span>km today</span></div>
-        <div><b>${climb.toLocaleString()}</b><span>m / effort</span></div>
+        <div><b>${today.km}</b><span>km</span></div>
+        <div><b>${eff.toLocaleString()}</b><span>effort</span></div>
         <div><b>${today.shop||0}</b><span>shops</span></div>
         <div><b>${today.stay||0}</b><span>beds</span></div>
       </div>
       ${printProfSvg([today], true)}
+      <p class="print-gap">${dayGapLine(today)}</p>
+      <div class="print-strip">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}"></i>`).join("")}</div>
       ${printDayFig(today)}
-      <div class="print-photos">${ph.slice(0,6).map(src=>`<img src="${esc(src)}" alt="">`).join("")}</div>
-      <p class="print-meta">${today.shop||0} shops · ${today.stay||0} beds · ${today.bath||0} baths · ${today.rail||0} stations</p>`;
+      ${vias.length?`<div class="print-wayhead">On the way</div><div class="print-way">${vias.map(s=>`<span>${esc(s.name)}</span>`).join("")}</div>`:""}
+      <p class="print-sleep">Sleep: ${esc(today.to)} · ${today.stay||0} beds</p>
+      ${phItems.length?`<div class="print-photos">${phItems.map(p=>`<img src="${esc(p.src)}" alt="${esc(p.name)}">`).join("")}</div>`:""}
+      ${forkNote?`<p class="print-fork">${esc(forkNote)}</p>`:""}`;
     return;
   }
   ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)}</p>
@@ -2036,6 +2258,7 @@ function sheet(){
   document.documentElement.classList.toggle("planner", plannerOn);
   document.body.classList.toggle("planner", plannerOn);
   document.body.classList.toggle("onday", plannerOn && !!selDay);
+  document.body.classList.toggle("editing", plannerOn && !selDay && !!editOpen);
   if(mode==="network"){
     col.className="";
     const n=visible().length;
@@ -2133,7 +2356,7 @@ function renderPlaceCard(){
   const lat=+p.lat, lon=+p.lon;
   const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
   const osmSearch="https://www.openstreetmap.org/search?query="+encodeURIComponent(p.nameLocal||p.name||"");
-  const ph=p.kind==="town"?(dayPhotos(p.name)||[])[0]:"";
+  const ph=p.kind==="town"?(placePhotos(p.name)||[])[0]:"";
   el.hidden=false;
   el.innerHTML=
     '<button type="button" class="scx" id="placex" title="close">×</button>'+
@@ -2212,8 +2435,14 @@ function tapMap(e){
     const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
     const pinSlop=18*vb[2]/Math.max(r.width,1);
     const stop=nearestStopHit(pt[0], pt[1], pinSlop);
-    if(stop){ selectStop(stop); return; }
     const fac=nearestPlace(pt[0], pt[1]);
+    if(stop && fac && fac.kind && fac.kind!=="town"){
+      const sh=stopHits.find(h=>h.stop===stop);
+      const dStop=sh?Math.hypot(sh.x-pt[0], sh.y-pt[1]):Infinity;
+      const dFac=Math.hypot(fac.x-pt[0], fac.y-pt[1]);
+      if(dFac<=dStop){ showPlaceCard(fac); return; }
+    }
+    if(stop){ selectStop(stop); return; }
     if(fac && fac.kind && fac.kind!=="town"){ showPlaceCard(fac); return; }
     const days=planDays();
     const d=days.find(x=>x.n===selDay);

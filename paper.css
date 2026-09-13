@@ -159,7 +159,9 @@ body.planner .split{display:block;position:relative;height:100%;overflow:hidden}
 body.planner .mapcard{position:absolute;inset:0;top:0;height:100%;min-height:0;border-radius:0;border:0;background:#efe8dc}
 body.planner #col.sheet{position:absolute;inset:0;z-index:8;display:block;height:auto;min-height:0;overflow:hidden;pointer-events:none;background:transparent}
 body.planner .hit,body.planner .ctx-card,body.planner .filmwrap,body.planner .daybar,#minimap,#place{pointer-events:auto}
-body.planner .ctx-card{position:absolute;top:56px;left:12px;width:min(340px,calc(100vw - 24px));max-height:calc(100% - 148px);overflow-x:hidden;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 10px;box-shadow:0 8px 28px rgba(28,25,22,.12)}
+body.planner .ctx-card{position:absolute;top:56px;left:12px;width:min(340px,calc(100vw - 24px));max-height:calc(100% - 148px);overflow-x:hidden;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 10px;box-shadow:0 8px 28px rgba(28,25,22,.12);transition:width .18s ease}
+body.planner.editing .ctx-card{width:min(468px,calc(100vw - 24px))}
+details.edittrip .opt{white-space:normal;line-height:1.35;text-align:left}
 body.planner .oneline{font-size:13px;color:var(--mute);margin:4px 0 8px}
 body.planner .dayfacts{font-size:12px;color:var(--mute);margin:6px 0}
 body.planner .ctx-card .phs{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
@@ -257,7 +259,15 @@ body.planner #maplayers{left:auto;right:12px;top:56px}
   #printsheet .print-facts span{font-size:11px;color:#6f675e}
   #printsheet .print-prof{width:100%;height:72px;display:block;background:#efe8dc;border-radius:8px;margin:8px 0 4px}
   #printsheet .print-hi{font-size:11px;color:#6f675e;margin:0 0 10px}
-  #printsheet .print-fig{width:100%;height:200px;display:block;background:#efe8dc;border-radius:8px;margin:10px 0 14px}
+  #printsheet .print-gap{font-size:12px;color:#6f675e;margin:0 0 8px}
+  #printsheet .print-strip{display:flex;align-items:center;height:18px;margin:0 0 12px}
+  #printsheet .print-strip i{display:block;height:12px;min-width:4px;border-radius:2px}
+  #printsheet .print-fig{width:100%;height:200px;display:block;background:#fffdf8;border:1px solid #ddd4c8;border-radius:8px;margin:10px 0 14px}
+  #printsheet .print-wayhead{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#6f675e;margin:12px 0 4px}
+  #printsheet .print-way{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
+  #printsheet .print-way span{border:1px solid #ddd4c8;background:#fffdf8;border-radius:999px;padding:3px 9px;font-size:12px}
+  #printsheet .print-sleep{margin:8px 0;padding-top:8px;border-top:1px solid #ddd4c8;font-size:13px}
+  #printsheet .print-fork{font-size:12px;color:#6f675e;margin:8px 0 0;padding-top:8px;border-top:1px dashed #ddd4c8}
   #printsheet .print-photos{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px}
   #printsheet .print-photos img{width:160px;height:104px;object-fit:cover;border-radius:6px}
   #printsheet .print-days{padding:0;margin:12px 0 0;list-style:none}

@@ -23,6 +23,10 @@ const ONLY = (() => {
   const i = process.argv.indexOf("--country");
   return i >= 0 ? process.argv[i + 1] : null;
 })();
+const TRIP = (() => {
+  const i = process.argv.indexOf("--trip");
+  return i >= 0 ? process.argv[i + 1] : null;
+})();
 
 const EXTRACT_JS = `(() => {
   function rnd(n, d){ d = d == null ? 0 : d; const p = Math.pow(10, d); return Math.round(n * p) / p; }
@@ -82,6 +86,59 @@ const EXTRACT_JS = `(() => {
     }
     return out;
   }
+  const SIGHT_SKIP={memorial:1,artwork:1,monument:1};
+  const KIND_W={mne:0,castle:1,waterfall:2,cape:3,peak:4,viewpoint:5,attraction:6,museum:7,ruins:8,beach:9};
+  function poiKey(p){
+    return String(p.name||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  }
+  function packPoi(seg, sd, sc, max){
+    const raw=[];
+    function add(km, name, kind, off, nameLocal){
+      if(!name || SIGHT_SKIP[kind]) return;
+      const xy=ptAtSeg(seg, km);
+      const p=ll(xy[0], xy[1]);
+      raw.push({
+        km:+(+km).toFixed(1),
+        off:+(+off||0).toFixed(1),
+        name:name,
+        nameLocal:nameLocal||"",
+        kind:kind||"attraction",
+        lat:p[0], lon:p[1]
+      });
+    }
+    ((sd.fac&&sd.fac.mne)||[]).forEach(f=>add(f[0], f[2]||"", "mne", f[1], f[3]));
+    ((sc.sight_list)||[]).forEach(f=>add(f[0], f[1], f[2], f[3], f[4]));
+    const seen={};
+    const uniq=raw.filter(p=>{
+      const k=poiKey(p);
+      if(!k || seen[k]) return false;
+      if(p.kind==="mne" && Object.keys(seen).some(x=>k.startsWith(x)||x.startsWith(k))) return false;
+      seen[k]=1;
+      return true;
+    });
+    const mne=uniq.filter(p=>p.kind==="mne").slice(0,3);
+    const rest=uniq.filter(p=>p.kind!=="mne").sort((a,b)=>{
+      const wa=KIND_W[a.kind]==null?20:KIND_W[a.kind];
+      const wb=KIND_W[b.kind]==null?20:KIND_W[b.kind];
+      if(wa!==wb) return wa-wb;
+      return (a.off||0)-(b.off||0);
+    });
+    const hi=rest.filter(p=>/^(castle|waterfall|cape|peak)$/.test(p.kind));
+    const lo=rest.filter(p=>!/^(castle|waterfall|cape|peak)$/.test(p.kind));
+    const picked=mne.slice();
+    hi.forEach(p=>{
+      if(picked.length>=max) return;
+      if(picked.filter(q=>q.kind!=="mne").some(q=>Math.abs(q.km-p.km)<1.4)) return;
+      picked.push(p);
+    });
+    lo.forEach(p=>{
+      if(picked.length>=max) return;
+      if(picked.some(q=>Math.abs(q.km-p.km)<6)) return;
+      picked.push(p);
+    });
+    picked.sort((a,b)=>a.km-b.km);
+    return picked;
+  }
   function packCand(seg){
     const raw = SEG[seg.id] || seg;
     const cand = (raw.cand || []).map(c => {
@@ -130,6 +187,7 @@ const EXTRACT_JS = `(() => {
       rail: (facSrc.rail || []).length,
       sights: sc.sights || 0,
       cand: packCand(s),
+      poi: packPoi(s, sd, sc, withFac ? 10 : 5),
       prof: thinPts(prof, 40),
       line: lineLL(s.line, false, 48)
     };
@@ -502,12 +560,12 @@ function atlasToGeo(atlas) {
 }
 
 const PAGES = [
-  { country: "switzerland", file: "switzerland.html", wait: 2200 },
-  { country: "switzerland", file: "switzerland-ns.html", wait: 1800 },
-  { country: "japan", file: "japan.html", wait: 5000 },
-  { country: "spain", file: "spain.html", wait: 2500 },
-  { country: "britain", file: "uk.html", wait: 2200 },
-  { country: "britain", file: "london.html", wait: 1800 }
+  { country: "switzerland", file: "docs/switzerland/index.html", wait: 2200 },
+  { country: "switzerland", file: "docs/switzerland-north-south/index.html", wait: 1800 },
+  { country: "japan", file: "docs/japan/index.html", wait: 5000 },
+  { country: "spain", file: "docs/spain/index.html", wait: 2500 },
+  { country: "britain", file: "docs/uk/index.html", wait: 2200 },
+  { country: "britain", file: "docs/london/index.html", wait: 1800 }
 ];
 
 function rideDir(country) {
@@ -550,8 +608,9 @@ async function main() {
       console.log("open", spec.country, spec.file);
       const { page, ws } = await openPage(browserWs, url, spec.wait);
       const meta = await tripIds(page);
-      console.log("  trips on graph:", meta.ids.join(", "));
-      if (!dumpedAtlas.has(spec.country)) {
+      const ids = TRIP ? meta.ids.filter(id => id === TRIP) : meta.ids;
+      console.log("  trips on graph:", (TRIP ? ids : meta.ids).join(", "));
+      if (!TRIP && process.argv.includes("--atlas") && !dumpedAtlas.has(spec.country)) {
         try {
           const atlas = await evalJson(page, ATLAS_JS);
           const geo = atlasToGeo(atlas);
@@ -564,9 +623,9 @@ async function main() {
         }
       }
       const outDir = rideDir(spec.country);
-      for (const id of meta.ids) {
+      for (const id of ids) {
         const path = join(outDir, id + ".json");
-        if (!ALL && existsSync(path)) {
+        if (!ALL && !TRIP && existsSync(path)) {
           console.log("  skip existing", id);
           continue;
         }

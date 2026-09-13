@@ -974,12 +974,10 @@ function bindCtxFold(){
   const ctx=document.getElementById("ctx");
   const fold=document.getElementById("ctxfold");
   if(!ctx) return;
-  const mobile=window.matchMedia("(max-width:860px)").matches;
-  if(ctxSlim==null) ctxSlim=mobile;
-  const slim=mobile && !!ctxSlim;
+  if(ctxSlim==null) ctxSlim=window.matchMedia("(max-width:860px)").matches;
+  const slim=!!ctxSlim;
   ctx.classList.toggle("slim", slim);
   if(!fold) return;
-  fold.hidden=!mobile;
   fold.setAttribute("aria-expanded", slim?"false":"true");
   fold.textContent=slim?"Details":"Hide";
   fold.onclick=e=>{
@@ -2785,6 +2783,7 @@ window.addEventListener("hashchange", applyHash);
 window.addEventListener("beforeprint", fillPrintSheet);
 window.addEventListener("resize", ()=>{
   if(mode==="ride" && PLAN && PLAN!==false && !vbManual) applyView();
+  if(document.getElementById("ctxfold")) bindCtxFold();
   scheduleTiles();
 });
 

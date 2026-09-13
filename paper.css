@@ -173,6 +173,10 @@ body.planner .ctxhead{display:flex;align-items:flex-start;gap:8px}
 body.planner .ctxhead .tn{flex:1;min-width:0}
 body.planner .ctxfold{flex:0 0 auto;margin:0;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font:11px/1.2 inherit;color:var(--mute);background:var(--card);cursor:pointer}
 body.planner .ctxbody{min-width:0}
+body.planner .ctx-card.slim{max-height:none;overflow:hidden}
+body.planner .ctx-card.slim .ctxbody{display:none}
+body.planner .ctx-card.slim .sheetback{margin-bottom:4px}
+body.planner .ctx-card.slim .oneline{margin:2px 0 0}
 body.planner .sheetback{display:block;margin:0 0 8px;padding:0;border:0;background:none;font:inherit;font-size:12px;color:var(--mute);cursor:pointer;text-align:left}
 body.planner .sheetback:hover{color:var(--ink)}
 body.planner.editing .ctx-card{width:min(468px,calc(100vw - 24px))}
@@ -192,7 +196,7 @@ body.planner .sleep{display:block;width:100%;text-align:left;border:0;border-top
 body.planner .sleep.on{color:#8a6a12}
 body.planner .forkline{font-size:12px;color:var(--mute);margin:8px 0 0;padding-top:8px;border-top:1px dashed var(--line)}
 body.planner .daybar{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px;box-shadow:0 1px 6px rgba(28,25,22,.08);z-index:9;white-space:nowrap;font-size:12px;color:var(--mute);max-width:calc(100vw - 280px)}
-body.planner .filmwrap{position:absolute;left:12px;right:12px;bottom:max(12px, env(safe-area-inset-bottom, 0px));display:flex;align-items:center;gap:8px;z-index:9}
+body.planner .filmwrap{position:absolute;left:12px;right:12px;bottom:max(12px, env(safe-area-inset-bottom, 0px));display:flex;align-items:center;gap:8px;z-index:11}
 body.planner .film-nav{flex:0 0 auto;width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:20px/1 inherit;cursor:pointer;box-shadow:0 4px 16px rgba(28,25,22,.1)}
 body.planner .film-nav:disabled{opacity:.35;cursor:default}
 body.planner .film-track{flex:1;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:2px;min-width:0;scrollbar-width:none}
@@ -248,17 +252,13 @@ body.planner #maplayers{left:auto;right:12px;top:56px}
   body.planner .mapcard{position:absolute;height:100%;min-height:0;order:unset}
   body.planner .ctx-card{width:calc(100% - 24px);max-height:32%;padding:10px 12px 8px}
   body.planner.onday .ctx-card{max-height:32%}
-  body.planner .ctx-card.slim{max-height:none;overflow:hidden}
-  body.planner .ctx-card.slim .ctxbody{display:none}
-  body.planner .ctx-card.slim .sheetback{margin-bottom:4px}
-  body.planner .ctx-card.slim .oneline{margin:2px 0 0}
   body.planner .daybar{left:12px;transform:none;max-width:calc(100vw - 24px);top:auto;bottom:max(76px, calc(env(safe-area-inset-bottom, 0px) + 64px))}
   body.planner .film-track .tile{width:156px;padding:6px 8px}
   body.planner .film-track .spark{display:none}
   body.planner .film-track .tile-who{font-size:12px}
   body.planner #maptools{max-width:calc(100% - 118px);top:10px}
   body.planner #langbtn{display:none}
-  body.planner #maplayers{top:auto;left:12px;right:auto;bottom:max(88px, calc(env(safe-area-inset-bottom, 0px) + 76px))}
+  body.planner #maplayers{top:auto;left:auto;right:8px;bottom:calc(96px + env(safe-area-inset-bottom, 0px))}
   #minimap{display:none!important}
 }
 #printsheet{display:none}

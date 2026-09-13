@@ -63,7 +63,7 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 #warn:empty{display:none}
 .segcard{margin:8px 0;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px}
 .segcard .schead{display:flex;justify-content:space-between;align-items:center;font-size:13px}
-.segcard .scx{border:0;background:none;cursor:pointer;font:inherit;color:var(--mute)}
+.segcard .scx{border:1px solid var(--line);background:var(--card);cursor:pointer;font:11px/1.2 inherit;color:var(--mute);border-radius:999px;padding:3px 9px}
 .segcard .scmeta{font-size:12px;color:var(--mute);margin:4px 0}
 .scbar{display:flex;height:6px;border-radius:4px;overflow:hidden;margin:6px 0}
 .scbar i{display:block;height:100%}
@@ -205,6 +205,8 @@ body.planner .film-track .tile{flex:0 0 auto;width:220px;text-align:left;backgro
 body.planner .film-track .tile:hover,body.planner .film-track .tile:focus,body.planner .film-track .tile.on{border-color:var(--route);outline:none}
 body.planner .film-track .tile-n{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--route);color:#fff;font-size:11px;font-weight:700}
 body.planner .film-track .tile.on .tile-n{background:var(--gold)}
+body.planner .film-track .tile .tour-n{background:var(--ink)}
+body.planner .film-track .tile.tour-tile.on .tour-n{background:var(--gold);color:var(--ink)}
 body.planner .film-track .tile-who{display:block;font-size:13px;margin-top:4px}
 body.planner .film-track .tile-km{display:block;font-size:11px;color:var(--mute)}
 body.planner .film-track .spark{width:100%;height:22px;display:block;margin-top:4px}

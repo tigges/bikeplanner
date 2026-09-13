@@ -1762,7 +1762,7 @@ function drawProfile(days){
     r.setAttribute("x",off); r.setAttribute("y",0); r.setAttribute("width",w); r.setAttribute("height",H);
     r.setAttribute("fill", selDay===d.n?"#e8d7a4":(i%2?"#efe8dc":"#e7dfd2"));
     r.style.cursor="pointer";
-    r.addEventListener("click",()=>openRide(ride.id, selDay===d.n?null:d.n));
+    r.addEventListener("click",()=>openRide(ride.id, d.n));
     g.appendChild(r);
     if(w>16){ const t=document.createElementNS("http://www.w3.org/2000/svg","text");
       t.setAttribute("x",off+3); t.setAttribute("y",H-5); t.setAttribute("font-size","9"); t.setAttribute("fill","#6f675e"); t.textContent=d.n; g.appendChild(t); }
@@ -1793,7 +1793,11 @@ function plannerSheet(t){
   const phItems=onDay&&today?dayPhotoItems(stops, today):[];
   const daySegs=onDay&&today?segsOnDay(today, days):[];
   const forkNote=onDay&&today?dayForkNote(today, days):"";
-  const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
+  const filmHtml=`<button type="button" class="tile tour-tile${!selDay?" on":""}" id="filmtour" title="Whole tour — edit start, end, and effort">
+      <span class="tile-n tour-n">Tour</span>
+      <span class="tile-who">${esc(t.name)}</span>
+      <span class="tile-km">${rideDays.length} d · ${st.km} km</span>
+    </button>`+rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
       <span class="tile-n">${d.n}</span>
       <span class="tile-who">${d.frm} → ${d.to}</span>
       <span class="tile-km">${d.km} km · ${Math.round(d.eff||0)} eff</span>
@@ -2099,10 +2103,11 @@ function plannerSheet(t){
     film.querySelectorAll(".tile").forEach(btn=>{
       btn.onclick=()=>{
         vbManual=false; selSeg=null; selStop=null;
-        const n=Number(btn.dataset.day);
-        openRide(ride.id, selDay===n?null:n);
+        if(!btn.dataset.day){ openRide(ride.id, null); return; }
+        openRide(ride.id, Number(btn.dataset.day));
       };
-      btn.title=selDay===Number(btn.dataset.day)?"Show the whole tour":"Open this day";
+      if(!btn.dataset.day) btn.title="Whole tour — edit start, end, and effort";
+      else btn.title=selDay===Number(btn.dataset.day)?"This day":"Open this day";
     });
     const prev=document.getElementById("filmprev");
     const next=document.getElementById("filmnext");
@@ -2185,6 +2190,11 @@ function syncFilm(){
   filmFocus=Math.min(Math.max(1, filmFocus||1), n||1);
   let on=null;
   film.querySelectorAll(".tile").forEach(b=>{
+    if(!b.dataset.day){
+      b.classList.toggle("on", !selDay);
+      if(!selDay) on=b;
+      return;
+    }
     const num=+b.dataset.day;
     const is=!!selDay && num===selDay;
     b.classList.toggle("on", is);

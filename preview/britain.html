@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Britain by bike</title>
+<link rel="stylesheet" href="paper.css?v=20">
+</head>
+<body>
+<header id="head"></header>
+<main>
+  <div class="split">
+    <div id="col"></div>
+    <aside class="mapcard" id="stage">
+      <button type="button" id="mapback" hidden>‹ All trips</button>
+      <div id="maptools" hidden>
+        <div class="zoompair">
+          <button type="button" id="zout" title="Zoom out">−</button>
+          <button type="button" id="zin" title="Zoom in">+</button>
+        </div>
+        <button type="button" id="vehbtn" title="Switch vehicle">Bicycle</button>
+        <button type="button" id="langbtn" title="Place names">English names</button>
+        <button type="button" id="fitbtn" title="Show the whole trip">Whole trip</button>
+      </div>
+      <svg id="map" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet">
+        <g id="land"></g>
+        <g id="water"></g>
+        <g id="ghost"></g>
+        <g id="lines"></g>
+        <g id="ride"></g>
+        <g id="gold"></g>
+        <g id="fac"></g>
+        <g id="towns"></g>
+        <g id="discs"></g>
+        <g id="badges"></g>
+      </svg>
+      <div id="maplayers" hidden>
+        <button type="button" data-l="shop" title="Shops"><svg viewBox="0 0 20 20"><path d="M3 7h14l-1.2 9.5H4.2z"/><path d="M7 7V5a3 3 0 0 1 6 0v2"/></svg></button>
+        <button type="button" data-l="stay" title="Beds"><svg viewBox="0 0 20 20"><path d="M2 15V8h16v7"/><path d="M2 12h16"/><path d="M4 8V5h5v3"/></svg></button>
+        <button type="button" data-l="bath" title="Baths and hot springs"><svg viewBox="0 0 20 20"><path d="M3 10h14v2a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><path d="M5 10V5a2 2 0 0 1 4 0"/></svg></button>
+        <button type="button" data-l="rail" title="Stations"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="12" height="11" rx="2.5"/><path d="M4 9h12M7 17l1-3M13 17l-1-3"/><circle cx="7.5" cy="11.5" r=".6"/><circle cx="12.5" cy="11.5" r=".6"/></svg></button>
+        <button type="button" data-l="water" title="Drinking water"><svg viewBox="0 0 20 20"><path d="M10 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9z"/></svg></button>
+      </div>
+      <svg id="minimap" hidden viewBox="0 0 180 120" preserveAspectRatio="xMidYMid meet" role="button" title="All days" aria-label="Show the whole trip"></svg>
+      <a id="pop" target="_self"></a>
+      <div id="place" hidden></div>
+    </aside>
+  </div>
+</main>
+<footer></footer>
+<script>
+window.PAPER={
+  id:"britain",
+  title:"Britain by bike",
+  country:"Britain",
+  localLabel:"Local names",
+  kicker:n=>"Britain · "+n+" trips",
+  lede:"Land's End to Edinburgh, or a day from Ealing: Richmond Park, the Thames, Box Hill, London to Brighton. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort.",
+  note:"Same catalogue as the input planner: the national crossing (west side or via London) plus the London and Ealing rides. Two graphs, one country. Snapshots of those graphs, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
+  footer:"Britain · 18 trips. Photos Wikimedia Commons. Days are computed, not stored.",
+  backAll:n=>"‹ All "+n+" trips",
+  tripsUrl:"data/britain-trips.json",
+  landUrl:"data/britain_outline.geojson",
+  waterUrl:null,
+  atlasUrl:null,
+  ridesUrl:"data/rides/britain/",
+  photosUrl:"data/photos.json",
+  landFilter:"Great Britain",
+  landMode:"fill",
+  bbox:{lon0:-6.0, lon1:0.4, lat0:49.85, lat1:56.15},
+  photos:{
+    "lejog-west":"img/landsend.jpg", "lejog-london":"img/london.jpg",
+    "le-london":"img/landsend.jpg", "london-edinburgh":"img/edinburgh.jpg",
+    "london-cambridge":"img/cambridge.jpg", "richmond-park":"img/richmond.jpg",
+    "hampton-court":"img/windsor.jpg", "windsor-river":"img/windsor.jpg",
+    "chilterns-loop":"img/windsor.jpg", "grand-union":"img/london.jpg",
+    "box-hill":"img/boxhill.jpg", "thames-path":"img/london.jpg",
+    "regents-canal":"img/london.jpg", "lee-valley":"img/london.jpg",
+    "london-brighton":"img/brighton.jpg", "epping-forest":"img/london.jpg",
+    "waterlink":"img/london.jpg", "wandle":"img/london.jpg"
+  },
+  places:{
+    "Land's End":["img/landsend.jpg"],
+    Edinburgh:["img/edinburgh.jpg"],
+    London:["img/london.jpg"],
+    "Ealing Broadway":["img/london.jpg"],
+    Ealing:["img/london.jpg"],
+    Richmond:["img/richmond.jpg"],
+    Windsor:["img/windsor.jpg"],
+    Brighton:["img/brighton.jpg"],
+    Cambridge:["img/cambridge.jpg"],
+    Greenwich:["img/london.jpg"],
+    "Hampton Court":["img/windsor.jpg"],
+    "Box Hill":["img/boxhill.jpg"],
+    Westminster:["img/london.jpg"],
+    Penzance:["img/landsend.jpg"],
+    Bath:["img/landsend.jpg"],
+    York:["img/edinburgh.jpg"],
+    Durham:["img/edinburgh.jpg"]
+  },
+  en:{},
+  photoFallback:"img/landsend.jpg"
+};
+</script>
+<script src="paper.js?v=20"></script>
+</body>
+</html>

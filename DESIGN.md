@@ -13,7 +13,7 @@ Previews: [preview/hub.html](preview/hub.html), [preview/switzerland.html](previ
 **One site, three rooms, one paper design.**
 
 ```
-HUB (paper)          Where to ride — three country photographs
+HUB (paper)          Where to ride — four country photographs
    click a country
 GALLERY (paper)      Pick a trip — photograph + why + km
    click a trip
@@ -22,7 +22,7 @@ PLANNER (paper)      Tour sheet: elevation, days, map as a figure
 DAY                  Gold on that stretch; photos on the sheet
 ```
 
-Do **not** split Japan / Switzerland / Spain into separate sites. The data is already split (one 2–11 MB HTML page per graph). The product should not be.
+Do **not** split Japan / Switzerland / Spain / Britain into separate sites. The data is already split (one HTML page per graph). The product should not be.
 
 Do **not** switch atmospheres. Hub, gallery, and planner share the same paper, ink, mute, and coral. Discovery is photographic; the planner is still a schematic atlas, not tiles — but it sits on the same cream page.
 
@@ -34,7 +34,8 @@ Three self-contained cycle-tour planners behind a dark text list. Screenshot of 
 
 | Page | What it is | Size | Opens on |
 |---|---|---|---|
-| Hub `/` | Title, blurb, three links | 1 KB | Country list |
+| Hub `/` | Title, blurb, four links | 1 KB | Country list |
+| Britain | Land's End → Edinburgh; London / Ealing rides | 0.4 + 0.3 MB | Trip picker (18 trips, two graphs) |
 | Japan | Cape Sōya → Cape Sata | 12.2 MB | Trip picker (29 trips, Fuji-ichi Top 5, Tokapuchi 400 Top 7) |
 | Switzerland | National routes, passes, loops; second graph off the hub | 3.3 + 0.8 MB | Trip picker (29 trips, default `top`) |
 | Spain | Cap de Creus → Cabo Fisterra | 2.4 MB | Trip picker (8 trips: Francés, Norte, …) |
@@ -47,10 +48,11 @@ The problem is the **product surface**. Nothing on the hub says Shimanami, Furka
 
 ## 3. What the repository already has (the hub hides this)
 
-As of 2026-09-13 (`tigges/routeplanner` `f4c7f8d`, live hub still a dark 1 KB list):
+As of 2026-09-13 (`tigges/routeplanner` `43a0325`, live hub still a dark 1 KB list):
 
 1. **Trip catalogues**
-   - Japan: **29 trips** as of `f4c7f8d`. Cape-to-cape plus Shimanami (Top 1), **Biwaichi (Top 2)**, Noto, **Ring-Ring Road (Top 4)**, **Fuji-ichi (Top 5)**, Toyama Bay, **Tokapuchi 400 (Top 7)**, **Awaji (Awa-ichi)**, **Yamanami Highway**, **Pacific Cycling Road from Chōshi**, Keinawa, Bōsō / Tokyo Bay ferry, **Amaichi**, **Okhotsk Cycling Road**, Sapporo–Tokachi, Tokachi–Okhotsk. Towns Motosu, Kawaguchiko, Yamanakako, Gotemba, Akashi, Iwaya, Sumoto, Fukura, Nara, Gojo, Beppu, Yufuin, Aso, Takachiho, Chōshi, Obihiro, Abashiri, Misumi, Ushibuka.
+   - Britain: **18 trips** as of `43a0325`. Two graphs, one country — same pattern as Switzerland N–S. National crossing `uk` (Land's End → Edinburgh west, via London, Land's End → London, London → Edinburgh, London → Cambridge) plus London / Ealing rides (`richmond-park`, Hampton Court, Windsor, Chilterns, Grand Union, Box Hill, Thames path, Regent's Canal, Lee Valley, London–Brighton, Epping, Waterlink, Wandle).
+   - Japan: **29 trips**. Cape-to-cape plus Shimanami (Top 1), **Biwaichi (Top 2)**, Noto, **Ring-Ring Road (Top 4)**, **Fuji-ichi (Top 5)**, Toyama Bay, **Tokapuchi 400 (Top 7)**, **Awaji (Awa-ichi)**, **Yamanami Highway**, **Pacific Cycling Road from Chōshi**, Keinawa, Bōsō / Tokyo Bay ferry, **Amaichi**, **Okhotsk Cycling Road**, Sapporo–Tokachi, Tokachi–Okhotsk. Towns Motosu, Kawaguchiko, Yamanakako, Gotemba, Akashi, Iwaya, Sumoto, Fukura, Nara, Gojo, Beppu, Yufuin, Aso, Takachiho, Chōshi, Obihiro, Abashiri, Misumi, Ushibuka.
    - Switzerland: 29 trips. E–W and N–S crossings, national routes 1–9 and 99, pass days, loops. Fifteen ranked Top 5/10/15.
    - Spain: **8 trips** as of `5e90a38`. East–west crossing plus **Camino Francés (Top 1)**, **Camino del Norte (Top 2)**, Invierno, Fisterra, Pyrenees / Ebro / Barcelona sections.
 
@@ -108,8 +110,9 @@ Switzerland’s second graph stays data, not a second site. Deep links stay in-p
 
 ### Room 1 — Hub: “Where to ride”
 
-Three country cards, not a list.
+Four country cards, not a list.
 
+- **Britain** — Land's End. Overline: 18 trips · Land's End to Edinburgh, London and Ealing rides.
 - **Japan** — Shimanami bridge or cape light. Overline: 29 trips · Shimanami, Biwaichi, Tokapuchi 400, cape to cape.
 - **Switzerland** — pass road or lake. Overline: 29 trips · national routes 1–9.
 - **Spain** — Fisterra. Overline: 8 trips · Camino Francés, Norte, Cap de Creus to Fisterra.
@@ -255,16 +258,18 @@ images/{slug}.json
 
 ## 10. Next steps
 
-Clean, bright, simple. One paper design. **All three countries** now have a gallery and a paper tour sheet from ride snapshots.
+Clean, bright, simple. One paper design. **All four countries** now have a gallery and a paper tour sheet from ride snapshots.
 
 | # | What | Status |
 |---|---|---|
-| **Hub** | Three country photo cards on `/` / `hub.html` | **this slice** |
+| **Hub** | Four country photo cards on `/` / `hub.html` | **this slice** |
+| **Britain** | Gallery + GB outline + snapshots for 18 trips (national crossing + London / Ealing), from `43a0325` | **this slice** |
 | **CH** | Swiss gallery + paper atlas + ride snapshots for all 29 trips | **done** |
-| **Japan** | Gallery + coastline/lakes atlas + snapshots for 29 trips (including Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road) | **this slice** |
-| **Spain** | Gallery + paper atlas + snapshots for 8 trips (Francés, Norte, …) | **this slice** |
-| **Planner sheet** | Wider left column, one scrollbar, slim export; Plan / Route / Days still mapped from the live planner | **this slice** |
-| **Place card** | Town / facility tap on the tour sheet: paper card, OpenStreetMap outbound — not Google, not tiles | **this slice** |
+| **Japan** | Gallery + coastline/lakes atlas + snapshots for 29 trips (including Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road) | **done** |
+| **Spain** | Gallery + paper atlas + snapshots for 8 trips (Francés, Norte, …) | **done** |
+| **Print** | Day and tour sheets print a dedicated article (`#printsheet`), not the overlay chrome | **this slice** |
+| **Planner sheet** | Wider left column, one scrollbar, slim export; Plan / Route / Days still mapped from the live planner | **done** |
+| **Place card** | Town / facility tap on the tour sheet: paper card, OpenStreetMap outbound — not Google, not tiles | **done** |
 
 Snapshots are not the full graph — forks rewrite with `alts[node:option]`, last non-default wins. The old planner stays the graph source. Do not link into it.
 

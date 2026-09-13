@@ -18,7 +18,7 @@ h1{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:6
   font-size:clamp(32px,5vw,52px);letter-spacing:-.02em;margin:0 0 8px;line-height:1.1}
 .lede{color:var(--mute);max-width:42em;margin:0}
 main{max-width:1120px;margin:0 auto;padding:28px 24px 64px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
 a.card, .card{display:block;background:var(--card);border-radius:16px;overflow:hidden;
   text-decoration:none;color:inherit;border:1px solid var(--line);
   box-shadow:0 1px 0 rgba(28,25,22,.04)}
@@ -46,6 +46,17 @@ footer a{color:var(--mute)}
 </header>
 <main>
 <div class="grid">
+  <a class="card" href="britain.html">
+    <div class="photo" style="background-image:url('img/landsend.jpg')">
+      <span>Land's End · Commons</span>
+    </div>
+    <div class="body">
+      <p class="meta">Britain · 18 trips · Land's End to Edinburgh</p>
+      <h2>Britain by bike</h2>
+      <p>The west-side crossing, or via London; then the London and Ealing rides — Richmond Park, the Thames, Box Hill, Brighton.</p>
+      <div class="stat"><span><b>1,133</b> km west crossing</span><span><b>two</b> graphs</span></div>
+    </div>
+  </a>
   <a class="card" href="japan.html">
     <div class="photo" style="background-image:url('img/japan.jpg')">
       <span>Kurushima-Kaikyō Bridge · Commons</span>
@@ -80,7 +91,7 @@ footer a{color:var(--mute)}
     </div>
   </a>
 </div>
-<p class="note">One paper site: hub, three country galleries, a tour sheet on the same page. Days are computed from effort. The old dark planner is input only — nothing here links there.</p>
+<p class="note">One paper site: hub, four country galleries, a tour sheet on the same page. Days are computed from effort. The old dark planner is input only — nothing here links there.</p>
 </main>
 <footer>Trip catalogues from <a href="https://github.com/tigges/routeplanner">tigges/routeplanner</a>. This site is the rebuilt product, not a skin on the published planner.</footer>
 </body>

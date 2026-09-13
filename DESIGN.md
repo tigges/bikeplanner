@@ -267,6 +267,8 @@ Clean, bright, simple. One paper design. **All three countries** now have a gall
 
 Snapshots are not the full graph — forks rewrite with `alts[node:option]`, last non-default wins. The old planner stays the graph source. Do not link into it.
 
+Direction chips recompute climb and days from the current chain. Reverse overnight points (`cand.eff`) are inverted; wild published descents are replaced from the elevation profile. The friendliness strip is a click target for start-here / end-here.
+
 ---
 
 ## 11. Success

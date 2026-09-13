@@ -27,7 +27,40 @@ const PAPER=Object.assign({
     dreiseen:"img/murten.jpg", gotthardx:"img/gotthard.jpg", ticino:"img/lugano.jpg",
     loopfng:"img/gletsch.jpg"
   },
-  places:{},
+  places:{
+    Realp:["img/furka.jpg","img/gletsch.jpg"],
+    Oberwald:["img/gletsch.jpg","img/furka.jpg"],
+    Gletsch:["img/gletsch.jpg","img/furka.jpg"],
+    Brig:["img/gletsch.jpg","img/furka.jpg"],
+    Andermatt:["img/furka.jpg","img/gotthard.jpg"],
+    Martigny:["img/lavaux.jpg"],
+    Aigle:["img/chillon.jpg","img/lavaux.jpg"],
+    Montreux:["img/chillon.jpg","img/lavaux.jpg"],
+    Lausanne:["img/lavaux.jpg","img/chillon.jpg"],
+    Genève:["img/chillon.jpg","img/lavaux.jpg"],
+    Geneva:["img/chillon.jpg","img/lavaux.jpg"],
+    Sion:["img/gletsch.jpg"],
+    Basel:["img/basel.jpg","img/rheinfall.jpg"],
+    Schaffhausen:["img/rheinfall.jpg","img/basel.jpg"],
+    "Rhine Falls":["img/rheinfall.jpg"],
+    Luzern:["img/lucerne.jpg"],
+    Lucerne:["img/lucerne.jpg"],
+    Interlaken:["img/lucerne.jpg","img/gletsch.jpg"],
+    Chur:["img/engadin.jpg"],
+    "St. Moritz":["img/engadin.jpg"],
+    Müstair:["img/engadin.jpg"],
+    Rorschach:["img/constance.jpg"],
+    Romanshorn:["img/constance.jpg"],
+    Murten:["img/murten.jpg"],
+    "Biel/Bienne":["img/murten.jpg"],
+    Biel:["img/murten.jpg"],
+    Lugano:["img/lugano.jpg"],
+    Chiasso:["img/lugano.jpg"],
+    Bellinzona:["img/lugano.jpg","img/gotthard.jpg"],
+    Airolo:["img/gotthard.jpg"],
+    Linthal:["img/klausen.jpg"],
+    "Flüelen":["img/klausen.jpg","img/lucerne.jpg"]
+  },
   en:{"Genève":"Geneva","Luzern":"Lucerne","Basel":"Basle","Bern":"Berne","Sankt Gallen":"St. Gallen"},
   photoFallback:"img/furka.jpg"
 }, window.PAPER||{});
@@ -347,7 +380,7 @@ function ensurePlan(id){
   PLAN=null;
   fetch(PAPER.ridesUrl+id+".json").then(r=>r.ok?r.json():null).then(d=>{
     if(!ride || ride.id!==wanted) return;
-    PLAN=d||false;
+    PLAN=d?sanitizePlan(d):false;
     if(d){
       effort=d.effort||100; startId=d.start; endId=d.end; zoom=1; vbManual=false;
       picks={}; (d.forks||[]).forEach(f=>picks[f.node]=f.pick);
@@ -394,20 +427,65 @@ function climbFromProf(s, reverse){
   for(let i=1;i<h.length;i++){ const d=h[i]-h[i-1]; if(d>0) up+=d; }
   return Math.round(up);
 }
+function climbCap(km){ return Math.max(2800,(km||1)*85); }
 function saneClimb(s, reverse){
   const raw=reverse?(s.descent||0):(s.ascent||0);
-  const cap=Math.max(2800,(s.km||1)*85);
+  const cap=climbCap(s.km);
   if(raw<=cap) return raw;
   const fromProf=climbFromProf(s, reverse);
   if(fromProf!=null) return fromProf;
   return Math.round(cap);
 }
+function effortOf(s, reverse){
+  const climb=saneClimb(s, reverse);
+  const guess=Math.round((s.km||0)+climb/10);
+  const raw=reverse?(s.effortR||0):(s.effort||0);
+  const cap=Math.max(guess*4, (s.km||1)*25);
+  if(raw>0 && raw<=cap) return raw;
+  return guess;
+}
+function flipCand(s, newEffort){
+  const oldE=s.effort||0;
+  const oldSane=oldE>0 && oldE<=Math.max((s.km||1)*25, 800);
+  return (s.cand||[]).slice().reverse().map(c=>{
+    const km=+((s.km-(c.km||0)).toFixed(1));
+    let eff;
+    if(oldSane) eff=+(newEffort*(1-(c.eff||0)/oldE)).toFixed(1);
+    else eff=+(newEffort*(km/Math.max(s.km,0.01))).toFixed(1);
+    return {...c, km, eff:Math.max(0,eff)};
+  });
+}
+function sanitizeSeg(s){
+  const ascent=saneClimb(s,false);
+  const descent=saneClimb(s,true);
+  const effort=effortOf(s,false);
+  const effortR=effortOf(s,true);
+  if(ascent===s.ascent && descent===s.descent && effort===s.effort && effortR===(s.effortR||0)) return s;
+  return {...s, ascent, descent, effort, effortR};
+}
+function sanitizePlan(d){
+  if(!d||!d.segs) return d;
+  const segs=d.segs.map(sanitizeSeg);
+  const altSegs=(d.altSegs||[]).map(sanitizeSeg);
+  const book={}; segs.concat(altSegs).forEach(s=>book[s.id]=s);
+  const dir=d.dir?{...d.dir}:d.dir;
+  if(dir&&dir.bk&&dir.bk.ids){
+    dir.bk={...dir.bk, asc:Math.round(dir.bk.ids.reduce((n,id)=>n+saneClimb(book[id]||{}, true),0))};
+  }
+  if(dir&&dir.fw&&dir.fw.ids){
+    dir.fw={...dir.fw, asc:Math.round(dir.fw.ids.reduce((n,id)=>n+saneClimb(book[id]||{}, false),0))};
+  }
+  return {...d, segs, altSegs, dir};
+}
 function flipSeg(s){
+  const ascent=saneClimb(s,true);
+  const descent=saneClimb(s,false);
+  const effort=effortOf(s,true);
   const line=(s.line||[]).slice().reverse();
-  const cand=(s.cand||[]).slice().reverse().map(c=>({...c, km:+((s.km-(c.km||0)).toFixed(1))}));
+  const cand=flipCand(s, effort);
   const prof=(s.prof||[]).slice().reverse().map(p=>[+(s.km-(p[0]||0)).toFixed(1), p[1]]);
   return {...s, frm:s.to, to:s.frm, frmName:s.toName, toName:s.frmName,
-    ascent:saneClimb(s,true), descent:saneClimb(s,false), effort:s.effortR||s.effort, line, cand, prof};
+    ascent, descent, effort, effortR:effortOf(s,false), line, cand, prof};
 }
 function chainSegs(){
   if(!PLAN || PLAN===false) return [];
@@ -729,40 +807,6 @@ function dayPhotos(to){
     const v=PAPER.places[to];
     return Array.isArray(v)?v:[v];
   }
-  const m={
-    Realp:["img/furka.jpg","img/gletsch.jpg"],
-    Oberwald:["img/gletsch.jpg","img/furka.jpg"],
-    Gletsch:["img/gletsch.jpg","img/furka.jpg"],
-    Brig:["img/gletsch.jpg","img/furka.jpg"],
-    Andermatt:["img/furka.jpg","img/gotthard.jpg"],
-    Martigny:["img/lavaux.jpg"],
-    Aigle:["img/chillon.jpg","img/lavaux.jpg"],
-    Montreux:["img/chillon.jpg","img/lavaux.jpg"],
-    Lausanne:["img/lavaux.jpg","img/chillon.jpg"],
-    Genève:["img/chillon.jpg","img/lavaux.jpg"],
-    Geneva:["img/chillon.jpg","img/lavaux.jpg"],
-    Basel:["img/basel.jpg","img/rheinfall.jpg"],
-    Schaffhausen:["img/rheinfall.jpg","img/basel.jpg"],
-    "Rhine Falls":["img/rheinfall.jpg"],
-    Luzern:["img/lucerne.jpg"],
-    Lucerne:["img/lucerne.jpg"],
-    Interlaken:["img/lucerne.jpg","img/gletsch.jpg"],
-    Chur:["img/engadin.jpg"],
-    "St. Moritz":["img/engadin.jpg"],
-    Müstair:["img/engadin.jpg"],
-    Rorschach:["img/constance.jpg"],
-    Romanshorn:["img/constance.jpg"],
-    Murten:["img/murten.jpg"],
-    "Biel/Bienne":["img/murten.jpg"],
-    Biel:["img/murten.jpg"],
-    Lugano:["img/lugano.jpg"],
-    Chiasso:["img/lugano.jpg"],
-    Bellinzona:["img/lugano.jpg","img/gotthard.jpg"],
-    Airolo:["img/gotthard.jpg"],
-    Linthal:["img/klausen.jpg"],
-    "Flüelen":["img/klausen.jpg","img/lucerne.jpg"]
-  };
-  if(m[to]) return m[to];
   const src=ride && PHOTO[ride.id];
   return src?[src]:[];
 }
@@ -953,7 +997,7 @@ function plannerSheet(t){
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="strip" id="strip"></div>
+      <div class="strip" id="strip" title="Click a colour band for that segment — start here / end here"></div>
       <div class="legend">
         <span><i style="background:#97C459"></i>signed / quiet</span>
         <span><i style="background:#EF9F27"></i>minor / mixed</span>
@@ -1019,7 +1063,7 @@ function plannerSheet(t){
     i.dataset.seg=s.id;
     i.classList.toggle("sel", selSeg===s.id);
     i.title=showName(s.frmName)+" → "+showName(s.toName)+" · "+Math.round(s.km)+" km · signed "+Math.round(s.signed||0)+"% · busy "+Math.round(s.busy||0)+"%";
-    i.onclick=()=>selectSeg(s);
+    i.onclick=e=>{ e.stopPropagation(); selectSeg(s); };
     strip.appendChild(i);
   });
   if(selSeg) renderSegCard(activeSegs().find(s=>s.id===selSeg));

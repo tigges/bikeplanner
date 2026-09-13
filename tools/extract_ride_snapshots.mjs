@@ -112,7 +112,13 @@ const EXTRACT_JS = `(() => {
       ascent: saneClimb(s.ascent || 0, s.km, fromProf.up),
       descent: saneClimb(s.descent || 0, s.km, fromProf.down),
       effort: Math.round(s.effort || 0),
-      effortR: Math.round(s.effortR || 0),
+      effortR: (() => {
+        const down = saneClimb(s.descent || 0, s.km, fromProf.down);
+        const guess = Math.round((s.km || 0) + down / 10);
+        const raw = Math.round(s.effortR || 0);
+        const cap = Math.max(guess * 4, (s.km || 1) * 25);
+        return raw > 0 && raw <= cap ? raw : guess;
+      })(),
       band: (typeof friendBand === "function" && friendBand(s.id)) || "a",
       signed: Math.round(100 * (sc.route_any || 0)),
       busy: Math.round(100 * (sc.busy || 0)),

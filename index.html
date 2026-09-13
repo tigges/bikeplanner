@@ -19,7 +19,7 @@ h1{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:6
 h1 .by{font-size:.42em;font-weight:500;letter-spacing:0;color:var(--mute);
   font-family:-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;margin-left:.28em}
 .lede{color:var(--mute);max-width:42em;margin:0}
-main{max-width:1120px;margin:0 auto;padding:28px 24px 64px}
+main{max-width:1120px;margin:0 auto;padding:28px 24px 28px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
 a.card, .card{display:block;background:var(--card);border-radius:16px;overflow:hidden;
   text-decoration:none;color:inherit;border:1px solid var(--line);
@@ -34,9 +34,16 @@ a.card:hover{border-color:#cbbfaf}
 .body p{margin:0;color:#3f3a34;font-size:14.5px}
 .stat{display:flex;gap:14px;margin-top:12px;font-size:12px;color:var(--mute)}
 .stat b{color:var(--ink);font-weight:600}
-footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
+footer{max-width:1120px;margin:0 auto;padding:0 24px 48px;color:var(--mute);font-size:13px}
 footer a{color:var(--mute)}
-.note{margin-top:22px;padding:14px 16px;border-left:3px solid var(--route);color:var(--mute);font-size:14px}
+.about{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px 20px;margin:8px 0 18px}
+.about h2{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:600;font-size:22px;color:var(--ink);margin:0 0 10px}
+.about p{margin:0 0 12px;color:#3f3a34;font-size:15px;max-width:46em}
+.about p:last-child{margin-bottom:0}
+.about ul{margin:0 0 12px;padding:0 0 0 1.15em;color:#3f3a34;font-size:15px;max-width:46em}
+.about li{margin:0 0 6px}
+.about li:last-child{margin-bottom:0}
+.credit{margin:0}
 @media (max-width:860px){ .grid{grid-template-columns:1fr} }
 </style>
 </head>
@@ -93,8 +100,21 @@ footer a{color:var(--mute)}
     </div>
   </a>
 </div>
-<p class="note">Four country galleries and a tour sheet on the same page. Days are computed from effort. The old dark planner is input only — nothing here links there.</p>
 </main>
-<footer>Trip catalogues from <a href="https://github.com/tigges/routeplanner">tigges/routeplanner</a>. This site is the rebuilt product, not a skin on the published planner.</footer>
+<footer>
+<section class="about" aria-labelledby="about-title">
+<h2 id="about-title">About</h2>
+<p>This webpage is Your Bike Route Planners by CT, an open web platform that helps cyclists plan customized trips across Britain, Japan, Switzerland, and Spain. Rather than using a fixed schedule, it dynamically calculates trip duration based on your intended daily effort.</p>
+<p>The platform features:</p>
+<ul>
+<li><b>Britain by bike:</b> 23 trips, including a 1,133 km west crossing and a 1,372 km route via London.</li>
+<li><b>Japan by bike:</b> 29 trips, featuring 15 national routes and a 3,550 km cape-to-cape route.</li>
+<li><b>Switzerland by bike:</b> 30 trips, including national routes 1–9 and 99, mountain passes, lake loops, and EuroVelo 6.</li>
+<li><b>Across Spain:</b> 8 trips, covering 4 distinct caminos spanning 1,435 km east-to-west.</li>
+</ul>
+<p>Every listed route automatically integrates critical details like elevation, local shops, accommodations (beds), and sights along each stretch.</p>
+</section>
+<p class="credit">Trip catalogues from <a href="https://github.com/tigges/routeplanner">tigges/routeplanner</a>. This site is the rebuilt product, not a skin on the published planner.</p>
+</footer>
 </body>
 </html>

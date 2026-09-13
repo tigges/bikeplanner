@@ -289,6 +289,7 @@ function styleVis(vis, t, role){
 function paintBadge(){
   const gB=document.getElementById("badges");
   gB.innerHTML="";
+  if(mode!=="network") return;
   const active=pick || hover || (ride && ride.id);
   const t=TRIPS.find(x=>x.id===active);
   if(!t || (t.kind!=="route" && t.kind!=="crossing")) return;
@@ -978,14 +979,19 @@ function paintMini(){
   const mini=document.getElementById("minimap");
   if(!mini) return;
   const on=mode==="ride" && PLAN && PLAN!==false && !!selDay;
-  mini.hidden=!on;
-  if(!on){ mini.innerHTML=""; mini.onclick=null; return; }
+  if(!on){
+    mini.setAttribute("hidden","");
+    mini.innerHTML="";
+    mini.onclick=null;
+    return;
+  }
+  mini.removeAttribute("hidden");
   const days=planDays();
   const today=days.find(d=>d.n===selDay);
   const segs=activeSegs().filter(s=>!isSkipped(s.id));
   const all=[];
   segs.forEach(s=>(s.line||[]).forEach(p=>all.push(p)));
-  if(all.length<2){ mini.hidden=true; mini.innerHTML=""; return; }
+  if(all.length<2){ mini.setAttribute("hidden",""); mini.innerHTML=""; return; }
   const xypts=all.map(p=>xy(p[0],p[1]));
   let x0=Math.min(...xypts.map(p=>p[0])), x1=Math.max(...xypts.map(p=>p[0]));
   let y0=Math.min(...xypts.map(p=>p[1])), y1=Math.max(...xypts.map(p=>p[1]));

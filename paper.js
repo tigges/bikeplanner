@@ -1762,7 +1762,7 @@ function drawProfile(days){
     r.setAttribute("x",off); r.setAttribute("y",0); r.setAttribute("width",w); r.setAttribute("height",H);
     r.setAttribute("fill", selDay===d.n?"#e8d7a4":(i%2?"#efe8dc":"#e7dfd2"));
     r.style.cursor="pointer";
-    r.addEventListener("click",()=>openRide(ride.id, selDay===d.n?null:d.n));
+    r.addEventListener("click",()=>openRide(ride.id, d.n));
     g.appendChild(r);
     if(w>16){ const t=document.createElementNS("http://www.w3.org/2000/svg","text");
       t.setAttribute("x",off+3); t.setAttribute("y",H-5); t.setAttribute("font-size","9"); t.setAttribute("fill","#6f675e"); t.textContent=d.n; g.appendChild(t); }
@@ -1800,6 +1800,11 @@ function plannerSheet(t){
       ${d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:""}
     </button>`).join("");
   const filmBlock=rideDays.length>=1?`<div class="filmwrap hit" id="filmwrap">
+      <button type="button" class="tile tour-tile${!selDay?" on":""}" id="filmtour" title="Whole tour — edit start, end, and effort">
+        <span class="tile-n tour-n">Tour</span>
+        <span class="tile-who">All days</span>
+        <span class="tile-km">${rideDays.length} d · ${st.km} km</span>
+      </button>
       <button type="button" class="film-nav" id="filmprev" aria-label="Previous day">‹</button>
       <div class="film-track" id="film">${filmHtml}</div>
       <button type="button" class="film-nav" id="filmnext" aria-label="Next day">›</button>
@@ -2094,15 +2099,20 @@ function plannerSheet(t){
       net.addEventListener("toggle",()=>{ netForksOpen=net.open; });
     }
   }
+  const tourBtn=document.getElementById("filmtour");
+  if(tourBtn){
+    tourBtn.onclick=()=>{ vbManual=false; selSeg=null; selStop=null; openRide(ride.id, null); };
+    tourBtn.classList.toggle("on", !selDay);
+    tourBtn.setAttribute("aria-pressed", selDay?"false":"true");
+  }
   const film=document.getElementById("film");
   if(film){
     film.querySelectorAll(".tile").forEach(btn=>{
       btn.onclick=()=>{
         vbManual=false; selSeg=null; selStop=null;
-        const n=Number(btn.dataset.day);
-        openRide(ride.id, selDay===n?null:n);
+        openRide(ride.id, Number(btn.dataset.day));
       };
-      btn.title=selDay===Number(btn.dataset.day)?"Show the whole tour":"Open this day";
+      btn.title=selDay===Number(btn.dataset.day)?"This day":"Open this day";
     });
     const prev=document.getElementById("filmprev");
     const next=document.getElementById("filmnext");
@@ -2148,7 +2158,7 @@ function plannerSheet(t){
 }
 function selectSeg(s){
   if(!s){ selSeg=null; const c=document.getElementById("segcard"); if(c) c.hidden=true; vbManual=false; paint(); return; }
-  if(selSeg===s.id){ selectSeg(null); return; }
+  if(selSeg===s.id) return;
   selSeg=s.id; selDay=null; selStop=null; vbManual=false;
   renderSegCard(s);
   paint();
@@ -2161,7 +2171,7 @@ function renderSegCard(s){
   const sights=typeof s.sights==="number"?s.sights:0;
   const r=Math.round(s.signed||0), bsy=Math.round(s.busy||0);
   c.hidden=false;
-  c.innerHTML=`<div class="schead"><b>${showName(s.frmName||s.frm)} → ${showName(s.toName||s.to)}</b><button type="button" class="scx" title="close">×</button></div>
+  c.innerHTML=`<div class="schead"><b>${showName(s.frmName||s.frm)} → ${showName(s.toName||s.to)}</b><button type="button" class="scx" title="Whole tour">Tour</button></div>
     <div class="scmeta">${Math.round(s.km)} km · ${Math.round(s.ascent||0)} m climb</div>
     <div class="scbar"><i style="width:${r}%;background:#97C459"></i><i style="width:${bsy}%;background:#E24B4A"></i></div>
     <div class="scmeta">signed ${r}% · busy ${bsy}% · ${shops} shops · ${beds} beds · ${sights} sights</div>
@@ -2184,6 +2194,11 @@ function syncFilm(){
   const n=planDays().filter(d=>d.mode!=="train").length;
   filmFocus=Math.min(Math.max(1, filmFocus||1), n||1);
   let on=null;
+  const tour=document.getElementById("filmtour");
+  if(tour){
+    tour.classList.toggle("on", !selDay);
+    tour.setAttribute("aria-pressed", selDay?"false":"true");
+  }
   film.querySelectorAll(".tile").forEach(b=>{
     const num=+b.dataset.day;
     const is=!!selDay && num===selDay;

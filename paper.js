@@ -128,7 +128,7 @@ let placeOpen=null, placeHits=[], stopHits=[];
 let PLAN=null, effort=100, veh="bike", selDay=null, selStop=null, filmFocus=1;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
-let editOpen=false, netForksOpen=false;
+let editOpen=false, netForksOpen=false, ctxSlim=null, panMode=true;
 let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, preferSigned=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
 try{
   ["plan","days"].forEach(k=>{
@@ -963,6 +963,34 @@ function bumpZoom(f){
   paintMini();
   scheduleTiles();
 }
+function setViewBox(svg, x, y, w, h){
+  const ww=Math.min(Math.max(w, 16), W*1.6);
+  const hh=ww*(H/W);
+  vbManual=true;
+  zoom=Math.max(1, +(W/ww).toFixed(2));
+  svg.setAttribute("viewBox", x.toFixed(1)+" "+y.toFixed(1)+" "+ww.toFixed(1)+" "+hh.toFixed(1));
+}
+function bindCtxFold(){
+  const ctx=document.getElementById("ctx");
+  const fold=document.getElementById("ctxfold");
+  if(!ctx) return;
+  const mobile=window.matchMedia("(max-width:860px)").matches;
+  if(ctxSlim==null) ctxSlim=mobile;
+  const slim=mobile && !!ctxSlim;
+  ctx.classList.toggle("slim", slim);
+  if(!fold) return;
+  fold.hidden=!mobile;
+  fold.setAttribute("aria-expanded", slim?"false":"true");
+  fold.textContent=slim?"Details":"Hide";
+  fold.onclick=e=>{
+    e.stopPropagation();
+    ctxSlim=!ctx.classList.contains("slim");
+    ctx.classList.toggle("slim", ctxSlim);
+    fold.setAttribute("aria-expanded", ctxSlim?"false":"true");
+    fold.textContent=ctxSlim?"Details":"Hide";
+    if(!vbManual) applyView();
+  };
+}
 function syncMapTools(){
   const back=document.getElementById("mapback");
   const tools=document.getElementById("maptools");
@@ -971,6 +999,7 @@ function syncMapTools(){
   back.hidden=!on;
   tools.hidden=!on;
   layers.hidden=!on;
+  document.getElementById("stage").classList.toggle("pan", on && panMode);
   if(!on) return;
   if(selDay && ride){
     back.textContent="‹ "+ride.name;
@@ -984,6 +1013,11 @@ function syncMapTools(){
   document.getElementById("vehbtn").textContent=VEH_LABEL[veh]||"Bicycle";
   document.getElementById("langbtn").textContent=lang==="local"?"English names":(PAPER.localLabel||"Lokale Namen");
   layers.querySelectorAll("button[data-l]").forEach(b=>b.classList.toggle("on", !!layersOn[b.dataset.l]));
+  const pan=document.getElementById("panbtn");
+  if(pan){
+    pan.classList.toggle("on", panMode);
+    pan.setAttribute("aria-pressed", panMode?"true":"false");
+  }
 }
 function setVeh(k){
   veh=k;
@@ -1777,7 +1811,11 @@ function plannerSheet(t){
   col.innerHTML=onDay?`
     <aside class="ctx-card hit" id="ctx">
       <button type="button" class="sheetback" id="dayback">‹ ${esc(t.name)}</button>
-      <div class="tn"><span class="badge">${today?today.n:selDay}</span><h2>${today?today.frm+" → "+today.to:t.name}</h2></div>
+      <div class="ctxhead">
+        <div class="tn"><span class="badge">${today?today.n:selDay}</span><h2>${today?today.frm+" → "+today.to:t.name}</h2></div>
+        <button type="button" class="ctxfold" id="ctxfold" aria-controls="ctxbody">Details</button>
+      </div>
+      <div class="ctxbody" id="ctxbody">
       <div class="stats4">
         <div><b>${today?today.km:"—"}</b><span>km</span></div>
         <div><b>${today?Math.round(today.eff||today.climb||0).toLocaleString():"—"}</b><span>effort</span></div>
@@ -1800,6 +1838,7 @@ function plannerSheet(t){
         <button class="opt" id="copylink">Copy link</button>
         <span class="ghost" id="expnote"></span>
       </div></div>
+      </div>
     </aside>
     <div id="strip" hidden></div><div id="segcard" hidden></div>
     <select id="start" hidden></select><select id="end" hidden></select>
@@ -1812,9 +1851,13 @@ function plannerSheet(t){
     <details id="netforks" hidden></details>
     ${filmBlock}`:`
     <aside class="ctx-card hit" id="ctx">
-      <div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
-        <span class="dl dl${d0}">${DNAME[d0]}</span></div>
+      <div class="ctxhead">
+        <div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
+          <span class="dl dl${d0}">${DNAME[d0]}</span></div>
+        <button type="button" class="ctxfold" id="ctxfold" aria-controls="ctxbody">Details</button>
+      </div>
       <p class="oneline">${ends.from} → ${ends.to} · ${rideDays.length} d · ${st.km} km · ${st.asc.toLocaleString()} m</p>
+      <div class="ctxbody" id="ctxbody">
       <div class="profwrap">
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
@@ -1855,10 +1898,12 @@ function plannerSheet(t){
         <button class="opt" id="copylink">Copy link</button>
         <span class="ghost" id="expnote"></span>
       </div></div>
+      </div>
     </aside>
     ${filmBlock}
     <div id="days" hidden></div>`;
     drawProfile(onDay && today ? [today] : rideDays);
+  bindCtxFold();
   const edit=document.querySelector("details.edittrip");
   if(edit){
     edit.open=!!editOpen;
@@ -2546,7 +2591,112 @@ function pop(){
 const popEl=document.getElementById("pop");
 popEl.addEventListener("mouseenter",()=>{ if(hoverClear){ clearTimeout(hoverClear); hoverClear=null; } });
 popEl.addEventListener("mouseleave",()=>setHover(null));
-document.getElementById("map").addEventListener("click", tapMap);
+function mapChrome(el){
+  return el && el.closest && el.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daybar");
+}
+function readVb(svg){
+  return (svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
+}
+function rideMapOn(){
+  return mode==="ride" && PLAN && PLAN!==false;
+}
+
+let mapDrag=null;
+const mapPtrs=new Map();
+let panMoved=false;
+
+function endMapGesture(){
+  if(!mapDrag && mapPtrs.size===0) return;
+  mapDrag=null;
+  mapPtrs.clear();
+  document.getElementById("stage").classList.remove("dragging");
+  if(panMoved){
+    paintRide();
+    paintMini();
+    scheduleTiles();
+  }
+}
+
+function pinchMid(){
+  if(mapPtrs.size<2) return null;
+  const pts=[...mapPtrs.values()];
+  const dx=pts[1].x-pts[0].x, dy=pts[1].y-pts[0].y;
+  return {
+    x:(pts[0].x+pts[1].x)/2,
+    y:(pts[0].y+pts[1].y)/2,
+    dist:Math.hypot(dx, dy)||1
+  };
+}
+
+document.getElementById("stage").addEventListener("pointerdown", e=>{
+  if(!rideMapOn()) return;
+  if(mapChrome(e.target)) return;
+  if(e.pointerType==="mouse" && e.button!==0) return;
+  mapPtrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  const svg=document.getElementById("map");
+  if(!svg) return;
+  if(mapPtrs.size===1){
+    panMoved=false;
+    mapDrag={x:e.clientX, y:e.clientY, vb:readVb(svg), id:e.pointerId};
+    document.getElementById("stage").classList.add("dragging");
+    try{ e.currentTarget.setPointerCapture(e.pointerId); }catch(err){}
+  } else {
+    mapDrag={pinch:pinchMid(), vb:readVb(svg)};
+  }
+}, {passive:true});
+
+document.getElementById("stage").addEventListener("pointermove", e=>{
+  if(!rideMapOn()) return;
+  if(!mapPtrs.has(e.pointerId) && !mapDrag) return;
+  if(mapPtrs.has(e.pointerId)) mapPtrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+  const svg=document.getElementById("map");
+  if(!svg || !mapDrag) return;
+  if(mapDrag.pinch && mapPtrs.size>=2){
+    const now=pinchMid();
+    if(!now) return;
+    e.preventDefault();
+    const scale=mapDrag.pinch.dist/now.dist;
+    const vb=mapDrag.vb;
+    const r=svg.getBoundingClientRect();
+    const mx=vb[0]+(mapDrag.pinch.x-r.left)/r.width*vb[2];
+    const my=vb[1]+(mapDrag.pinch.y-r.top)/r.height*vb[3];
+    let w=Math.min(Math.max(vb[2]*scale, 16), W*1.6);
+    let h=w*(H/W);
+    const nx=mx-(now.x-r.left)/r.width*w;
+    const ny=my-(now.y-r.top)/r.height*h;
+    setViewBox(svg, nx, ny, w, h);
+    panMoved=true;
+    return;
+  }
+  if(!panMode && mapPtrs.size<2) return;
+  const dx=e.clientX-mapDrag.x, dy=e.clientY-mapDrag.y;
+  if(!panMoved && Math.hypot(dx, dy)<8) return;
+  e.preventDefault();
+  panMoved=true;
+  const r=svg.getBoundingClientRect();
+  const vb=mapDrag.vb;
+  const x=vb[0]-dx/Math.max(r.width,1)*vb[2];
+  const y=vb[1]-dy/Math.max(r.height,1)*vb[3];
+  setViewBox(svg, x, y, vb[2], vb[3]);
+}, {passive:false});
+
+["pointerup","pointercancel","lostpointercapture"].forEach(ev=>{
+  document.getElementById("stage").addEventListener(ev, e=>{
+    if(!mapPtrs.has(e.pointerId) && !(mapDrag && mapDrag.id===e.pointerId)) return;
+    mapPtrs.delete(e.pointerId);
+    if(mapPtrs.size===0) endMapGesture();
+    else if(mapPtrs.size===1){
+      const svg=document.getElementById("map");
+      const left=[...mapPtrs.entries()][0];
+      mapDrag={x:left[1].x, y:left[1].y, vb:svg?readVb(svg):null, id:left[0]};
+    }
+  });
+});
+
+document.getElementById("map").addEventListener("click", e=>{
+  if(panMoved){ panMoved=false; e.preventDefault(); e.stopPropagation(); return; }
+  tapMap(e);
+});
 
 document.getElementById("mapback").onclick=goNetwork;
 document.getElementById("vehbtn").onclick=()=>{
@@ -2560,6 +2710,11 @@ document.getElementById("fitbtn").onclick=()=>{
 };
 document.getElementById("zin").onclick=()=>bumpZoom(0.78);
 document.getElementById("zout").onclick=()=>bumpZoom(1.22);
+const panbtn=document.getElementById("panbtn");
+if(panbtn) panbtn.onclick=()=>{
+  panMode=!panMode;
+  syncMapTools();
+};
 document.getElementById("maplayers").addEventListener("click", e=>{
   const b=e.target.closest("button[data-l]"); if(!b) return;
   layersOn[b.dataset.l]=!layersOn[b.dataset.l];

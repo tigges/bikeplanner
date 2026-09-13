@@ -593,6 +593,17 @@ function forkSummary(){
   });
   return extra.length?"Main line · "+extra.join(" · "):(PLAN.forkSummary||"Main line");
 }
+function signedNoteText(){
+  if(veh==="opium") return "Not used by the S-pedelec: it keeps its own line.";
+  const book=segBook();
+  const sl=pickedIds().map(id=>book[id]).filter(s=>s && s.signedAlt);
+  if(!sl.length) return "";
+  const extra=sl.reduce((n,s)=>n+((s.signedAlt.km||0)-(s.km||0)),0);
+  const km=Math.round(extra);
+  return preferSigned
+    ? sl.length+" legs on this journey follow a signed cycle route, "+km+" km longer in total than the direct lines."
+    : "Would move "+sl.length+" legs on this journey onto a signed cycle route, adding "+km+" km.";
+}
 function travelEnds(){
   const segs=activeSegs();
   if(!segs.length) return {from:PLAN.startName, to:PLAN.endName, fromId:startId, toId:endId};
@@ -1221,6 +1232,7 @@ function plannerSheet(t){
         <p id="warn">${skipWarn?skipWarn:""}</p>
         <p class="ghost" id="vehnote"></p>
         <button type="button" id="signedtog" class="${preferSigned?"on":""}" ${((PLAN.segs||[]).concat(PLAN.altSegs||[]).some(s=>s.signedAlt))?"":"hidden"}>Prefer signed cycle routes</button>
+        <p class="ghost" id="signednote"></p>
         <p class="forkq">${forkSummary()}</p>
         <div id="forks"></div>
         <details class="netforks" id="netforks" hidden><summary>Other forks</summary><div id="forks-off"></div></details>
@@ -1336,9 +1348,11 @@ function plannerSheet(t){
     paint();
   };
   const signedTog=document.getElementById("signedtog");
+  const signedNote=document.getElementById("signednote");
   if(signedTog && !onDay){
     const n=((PLAN.segs||[]).concat(PLAN.altSegs||[])).filter(s=>s.signedAlt).length;
     signedTog.hidden=!n || veh==="opium";
+    if(signedNote) signedNote.textContent=signedTog.hidden?"":signedNoteText();
     signedTog.onclick=()=>{
       preferSigned=!preferSigned;
       try{ localStorage.setItem("signed", preferSigned?"1":"0"); }catch(e){}

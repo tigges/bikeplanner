@@ -35,7 +35,7 @@ Three self-contained cycle-tour planners behind a dark text list. Screenshot of 
 | Page | What it is | Size | Opens on |
 |---|---|---|---|
 | Hub `/` | Title, blurb, three links | 1 KB | Country list |
-| Japan | Cape Sōya → Cape Sata | 12.2 MB | Trip picker (19 trips, Fuji-ichi Top 5) |
+| Japan | Cape Sōya → Cape Sata | 12.2 MB | Trip picker (29 trips, Fuji-ichi Top 5, Tokapuchi 400 Top 7) |
 | Switzerland | National routes, passes, loops; second graph off the hub | 3.3 + 0.8 MB | Trip picker (29 trips, default `top`) |
 | Spain | Cap de Creus → Cabo Fisterra | 2.4 MB | Trip picker (8 trips: Francés, Norte, …) |
 
@@ -110,7 +110,7 @@ Switzerland’s second graph stays data, not a second site. Deep links stay in-p
 
 Three country cards, not a list.
 
-- **Japan** — Shimanami bridge or cape light. Overline: 19 trips · Shimanami, Biwaichi, Fuji-ichi, cape to cape.
+- **Japan** — Shimanami bridge or cape light. Overline: 29 trips · Shimanami, Biwaichi, Tokapuchi 400, cape to cape.
 - **Switzerland** — pass road or lake. Overline: 29 trips · national routes 1–9.
 - **Spain** — Fisterra. Overline: 8 trips · Camino Francés, Norte, Cap de Creus to Fisterra.
 

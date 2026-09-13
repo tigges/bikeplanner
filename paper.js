@@ -81,14 +81,30 @@ function photo(t){
 
 const W=900, H=640, PAD=28;
 const BBOX=PAPER.bbox;
+const RAD=Math.PI/180;
+function mercY(lat){
+  const s=Math.sin(Math.max(-85.05112878, Math.min(85.05112878, lat))*RAD);
+  return Math.log((1+s)/(1-s))/2;
+}
+const PJ=(function(){
+  const mx0=BBOX.lon0, mx1=BBOX.lon1;
+  const my0=mercY(BBOX.lat0), my1=mercY(BBOX.lat1);
+  const innerW=W-PAD*2, innerH=H-PAD*2;
+  const lonSpan=mx1-mx0, mercSpan=my1-my0;
+  const kx=Math.min(innerW/lonSpan, innerH/(mercSpan*180/Math.PI));
+  const ky=-kx*180/Math.PI;
+  const usedW=lonSpan*kx, usedH=mercSpan*(-ky);
+  const bx=PAD+(innerW-usedW)/2-mx0*kx;
+  const by=PAD+(innerH-usedH)/2-my1*ky;
+  return {kx, ky, bx, by, BM_W:360*kx, BM_X0:kx*(-180)+bx, BM_Y0:ky*Math.PI+by};
+})();
 function xy(lat, lon){
-  const x=PAD+(lon-BBOX.lon0)/(BBOX.lon1-BBOX.lon0)*(W-PAD*2);
-  const y=PAD+(BBOX.lat1-lat)/(BBOX.lat1-BBOX.lat0)*(H-PAD*2);
-  return [x,y];
+  return [PJ.kx*lon+PJ.bx, PJ.ky*mercY(lat)+PJ.by];
 }
 function fromXY(x, y){
-  const lon=BBOX.lon0+(x-PAD)/(W-PAD*2)*(BBOX.lon1-BBOX.lon0);
-  const lat=BBOX.lat1-(y-PAD)/(H-PAD*2)*(BBOX.lat1-BBOX.lat0);
+  const lon=(x-PJ.bx)/PJ.kx;
+  const m=(y-PJ.by)/PJ.ky;
+  const lat=(2*Math.atan(Math.exp(m))-Math.PI/2)/RAD;
   return [lat, lon];
 }
 function esc(s){
@@ -238,6 +254,132 @@ function drawBase(land, water, atlas){
   });
 }
 
+const BM_SRC={
+  plain:{url:"https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",s:"",max:16,attr:"© Esri, HERE, Garmin, OpenStreetMap contributors"},
+  cycle:{url:"https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",s:"abc",max:20,attr:"© OpenStreetMap contributors · CyclOSM"}
+};
+const BM_SWITCH=10;
+let BM_TILES={}, BM_T=null;
+function mapViewBox(){
+  const svg=document.getElementById("map");
+  return ((svg&&svg.getAttribute("viewBox"))||VB0).split(/\s+/).map(Number);
+}
+function pxPerUnit(){
+  const svg=document.getElementById("map");
+  if(!svg) return 1;
+  return svg.getBoundingClientRect().width/Math.max(mapViewBox()[2], 1);
+}
+function tilesRoot(){
+  let g=document.getElementById("tiles");
+  if(!g){
+    const svg=document.getElementById("map");
+    g=document.createElementNS("http://www.w3.org/2000/svg","g");
+    g.id="tiles";
+    g.setAttribute("pointer-events","none");
+    const ghost=document.getElementById("ghost");
+    svg.insertBefore(g, ghost||null);
+  }
+  return g;
+}
+function attribEl(){
+  let el=document.getElementById("attrib");
+  if(!el){
+    el=document.createElement("div");
+    el.id="attrib";
+    const stage=document.getElementById("stage");
+    if(stage) stage.appendChild(el);
+  }
+  return el;
+}
+function bmZoom(){
+  const ppu=pxPerUnit(), dpr=Math.min(window.devicePixelRatio||1, 2);
+  return Math.round(Math.log(PJ.BM_W*ppu*dpr/256)/Math.LN2);
+}
+function bmOnRide(){
+  return mode==="ride" && PLAN && PLAN!==false;
+}
+function bmSource(){
+  if(!bmOnRide()) return null;
+  const z=bmZoom();
+  return z>=BM_SWITCH?"cycle":"plain";
+}
+function clearTiles(){
+  const g=document.getElementById("tiles");
+  if(g) g.innerHTML="";
+  BM_TILES={};
+  const att=document.getElementById("attrib");
+  if(att) att.textContent="";
+  document.body.classList.remove("tiled");
+}
+function bmClean(){
+  let pending=false;
+  for(const id in BM_TILES){
+    const im=BM_TILES[id];
+    if(!im.dataset.stale && im.style.opacity==="0"){ pending=true; break; }
+  }
+  if(pending) return;
+  for(const id in BM_TILES){
+    const im=BM_TILES[id];
+    if(im.dataset.stale){ im.remove(); delete BM_TILES[id]; }
+  }
+}
+function drawTiles(){
+  const att=attribEl();
+  const key=bmSource();
+  if(!key){ clearTiles(); return; }
+  const src=BM_SRC[key];
+  const z=Math.max(src.min||0, Math.min(src.max||19, bmZoom()));
+  const S=PJ.BM_W/Math.pow(2,z), n=Math.pow(2,z);
+  const vb=mapViewBox();
+  let x0=Math.floor((vb[0]-PJ.BM_X0)/S)-1;
+  let x1=Math.floor((vb[0]+vb[2]-PJ.BM_X0)/S)+1;
+  let y0=Math.max(0, Math.floor((vb[1]-PJ.BM_Y0)/S)-1);
+  let y1=Math.min(n-1, Math.floor((vb[1]+vb[3]-PJ.BM_Y0)/S)+1);
+  if((x1-x0+1)*(y1-y0+1)>400){ return; }
+  document.body.classList.add("tiled");
+  const g=tilesRoot();
+  const want={}, sub=src.s||"";
+  for(let tx=x0; tx<=x1; tx++){
+    for(let ty=y0; ty<=y1; ty++){
+      const wx=((tx%n)+n)%n, id=key+"/"+z+"/"+tx+"/"+ty;
+      want[id]=1;
+      if(BM_TILES[id]) continue;
+      const im=document.createElementNS("http://www.w3.org/2000/svg","image");
+      im.setAttribute("x", PJ.BM_X0+tx*S);
+      im.setAttribute("y", PJ.BM_Y0+ty*S);
+      im.setAttribute("width", S*1.003);
+      im.setAttribute("height", S*1.003);
+      im.setAttribute("preserveAspectRatio","none");
+      const url=src.url.replace("{z}",z).replace("{x}",wx).replace("{y}",ty).replace("{s}",sub?sub[(tx+ty)%sub.length]:"");
+      im.setAttributeNS("http://www.w3.org/1999/xlink","href", url);
+      im.setAttribute("href", url);
+      im.dataset.z=z; im.dataset.src=key;
+      im.style.opacity="0";
+      im.addEventListener("load", e=>{ e.target.style.opacity="1"; bmClean(); });
+      im.addEventListener("error", e=>{
+        const t=e.target; t.remove();
+        for(const q in BM_TILES) if(BM_TILES[q]===t) delete BM_TILES[q];
+        bmClean();
+      });
+      g.appendChild(im);
+      BM_TILES[id]=im;
+    }
+  }
+  for(const id in BM_TILES){
+    const im=BM_TILES[id];
+    if(want[id]) continue;
+    if(+im.dataset.z===z && im.dataset.src===key){ im.remove(); delete BM_TILES[id]; }
+    else im.dataset.stale=1;
+  }
+  att.textContent=src.attr||"";
+  g.querySelectorAll("image[data-stale]").forEach(im=>g.insertBefore(im, g.firstChild));
+  setTimeout(bmClean, 1500);
+}
+function scheduleTiles(){
+  if(BM_T) clearTimeout(BM_T);
+  BM_T=setTimeout(()=>{ BM_T=null; drawTiles(); }, 60);
+}
+
 function mkPoly(pts){
   const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
   p.setAttribute("points", pts);
@@ -352,6 +494,7 @@ function paint(){
   paintRide();
   paintMini();
   syncMapTools();
+  scheduleTiles();
 }
 function draw(){
   skipCache=null;
@@ -735,6 +878,7 @@ function bumpZoom(f){
   zoom=Math.max(1, +(W/w).toFixed(2));
   svg.setAttribute("viewBox", (cx-w/2).toFixed(1)+" "+(cy-h/2).toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
   paintMini();
+  scheduleTiles();
 }
 function syncMapTools(){
   const back=document.getElementById("mapback");
@@ -926,13 +1070,26 @@ function paintRide(){
   rideSegs.forEach(seg=>{
     const pts=seg.line||[];
     if(pts.length<2) return;
+    const ptsStr=linePts(pts);
+    const w=ink(selSeg===seg.id?3.2:2.1);
+    if(bmOnRide()){
+      const cas=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+      cas.setAttribute("points", ptsStr);
+      cas.setAttribute("fill","none");
+      cas.setAttribute("stroke","#fffdf8");
+      cas.setAttribute("stroke-width", w*2.4);
+      cas.setAttribute("stroke-linecap","round");
+      cas.setAttribute("stroke-linejoin","round");
+      cas.setAttribute("opacity",".9");
+      gRide.appendChild(cas);
+    }
     const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-    p.setAttribute("points", linePts(pts));
+    p.setAttribute("points", ptsStr);
     p.setAttribute("fill","none");
     p.setAttribute("stroke-linecap","round");
     p.setAttribute("stroke-linejoin","round");
     p.setAttribute("stroke", friendOn?(BAND[seg.band]||"#f0713f"):"#f0713f");
-    p.setAttribute("stroke-width", ink(selSeg===seg.id?3.2:2.1));
+    p.setAttribute("stroke-width", w);
     gRide.appendChild(p);
   });
   if(selSeg){
@@ -955,8 +1112,15 @@ function paintRide(){
       line=sliceLine(rideSegs, k0, k1);
     }
     if(line && line.length>1){
+      const ptsStr=linePts(line);
+      const cas=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+      cas.setAttribute("points", ptsStr);
+      cas.setAttribute("fill","none"); cas.setAttribute("stroke","#fffdf8");
+      cas.setAttribute("stroke-width", ink(7.2)); cas.setAttribute("stroke-linecap","round");
+      cas.setAttribute("stroke-linejoin","round"); cas.setAttribute("opacity",".88");
+      gGold.appendChild(cas);
       const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-      p.setAttribute("points", linePts(line));
+      p.setAttribute("points", ptsStr);
       p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
       p.setAttribute("stroke-width", ink(5.2)); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
       gGold.appendChild(p);
@@ -1939,6 +2103,7 @@ document.addEventListener("keydown",e=>{
 });
 window.addEventListener("hashchange", applyHash);
 window.addEventListener("beforeprint", fillPrintSheet);
+window.addEventListener("resize", scheduleTiles);
 
 Promise.all([
   fetch(PAPER.tripsUrl).then(r=>r.json()),

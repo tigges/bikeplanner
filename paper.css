@@ -160,11 +160,20 @@ body.planner .mapcard{position:absolute;inset:0;top:0;height:100%;min-height:0;b
 body.planner #col.sheet{position:absolute;inset:0;z-index:8;display:block;height:auto;min-height:0;overflow:hidden;pointer-events:none;background:transparent}
 body.planner .hit,body.planner .ctx-card,body.planner .filmwrap,body.planner .daybar,#minimap,#place{pointer-events:auto}
 body.planner .ctx-card{position:absolute;top:56px;left:12px;width:min(340px,calc(100vw - 24px));max-height:calc(100% - 148px);overflow-x:hidden;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 10px;box-shadow:0 8px 28px rgba(28,25,22,.12)}
-body.planner.onday .ctx-card{max-height:calc(100% - 68px)}
 body.planner .oneline{font-size:13px;color:var(--mute);margin:4px 0 8px}
 body.planner .dayfacts{font-size:12px;color:var(--mute);margin:6px 0}
 body.planner .ctx-card .phs{display:flex;gap:6px;margin:8px 0;flex-wrap:wrap}
-body.planner .ctx-card .phs div{width:88px;height:56px;background:#cfc4b4 center/cover no-repeat;border-radius:6px;flex:0 0 auto}
+body.planner .ctx-card .phs div,body.planner .ctx-card .phs .ph{width:88px;height:56px;background:#cfc4b4 center/cover no-repeat;border-radius:6px;flex:0 0 auto;border:2px solid transparent;padding:0;cursor:pointer;font:inherit}
+body.planner .ctx-card .phs .ph.on{border-color:var(--gold)}
+body.planner .daystrip{cursor:default;margin:2px 0 8px}
+body.planner .daystrip i{cursor:default}
+body.planner .wayhead{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:10px 0 4px}
+body.planner .waylist{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
+body.planner .waylist .way{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 9px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}
+body.planner .waylist .way.on{border-color:var(--gold);background:#f8efd4}
+body.planner .sleep{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:8px 0 2px;margin:8px 0 0;font:inherit;font-size:13px;color:var(--ink);cursor:pointer}
+body.planner .sleep.on{color:#8a6a12}
+body.planner .forkline{font-size:12px;color:var(--mute);margin:8px 0 0;padding-top:8px;border-top:1px dashed var(--line)}
 body.planner .daybar{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px;box-shadow:0 1px 6px rgba(28,25,22,.08);z-index:9;white-space:nowrap;font-size:12px;color:var(--mute);max-width:calc(100vw - 280px)}
 body.planner .filmwrap{position:absolute;left:12px;right:12px;bottom:12px;display:flex;align-items:center;gap:8px;z-index:9}
 body.planner .film-nav{flex:0 0 auto;width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:20px/1 inherit;cursor:pointer;box-shadow:0 4px 16px rgba(28,25,22,.1)}
@@ -221,7 +230,7 @@ body.planner #maplayers{left:auto;right:12px;top:56px}
   body.planner main{height:100vh}
   body.planner .mapcard{position:absolute;height:100%;min-height:0;order:unset}
   body.planner .ctx-card{width:calc(100% - 24px);max-height:38%}
-  body.planner.onday .ctx-card{max-height:calc(100% - 68px)}
+  body.planner.onday .ctx-card{max-height:38%}
   body.planner .daybar{left:12px;transform:none;max-width:calc(100vw - 24px);top:52px}
   body.planner .film-track .tile{width:180px}
   #minimap{width:112px;height:56px;right:12px;bottom:8px}

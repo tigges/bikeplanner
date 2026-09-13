@@ -268,7 +268,7 @@ function addTrip(t, dest, role){
   const hit=mkPoly(pts);
   hit.setAttribute("stroke","rgba(0,0,0,0.01)");
   hit.setAttribute("stroke-width","16");
-  hit.setAttribute("pointer-events","stroke");
+  hit.setAttribute("pointer-events", mode==="ride"?"none":"stroke");
   const vis=mkPoly(pts);
   vis.setAttribute("data-vis","1");
   vis.setAttribute("pointer-events","none");
@@ -1655,7 +1655,7 @@ function renderPlaceCard(){
   const lat=+p.lat, lon=+p.lon;
   const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
   const osmSearch="https://www.openstreetmap.org/search?query="+encodeURIComponent(p.nameLocal||p.name||"");
-  const ph=(dayPhotos(p.name)||[])[0];
+  const ph=p.kind==="town"?(dayPhotos(p.name)||[])[0]:"";
   el.hidden=false;
   el.innerHTML=
     '<button type="button" class="scx" id="placex" title="close">×</button>'+

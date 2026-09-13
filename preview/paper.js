@@ -301,8 +301,8 @@ function paint(){
   });
   paintBadge();
   pop();
-  paintRide();
   applyView();
+  paintRide();
   syncMapTools();
 }
 function draw(){
@@ -607,7 +607,11 @@ function fitPts(pts, pad){
   zoom=Math.max(1, +(W/w).toFixed(2));
   svg.setAttribute("viewBox", x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
 }
-function fitRide(){ fitPts(ridePoints(), 1.22); }
+function ink(n){
+  const z=Math.max(zoom,1);
+  return +Math.max(n/z, n*0.09).toFixed(2);
+}
+function fitRide(){ fitPts(ridePoints(), 1.38); }
 function fitDay(){
   const days=planDays();
   const d=days.find(x=>x.n===selDay);
@@ -617,7 +621,7 @@ function fitDay(){
     days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
     line=sliceLine(activeSegs().filter(s=>!isSkipped(s.id)), k0, k1);
   }
-  if(line&&line.length>1) fitPts(line, 1.1);
+  if(line&&line.length>1) fitPts(line, 1.18);
   else fitRide();
 }
 function fitSeg(){
@@ -843,7 +847,7 @@ function paintRide(){
     p.setAttribute("stroke-linecap","round");
     p.setAttribute("stroke-linejoin","round");
     p.setAttribute("stroke", friendOn?(BAND[seg.band]||"#f0713f"):"#f0713f");
-    p.setAttribute("stroke-width", selSeg===seg.id?"3.2":"2.1");
+    p.setAttribute("stroke-width", ink(selSeg===seg.id?3.2:2.1));
     gRide.appendChild(p);
   });
   if(selSeg){
@@ -852,7 +856,7 @@ function paintRide(){
       const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       p.setAttribute("points", linePts(s.line));
       p.setAttribute("fill","none"); p.setAttribute("stroke","#1c1916");
-      p.setAttribute("stroke-width","3.6"); p.setAttribute("stroke-opacity",".28");
+      p.setAttribute("stroke-width", ink(3.6)); p.setAttribute("stroke-opacity",".28");
       p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
       gGold.appendChild(p);
     }
@@ -869,36 +873,48 @@ function paintRide(){
       const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       p.setAttribute("points", linePts(line));
       p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
-      p.setAttribute("stroke-width","6"); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
+      p.setAttribute("stroke-width", ink(5.2)); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
       gGold.appendChild(p);
     }
   }
   const labels=[];
   const c0=rideSegs[0]&&rideSegs[0].cand&&rideSegs[0].cand[0];
   const ends=travelEnds();
-  if(c0&&c0.lat!=null) labels.push({name:ends.from, lat:c0.lat, lon:c0.lon});
-  else if(rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0]) labels.push({name:ends.from, lat:rideSegs[0].line[0][0], lon:rideSegs[0].line[0][1]});
-  days.forEach(d=>{ if(d.mode==="train") return; if(d.lat!=null) labels.push({name:d.to, lat:d.lat, lon:d.lon}); });
+  if(selDay){
+    const d=days.find(x=>x.n===selDay);
+    if(d){
+      const a=d.line&&d.line[0];
+      if(a) labels.push({name:d.frm, lat:a[0], lon:a[1]});
+      labels.push({name:d.to, lat:d.lat, lon:d.lon});
+    }
+  } else {
+    if(c0&&c0.lat!=null) labels.push({name:ends.from, lat:c0.lat, lon:c0.lon});
+    else if(rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0]) labels.push({name:ends.from, lat:rideSegs[0].line[0][0], lon:rideSegs[0].line[0][1]});
+    days.forEach(d=>{ if(d.mode==="train") return; if(d.lat!=null) labels.push({name:d.to, lat:d.lat, lon:d.lon}); });
+  }
+  const off=ink(8);
   labels.forEach(t=>{
     if(t.lat==null || t.lon==null) return;
     const q=xy(t.lat,t.lon);
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-    tx.setAttribute("x", q[0]+8); tx.setAttribute("y", q[1]-8);
+    tx.setAttribute("x", q[0]+off); tx.setAttribute("y", q[1]-off);
     tx.setAttribute("class","townlab"); tx.setAttribute("pointer-events","none");
+    tx.setAttribute("font-size", ink(9));
     tx.textContent=showName(t.name);
     gT.appendChild(tx);
   });
+  const discR=ink(7);
   days.forEach(d=>{
     if(d.mode==="train" || d.lat==null) return;
     const q=xy(d.lat,d.lon);
     const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-    c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", 8);
+    c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", discR);
     c.setAttribute("fill", selDay===d.n?"#c9a227":"#f0713f");
     c.style.cursor="pointer";
     c.addEventListener("click",e=>{ e.stopPropagation(); vbManual=false; selSeg=null; openRide(ride.id, selDay===d.n?null:d.n); });
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-    tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+4);
-    tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","10");
+    tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+ink(3.4));
+    tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size", ink(9));
     tx.setAttribute("font-weight","700"); tx.setAttribute("fill","#fff"); tx.setAttribute("pointer-events","none");
     tx.textContent=d.n;
     gD.appendChild(c); gD.appendChild(tx);
@@ -911,11 +927,11 @@ function paintRide(){
         if(f.lat==null||f.lon==null) return;
         const q=xy(f.lat,f.lon);
         const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-        c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", "1.6");
+        c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]);         c.setAttribute("r", ink(1.6));
         c.setAttribute("fill", LCOL[k]);
         c.setAttribute("fill-opacity","0.9");
         c.setAttribute("stroke", "#fffdf8");
-        c.setAttribute("stroke-width","0.4");
+        c.setAttribute("stroke-width", ink(0.4));
         if(f.name) c.setAttribute("title", f.name);
         gFac.appendChild(c);
       });
@@ -1063,7 +1079,7 @@ function plannerSheet(t){
       </div>
       <div class="strip" id="strip" title="Click a colour band"></div>
       <button type="button" id="friendtog" class="${friendOn?"on":""}">colour the map line</button>
-      <details class="edittrip" open>
+      <details class="edittrip">
         <summary>Edit trip</summary>
         <div class="ends">
           <label>From <select id="start"></select></label>

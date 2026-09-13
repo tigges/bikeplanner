@@ -197,7 +197,7 @@ body.planner .sleep.on{color:#8a6a12}
 body.planner .forkline{font-size:12px;color:var(--mute);margin:8px 0 0;padding-top:8px;border-top:1px dashed var(--line)}
 body.planner .daybar{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 10px;box-shadow:0 1px 6px rgba(28,25,22,.08);z-index:9;white-space:nowrap;font-size:12px;color:var(--mute);max-width:calc(100vw - 280px)}
 body.planner .daydock{position:absolute;left:12px;right:12px;bottom:max(12px, env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:8px;z-index:11;pointer-events:auto}
-body.planner .cuebar{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px 8px;box-shadow:0 8px 28px rgba(28,25,22,.12);max-height:28vh;overflow:hidden}
+body.planner .cuebar{align-self:flex-start;max-width:100%;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 12px;box-shadow:0 8px 28px rgba(28,25,22,.12)}
 body.planner .cue-kicker{margin:0 0 6px;font-size:12px;color:var(--mute)}
 body.planner .cue-row{display:flex;align-items:stretch;gap:0;overflow-x:auto;scrollbar-width:none}
 body.planner .cue-row::-webkit-scrollbar{display:none}

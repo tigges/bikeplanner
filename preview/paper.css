@@ -88,7 +88,7 @@ details.netforks summary{cursor:pointer;color:var(--mute)}
 .row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
 .opt{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;background:transparent;font:inherit;cursor:pointer;color:var(--ink)}
 .opt.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-.effort{width:100%;accent-color:var(--route)}
+.effort{width:100%;accent-color:var(--route);height:16px}
 .dlist{margin:6px 0 0;padding:0;list-style:none}
 .day{display:grid;grid-template-columns:22px 1fr auto;gap:6px;align-items:center;padding:5px 4px;border-radius:8px;cursor:pointer}
 .day:hover,.day.sel{background:#fff}
@@ -166,6 +166,7 @@ body.planner .day .spark{height:16px}
 body.planner .day .sup{display:none}
 body.planner .day.sel .sup{display:block}
 body.planner .opt{padding:3px 8px;font-size:11px}
+body.planner .effort{height:18px}
 body.planner .ends select{padding:4px 6px;font-size:12px}
 @media(max-width:860px){
   .split{grid-template-columns:1fr}

@@ -558,11 +558,12 @@ function peekDir(rev){
     const st=rideStats();
     return {asc:st.asc, km:st.km, days:planDays().filter(d=>d.mode!=="train").length};
   }
-  const keepR=reversed, keepC=skipCache, keepW=skipWarn;
+  const keepR=reversed, keepC=skipCache, keepW=skipWarn, keepS=startId, keepE=endId;
+  const tmp=startId; startId=endId; endId=tmp;
   reversed=rev; skipCache=null;
   const st=rideStats();
   const days=planDays().filter(d=>d.mode!=="train").length;
-  reversed=keepR; skipCache=keepC; skipWarn=keepW;
+  reversed=keepR; skipCache=keepC; skipWarn=keepW; startId=keepS; endId=keepE;
   return {asc:st.asc, km:st.km, days};
 }
 function isSkipped(id){

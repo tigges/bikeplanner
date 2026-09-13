@@ -264,6 +264,7 @@ Clean, bright, simple. One paper design. **All three countries** now have a gall
 | **Japan** | Gallery + coastline/lakes atlas + snapshots for 29 trips (including Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road) | **this slice** |
 | **Spain** | Gallery + paper atlas + snapshots for 8 trips (Francés, Norte, …) | **this slice** |
 | **Planner sheet** | Wider left column, one scrollbar, slim export; Plan / Route / Days still mapped from the live planner | **this slice** |
+| **Place card** | Town / facility tap on the tour sheet: paper card, OpenStreetMap outbound — not Google, not tiles | **this slice** |
 
 Snapshots are not the full graph — forks rewrite with `alts[node:option]`, last non-default wins. The old planner stays the graph source. Do not link into it.
 

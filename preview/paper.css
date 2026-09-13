@@ -138,6 +138,16 @@ details.netforks summary{cursor:pointer;color:var(--mute)}
 #pop:hover{border-color:var(--route)}
 #pop b{display:block}
 #pop .cta{color:var(--route);margin-top:4px;font-size:12px}
+#place{display:block;position:absolute;z-index:12;width:min(240px,calc(100% - 24px));background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px 12px;font-size:13px;box-shadow:0 8px 24px rgba(28,25,22,.14);color:inherit}
+#place[hidden]{display:none!important}
+#place b{display:block;font-family:Georgia,serif;font-size:16px;font-weight:600;padding-right:18px}
+#place .ja{color:var(--mute);font-size:12px;margin:2px 0 0}
+#place .sub{color:var(--mute);font-size:12px;margin:6px 0 8px}
+#place .links{display:flex;flex-direction:column;gap:4px}
+#place .links a{color:var(--route);font-size:12px;text-decoration:none}
+#place .links a:hover{text-decoration:underline}
+#place .placeph{height:72px;border-radius:8px;background:#cfc4b4 center/cover no-repeat;margin:0 0 8px}
+#place .scx{position:absolute;top:8px;right:8px;border:0;background:none;cursor:pointer;font:inherit;color:var(--mute);line-height:1}
 .note{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
 footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
 body.planner header,body.planner footer{display:none}
@@ -145,7 +155,7 @@ body.planner main{max-width:none;padding:0;height:100vh;overflow:hidden}
 body.planner .split{display:block;position:relative;height:100%;overflow:hidden}
 body.planner .mapcard{position:absolute;inset:0;top:0;height:100%;min-height:0;border-radius:0;border:0;background:#efe8dc}
 body.planner #col.sheet{position:absolute;inset:0;z-index:8;display:block;height:auto;min-height:0;overflow:hidden;pointer-events:none;background:transparent}
-body.planner .hit,body.planner .ctx-card,body.planner .filmwrap,body.planner .daybar,#minimap{pointer-events:auto}
+body.planner .hit,body.planner .ctx-card,body.planner .filmwrap,body.planner .daybar,#minimap,#place{pointer-events:auto}
 body.planner .ctx-card{position:absolute;top:56px;left:12px;width:min(340px,calc(100vw - 24px));max-height:calc(100% - 148px);overflow-x:hidden;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 10px;box-shadow:0 8px 28px rgba(28,25,22,.12)}
 body.planner.onday .ctx-card{max-height:calc(100% - 68px)}
 body.planner .oneline{font-size:13px;color:var(--mute);margin:4px 0 8px}

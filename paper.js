@@ -123,8 +123,8 @@ const VEH_LABEL={bike:"Bicycle",ebike:"E-bike",opium:"45 km/h"};
 const VB0="0 0 900 640";
 
 let TRIPS=[], mode="network", ride=null, hover=null, pick=null, filter="top";
-let placeOpen=null, placeHits=[];
-let PLAN=null, effort=100, veh="bike", selDay=null, filmFocus=1;
+let placeOpen=null, placeHits=[], stopHits=[];
+let PLAN=null, effort=100, veh="bike", selDay=null, selStop=null, filmFocus=1;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
 let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, preferSigned=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
@@ -542,10 +542,12 @@ function applyHash(){
   const p=parseHash();
   if(p.trip && TRIPS.some(t=>t.id===p.trip)){
     const day=p.day?+p.day:null;
+    const same=ride && ride.id===p.trip && (selDay||null)===(day||null);
+    if(!same){ selStop=null; hidePlaceCard(); }
     selDay=day||null;
     vbManual=false;
     if(!(mode==="ride" && ride && ride.id===p.trip)){
-      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; }
+      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; selStop=null; }
       ride=TRIPS.find(t=>t.id===p.trip); mode="ride"; hover=null;
       filmFocus=day||1;
       ensurePlan(p.trip);
@@ -553,7 +555,7 @@ function applyHash(){
     draw();
     return;
   }
-  if(mode!=="network"){ if(ride) pick=ride.id; mode="network"; ride=null; hover=null; selDay=null; draw(); }
+  if(mode!=="network"){ if(ride) pick=ride.id; mode="network"; ride=null; hover=null; selDay=null; selStop=null; draw(); }
 }
 function openRide(id, day){
   if(!TRIPS.some(t=>t.id===id)) return;
@@ -563,7 +565,7 @@ function openRide(id, day){
 }
 function goNetwork(){
   if(ride) pick=ride.id;
-  zoom=1; vbManual=false; selDay=null; selSeg=null;
+  zoom=1; vbManual=false; selDay=null; selSeg=null; selStop=null;
   hidePlaceCard();
   applyView();
   if(location.hash!=="#network") location.hash="network";
@@ -847,7 +849,7 @@ function fitDay(){
     days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
     line=sliceLine(activeSegs().filter(s=>!isSkipped(s.id)), k0, k1);
   }
-  if(line&&line.length>1) fitPts(line, 1.18);
+  if(line&&line.length>1) fitPts(line, filmVisible()?1.36:1.18);
   else fitRide();
 }
 function fitSeg(){
@@ -900,7 +902,7 @@ function setVeh(k){
     const tr=PLAN.vehicles.targetRange[k];
     if(tr){ if(effort<tr[0]) effort=tr[0]; if(effort>tr[1]) effort=tr[1]; }
   }
-  selDay=null; skipCache=null;
+  selDay=null; selStop=null; skipCache=null;
   draw();
 }
 
@@ -1052,6 +1054,152 @@ function dayPhotos(to){
   const src=ride && PHOTO[ride.id];
   return src?[src]:[];
 }
+function rideDayCount(){
+  return planDays().filter(d=>d.mode!=="train").length;
+}
+function filmVisible(){
+  return mode==="ride" && PLAN && PLAN!==false && rideDayCount()>1;
+}
+function dayKmRange(days, n){
+  let k0=0, k1=0;
+  (days||[]).forEach(x=>{
+    if(x.mode==="train") return;
+    if(x.n<n) k0+=x.km||0;
+    if(x.n<=n) k1+=x.km||0;
+  });
+  return [k0, k1];
+}
+function segsOnDay(today, days){
+  if(!today) return [];
+  const segs=activeSegs().filter(s=>!isSkipped(s.id));
+  const [k0,k1]=dayKmRange(days, today.n);
+  const out=[];
+  let k=0;
+  segs.forEach(s=>{
+    const a=Math.max(k0,k), b=Math.min(k1, k+(s.km||0));
+    if(b>a+0.05) out.push({seg:s, km:b-a});
+    k+=s.km||0;
+  });
+  return out;
+}
+function stopEq(a, b){
+  if(!a||!b) return false;
+  if(a.name!==b.name) return false;
+  if(a.km==null || b.km==null) return true;
+  return Math.abs(a.km-b.km)<0.8;
+}
+function shortStop(name){
+  const s=String(name||"");
+  if(s.length<=22) return s;
+  const m=s.match(/\(([^)]+)\)\s*$/);
+  if(m && m[1] && m[1].length>=3 && m[1].length<s.length) return m[1];
+  return s;
+}
+function dayStops(today, days){
+  if(!today) return [];
+  const segs=activeSegs().filter(s=>!isSkipped(s.id));
+  const [k0,k1]=dayKmRange(days, today.n);
+  const raw=[];
+  const push=(name, lat, lon, km, role)=>{
+    if(lat==null || lon==null || !name) return;
+    const nm=showName(name);
+    if(!nm) return;
+    if(raw.some(s=>s.name===nm && Math.abs(s.km-km)<2)) return;
+    raw.push({name:nm, lat, lon, km:+(+km).toFixed(1), role:role||"via"});
+  };
+  const a=today.line&&today.line[0];
+  if(a) push(today.frm, a[0], a[1], k0, "start");
+  let k=0;
+  segs.forEach(s=>{
+    (s.cand||[]).forEach(c=>{
+      const km=k+(c.km||0);
+      if(km<k0+0.6 || km>k1-0.6) return;
+      const label=c.label||((PLAN.towns||[]).find(t=>t.id===c.node)||{}).name||"";
+      if(!label) return;
+      push(label, c.lat, c.lon, km, "via");
+    });
+    k+=s.km||0;
+  });
+  push(today.to, today.lat, today.lon, k1, "end");
+  const start=raw.filter(s=>s.role==="start");
+  const end=raw.filter(s=>s.role==="end");
+  let vias=raw.filter(s=>s.role==="via");
+  const maxVia=6;
+  if(vias.length>maxVia){
+    const picked=[];
+    for(let i=0;i<maxVia;i++){
+      const idx=Math.round(i*(vias.length-1)/Math.max(maxVia-1,1));
+      if(!picked.includes(vias[idx])) picked.push(vias[idx]);
+    }
+    vias=picked;
+  }
+  return start.concat(vias).concat(end);
+}
+function dayForkNote(today, days){
+  if(!today || !PLAN) return "";
+  const on=new Set();
+  segsOnDay(today, days).forEach(({seg})=>{ on.add(seg.frm); on.add(seg.to); });
+  const notes=[];
+  (PLAN.forks||[]).forEach(f=>{
+    const def=f.pick||(f.options[0]&&f.options[0].id);
+    const p=picks[f.node]||f.pick||def;
+    if(!p || p===def) return;
+    if(!on.has(f.node)) return;
+    const o=(f.options||[]).find(x=>x.id===p);
+    notes.push((f.name||showName(f.node))+": "+(o?o.label:p));
+  });
+  return notes.join(" · ");
+}
+function dayPhotoItems(stops, today){
+  const items=[];
+  const add=stop=>{
+    if(!stop) return;
+    const src=(dayPhotos(stop.name)||[])[0];
+    if(!src) return;
+    if(items.some(p=>p.src===src)) return;
+    items.push({src, name:stop.name, stop});
+  };
+  if(selStop) add(selStop);
+  (stops||[]).forEach(add);
+  if(!items.length && today){
+    (dayPhotos(today.to)||[]).forEach(src=>{
+      if(!items.some(p=>p.src===src)) items.push({src, name:today.to, stop:(stops||[]).find(s=>s.role==="end")});
+    });
+  }
+  return items.slice(0,6);
+}
+function selectStop(stop){
+  if(!stop){
+    selStop=null;
+    hidePlaceCard();
+    paint();
+    syncDayOverlay();
+    return;
+  }
+  if(stopEq(selStop, stop)){
+    const role=stop.role==="end"?"Sleep":stop.role==="start"?"Start of the day":"On the way";
+    showPlaceCard({kind:"town", name:stop.name, lat:stop.lat, lon:stop.lon,
+      sub:role+(stop.km!=null?" · km "+Math.round(stop.km):"")});
+    return;
+  }
+  hidePlaceCard();
+  selStop={name:stop.name, lat:stop.lat, lon:stop.lon, km:stop.km, role:stop.role,
+    photo:(dayPhotos(stop.name)||[])[0]||null};
+  paint();
+  syncDayOverlay();
+}
+function syncDayOverlay(){
+  document.querySelectorAll("#dayph .ph").forEach(el=>{
+    const mine=!!(selStop && (el.dataset.name===selStop.name || (selStop.photo && el.dataset.src===selStop.photo)));
+    el.classList.toggle("on", mine);
+  });
+  document.querySelectorAll(".waylist .way").forEach(el=>{
+    const km=+el.dataset.km;
+    el.classList.toggle("on", !!(selStop && Math.abs((selStop.km||0)-km)<0.8));
+  });
+  const sleep=document.getElementById("daysleep");
+  if(sleep) sleep.classList.toggle("on", !!(selStop && selStop.role==="end"));
+}
 function niceName(label){
   if(!label) return label;
   const t=(PLAN.towns||[]).find(x=>x.id===label || (x.name||"").toLowerCase()===String(label).toLowerCase());
@@ -1063,6 +1211,7 @@ function paintRide(){
   const gT=document.getElementById("towns"), gD=document.getElementById("discs"), gFac=document.getElementById("fac");
   [gRide,gGold,gT,gD,gFac].forEach(g=>{ if(g) g.innerHTML=""; });
   placeHits=[];
+  stopHits=[];
   if(mode!=="ride" || !PLAN || PLAN===false) return;
   const days=planDays();
   const segs=activeSegs();
@@ -1129,13 +1278,38 @@ function paintRide(){
   const labels=[];
   const c0=rideSegs[0]&&rideSegs[0].cand&&rideSegs[0].cand[0];
   const ends=travelEnds();
-  if(selDay){
-    const d=days.find(x=>x.n===selDay);
-    if(d){
-      const a=d.line&&d.line[0];
-      if(a) labels.push({name:d.frm, lat:a[0], lon:a[1]});
-      labels.push({name:d.to, lat:d.lat, lon:d.lon});
-    }
+  const today=selDay?days.find(x=>x.n===selDay):null;
+  const stops=today?dayStops(today, days):[];
+  if(selDay && today){
+    stops.forEach(s=>{
+      const q=xy(s.lat, s.lon);
+      if(q[0]==null) return;
+      stopHits.push({x:q[0], y:q[1], stop:s});
+      const on=stopEq(selStop, s);
+      const disc=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]);
+      disc.setAttribute("r", ink(on?8:6));
+      disc.setAttribute("fill", on?"#c9a227":"#fffdf8");
+      disc.setAttribute("stroke", "#c9a227");
+      disc.setAttribute("stroke-width", ink(on?2.2:1.4));
+      disc.style.cursor="pointer";
+      disc.addEventListener("click",e=>{ e.stopPropagation(); selectStop(s); });
+      gT.appendChild(disc);
+      const showLab=s.role==="start" || s.role==="end" || (on && !stops.some(o=>o!==s && (o.role==="start"||o.role==="end") && Math.abs((o.km||0)-(s.km||0))<4));
+      if(!showLab) return;
+      const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
+      tx.setAttribute("x", q[0]+ink(8)); tx.setAttribute("y", q[1]-ink(8));
+      tx.setAttribute("pointer-events","none");
+      tx.setAttribute("font-size", ink(on?9:8));
+      tx.setAttribute("font-weight", on?"700":"600");
+      tx.setAttribute("fill", on?"#1c1916":"#6f675e");
+      tx.setAttribute("stroke", "#fffdf8");
+      tx.setAttribute("stroke-width", ink(2.2));
+      tx.setAttribute("paint-order", "stroke");
+      tx.setAttribute("stroke-linejoin", "round");
+      tx.textContent=shortStop(s.name);
+      gT.appendChild(tx);
+    });
   } else {
     if(c0&&c0.lat!=null) labels.push({name:ends.from, lat:c0.lat, lon:c0.lon});
     else if(rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0]) labels.push({name:ends.from, lat:rideSegs[0].line[0][0], lon:rideSegs[0].line[0][1]});
@@ -1161,21 +1335,23 @@ function paintRide(){
     gT.appendChild(tx);
   });
   const discR=ink(7);
-  days.forEach(d=>{
-    if(d.mode==="train" || d.lat==null) return;
-    const q=xy(d.lat,d.lon);
-    const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-    c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", discR);
-    c.setAttribute("fill", selDay===d.n?"#c9a227":"#f0713f");
-    c.style.cursor="pointer";
-    c.addEventListener("click",e=>{ e.stopPropagation(); vbManual=false; selSeg=null; openRide(ride.id, selDay===d.n?null:d.n); });
-    const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-    tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+ink(3.4));
-    tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size", ink(9));
-    tx.setAttribute("font-weight","700"); tx.setAttribute("fill","#fff"); tx.setAttribute("pointer-events","none");
-    tx.textContent=d.n;
-    gD.appendChild(c); gD.appendChild(tx);
-  });
+  if(!selDay){
+    days.forEach(d=>{
+      if(d.mode==="train" || d.lat==null) return;
+      const q=xy(d.lat,d.lon);
+      const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", discR);
+      c.setAttribute("fill", "#f0713f");
+      c.style.cursor="pointer";
+      c.addEventListener("click",e=>{ e.stopPropagation(); vbManual=false; selSeg=null; selStop=null; openRide(ride.id, d.n); });
+      const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
+      tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+ink(3.4));
+      tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size", ink(9));
+      tx.setAttribute("font-weight","700"); tx.setAttribute("fill","#fff"); tx.setAttribute("pointer-events","none");
+      tx.textContent=d.n;
+      gD.appendChild(c); gD.appendChild(tx);
+    });
+  }
   rideSegs.forEach(seg=>{
     const fac=seg.fac||{};
     Object.keys(LCOL).forEach(k=>{
@@ -1205,7 +1381,7 @@ function paintRide(){
 function paintMini(){
   const mini=document.getElementById("minimap");
   if(!mini) return;
-  const on=mode==="ride" && PLAN && PLAN!==false && !!selDay;
+  const on=mode==="ride" && PLAN && PLAN!==false && !!selDay && !filmVisible();
   if(!on){
     mini.setAttribute("hidden","");
     mini.innerHTML="";
@@ -1362,36 +1538,44 @@ function plannerSheet(t){
   const kmDay=rideDays.length?Math.round(st.km/rideDays.length):st.km;
   const onDay=!!selDay;
   const today=rideDays.find(d=>d.n===selDay);
-  const todayPh=today?dayPhotos(today.to):[];
+  const stops=onDay&&today?dayStops(today, days):[];
+  const vias=stops.filter(s=>s.role==="via").slice(0,6);
+  const phItems=onDay&&today?dayPhotoItems(stops, today):[];
+  const daySegs=onDay&&today?segsOnDay(today, days):[];
+  const forkNote=onDay&&today?dayForkNote(today, days):"";
+  const gapKm=today&&today.gap!=null?Math.round(today.gap):null;
   const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
       <span class="tile-n">${d.n}</span>
       <span class="tile-who">${d.frm} → ${d.to}</span>
       <span class="tile-km">${d.km} km · ${Math.round(d.eff||0)} eff</span>
       ${d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:""}
     </button>`).join("");
+  const filmBlock=rideDays.length>1?`<div class="filmwrap hit" id="filmwrap">
+      <button type="button" class="film-nav" id="filmprev" aria-label="Previous day">‹</button>
+      <div class="film-track" id="film">${filmHtml}</div>
+      <button type="button" class="film-nav" id="filmnext" aria-label="Next day">›</button>
+    </div>`:`<div id="filmwrap" hidden></div>`;
   document.getElementById("head").innerHTML="";
   col.className="sheet";
   col.innerHTML=onDay?`
-    <div class="daybar hit" id="daybar">
-      <button type="button" class="opt" id="alldays">All days</button>
-      <button type="button" class="opt" id="prevday" ${selDay<=1?"disabled":""}>‹</button>
-      <span>Day ${selDay} of ${rideDays.length} · ${today?today.frm+" → "+today.to:ends.from+" → "+ends.to}</span>
-      <button type="button" class="opt" id="nextday" ${selDay>=rideDays.length?"disabled":""}>›</button>
-    </div>
     <aside class="ctx-card hit" id="ctx">
       <div class="tn"><span class="badge">${today?today.n:selDay}</span><h2>${today?today.frm+" → "+today.to:t.name}</h2></div>
       <div class="stats4">
-        <div><b>${today?today.km:"—"}</b><span>km today</span></div>
-        <div><b>${today?Math.round(today.climb||today.eff||0).toLocaleString():"—"}</b><span>m / effort</span></div>
-        <div><b>${today?today.stay||0:0}</b><span>beds</span></div>
+        <div><b>${today?today.km:"—"}</b><span>km</span></div>
+        <div><b>${today?Math.round(today.eff||today.climb||0).toLocaleString():"—"}</b><span>effort</span></div>
         <div><b>${today?today.shop||0:0}</b><span>shops</span></div>
+        <div><b>${today?today.stay||0:0}</b><span>beds</span></div>
       </div>
       <div class="profwrap">
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="dayfacts">${today?`<b>${today.shop||0}</b> shops · <b>${today.stay||0}</b> beds · <b>${today.bath||0}</b> baths · <b>${today.rail||0}</b> stations`:""}</div>
-      <div class="phs" id="dayph">${todayPh.map(src=>`<div style="background-image:url('${src}')"></div>`).join("")}</div>
+      <div class="dayfacts">${today?`${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> bath${(today.bath||0)===1?"":"s"} · <b>${today.rail||0}</b> station${(today.rail||0)===1?"":"s"}${today.water?` · <b>${today.water}</b> water`:""}`:""}</div>
+      <div class="strip daystrip" id="daystrip" title="Friendliness on today's legs">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}" title="${esc(showName(seg.frmName)+" → "+showName(seg.toName))}"></i>`).join("")}</div>
+      <div class="phs" id="dayph">${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
+      ${vias.length?`<div class="wayhead">On the way</div><div class="waylist">${vias.map(s=>`<button type="button" class="way${stopEq(selStop,s)?" on":""}" data-km="${s.km}">${esc(s.name)}</button>`).join("")}</div>`:""}
+      <button type="button" class="sleep${selStop&&selStop.role==="end"?" on":""}" id="daysleep">Sleep: ${esc(today?today.to:"")} · ${today?today.stay||0:0} beds</button>
+      ${forkNote?`<p class="forkline">${esc(forkNote)}</p>`:""}
       <div class="export"><div class="row">
         <button class="opt" id="gpx">GPX today</button>
         <button class="opt" id="pdf">Print</button>
@@ -1407,7 +1591,8 @@ function plannerSheet(t){
     <span id="slv" hidden></span><span id="dlv" hidden></span><span id="vehnote" hidden></span>
         <button type="button" id="friendtog" hidden></button><button type="button" id="signedtog" hidden></button><button type="button" id="csv" hidden></button>
     <span id="warn" hidden></span>
-    <details id="netforks" hidden></details>`:`
+    <details id="netforks" hidden></details>
+    ${filmBlock}`:`
     <aside class="ctx-card hit" id="ctx">
       <div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
         <span class="dl dl${d0}">${DNAME[d0]}</span></div>
@@ -1453,11 +1638,7 @@ function plannerSheet(t){
         <span class="ghost" id="expnote"></span>
       </div></div>
     </aside>
-    <div class="filmwrap hit" id="filmwrap">
-      <button type="button" class="film-nav" id="filmprev" aria-label="Previous day">‹</button>
-      <div class="film-track" id="film">${filmHtml}</div>
-      <button type="button" class="film-nav" id="filmnext" aria-label="Next day">›</button>
-    </div>
+    ${filmBlock}
     <div id="days" hidden></div>`;
     drawProfile(onDay && today ? [today] : rideDays);
   const strip=document.getElementById("strip");
@@ -1493,13 +1674,13 @@ function plannerSheet(t){
     startId=startSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
     if(i1<i0 || (i1===i0 && !loop)) endId=towns[towns.length-1].id;
-    selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+    selDay=null; selSeg=null; selStop=null; vbManual=false; skipCache=null; draw();
   };
   endSel.onchange=()=>{
     endId=endSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
     if(i1<i0 || (i1===i0 && !loop)) startId=towns[0].id;
-    selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+    selDay=null; selSeg=null; selStop=null; vbManual=false; skipCache=null; draw();
   };
   const dirrow=document.getElementById("dirrow");
   if(dirrow && !dirrow.hidden){
@@ -1513,15 +1694,15 @@ function plannerSheet(t){
       b.title=on?"the direction you are planning":"ride it the other way";
       if(!on) b.onclick=()=>{
         const tmp=startId; startId=endId; endId=tmp;
-        reversed=!reversed; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+        reversed=!reversed; selDay=null; selSeg=null; selStop=null; vbManual=false; skipCache=null; draw();
       };
       dirrow.appendChild(b);
     });
   }
   document.getElementById("eff").oninput=e=>{ document.getElementById("slv").textContent=e.target.value; };
-  document.getElementById("eff").onchange=e=>{ effort=+e.target.value; selDay=null; skipCache=null; draw(); };
+  document.getElementById("eff").onchange=e=>{ effort=+e.target.value; selDay=null; selStop=null; skipCache=null; draw(); };
   document.getElementById("dtar").oninput=e=>{ document.getElementById("dlv").textContent=+e.target.value?e.target.value+" days":"no limit"; };
-  document.getElementById("dtar").onchange=e=>{ dtar=+e.target.value; selDay=null; skipCache=null; draw(); };
+  document.getElementById("dtar").onchange=e=>{ dtar=+e.target.value; selDay=null; selStop=null; skipCache=null; draw(); };
   const skipBox=document.getElementById("skips");
   skipBox.innerHTML="";
   const stt=skipState();
@@ -1541,7 +1722,7 @@ function plannerSheet(t){
     b.onclick=()=>{
       if(on){ if(skipOn[id]){ delete skipOn[id]; skipOff[id]=1; } else skipOff[id]=1; }
       else { delete skipOff[id]; skipOn[id]=1; }
-      skipCache=null; selDay=null; vbManual=false; draw();
+      skipCache=null; selDay=null; selStop=null; vbManual=false; draw();
     };
     skipBox.appendChild(b);
   });
@@ -1564,7 +1745,7 @@ function plannerSheet(t){
     signedTog.onclick=()=>{
       preferSigned=!preferSigned;
       try{ localStorage.setItem("signed", preferSigned?"1":"0"); }catch(e){}
-      skipCache=null; selDay=null; vbManual=false; draw();
+      skipCache=null; selDay=null; selStop=null; vbManual=false; draw();
     };
   }
   const warnEl=document.getElementById("warn");
@@ -1622,7 +1803,7 @@ function plannerSheet(t){
           const towns=chainTowns();
           if(!towns.some(x=>x.id===startId)) startId=towns[0]&&towns[0].id;
           if(!towns.some(x=>x.id===endId)) endId=towns[towns.length-1]&&towns[towns.length-1].id;
-          selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+          selDay=null; selSeg=null; selStop=null; vbManual=false; skipCache=null; draw();
         };
       } else {
         b.disabled=true;
@@ -1641,26 +1822,56 @@ function plannerSheet(t){
   const film=document.getElementById("film");
   if(film){
     film.querySelectorAll(".tile").forEach(btn=>{
-      btn.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, Number(btn.dataset.day)); };
+      btn.onclick=()=>{
+        vbManual=false; selSeg=null; selStop=null;
+        const n=Number(btn.dataset.day);
+        openRide(ride.id, selDay===n?null:n);
+      };
     });
     const prev=document.getElementById("filmprev");
     const next=document.getElementById("filmnext");
-    if(prev) prev.onclick=()=>filmStep(-1);
-    if(next) next.onclick=()=>filmStep(1);
+    if(prev) prev.onclick=()=>{
+      if(selDay){ if(selDay>1){ vbManual=false; selSeg=null; selStop=null; openRide(ride.id, selDay-1); } }
+      else filmStep(-1);
+    };
+    if(next) next.onclick=()=>{
+      if(selDay){
+        if(selDay<rideDays.length){ vbManual=false; selSeg=null; selStop=null; openRide(ride.id, selDay+1); }
+      } else filmStep(1);
+    };
+    if(selDay) filmFocus=selDay;
     filmFocus=Math.min(Math.max(1, filmFocus||1), rideDays.length||1);
     syncFilm();
   }
-  const alldays=document.getElementById("alldays");
-  if(alldays) alldays.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, null); };
-  const prevd=document.getElementById("prevday");
-  if(prevd) prevd.onclick=()=>{ if(selDay>1){ vbManual=false; selSeg=null; openRide(ride.id, selDay-1); } };
-  const nextd=document.getElementById("nextday");
-  if(nextd) nextd.onclick=()=>{ if(selDay<rideDays.length){ vbManual=false; selSeg=null; openRide(ride.id, selDay+1); } };
+  if(onDay){
+    document.querySelectorAll("#dayph .ph").forEach(el=>{
+      el.onclick=e=>{
+        e.stopPropagation();
+        const name=el.dataset.name;
+        const stop=stops.find(s=>s.name===name);
+        if(stop) selectStop(stop);
+      };
+    });
+    document.querySelectorAll(".waylist .way").forEach(el=>{
+      el.onclick=e=>{
+        e.stopPropagation();
+        const km=+el.dataset.km;
+        const stop=stops.find(s=>Math.abs(s.km-km)<0.8);
+        if(stop) selectStop(stop);
+      };
+    });
+    const sleep=document.getElementById("daysleep");
+    if(sleep) sleep.onclick=e=>{
+      e.stopPropagation();
+      const stop=stops.find(s=>s.role==="end");
+      if(stop) selectStop(stop);
+    };
+  }
 }
 function selectSeg(s){
   if(!s){ selSeg=null; const c=document.getElementById("segcard"); if(c) c.hidden=true; vbManual=false; paint(); return; }
   if(selSeg===s.id){ selectSeg(null); return; }
-  selSeg=s.id; selDay=null; vbManual=false;
+  selSeg=s.id; selDay=null; selStop=null; vbManual=false;
   renderSegCard(s);
   paint();
 }
@@ -1678,8 +1889,8 @@ function renderSegCard(s){
     <div class="scmeta">signed ${r}% · busy ${bsy}% · ${shops} shops · ${beds} beds · ${sights} sights</div>
     <div class="scbtns"><button class="opt" id="sHere">start here</button><button class="opt" id="eHere">end here</button></div>`;
   c.querySelector(".scx").onclick=e=>{ e.stopPropagation(); selectSeg(null); };
-  c.querySelector("#sHere").onclick=()=>{ startId=s.frm; selSeg=null; selDay=null; vbManual=false; skipCache=null; draw(); };
-  c.querySelector("#eHere").onclick=()=>{ endId=s.to; selSeg=null; selDay=null; vbManual=false; skipCache=null; draw(); };
+  c.querySelector("#sHere").onclick=()=>{ startId=s.frm; selSeg=null; selDay=null; selStop=null; vbManual=false; skipCache=null; draw(); };
+  c.querySelector("#eHere").onclick=()=>{ endId=s.to; selSeg=null; selDay=null; selStop=null; vbManual=false; skipCache=null; draw(); };
 }
 function filmStep(dir){
   const n=planDays().filter(d=>d.mode!=="train").length;
@@ -1697,7 +1908,7 @@ function syncFilm(){
   let on=null;
   film.querySelectorAll(".tile").forEach(b=>{
     const num=+b.dataset.day;
-    const is=!!n && num===filmFocus;
+    const is=!!n && num===(selDay||filmFocus);
     b.classList.toggle("on", is);
     if(is) on=b;
   });
@@ -1707,8 +1918,8 @@ function syncFilm(){
   }
   const prev=document.getElementById("filmprev");
   const next=document.getElementById("filmnext");
-  if(prev) prev.disabled=filmFocus<=1;
-  if(next) next.disabled=!n || filmFocus>=n;
+  if(prev) prev.disabled=(selDay?selDay:filmFocus)<=1;
+  if(next) next.disabled=!n || (selDay?selDay:filmFocus)>=n;
 }
 function sparkPoly(d){
   if(!d.prof||d.prof.length<2||!d.km) return "";
@@ -1974,36 +2185,59 @@ function nearestPlace(x, y){
   });
   return best;
 }
+function nearestStopHit(x, y, slop){
+  let best=null, bd=slop;
+  stopHits.forEach(h=>{
+    const d=Math.hypot(h.x-x, h.y-y);
+    if(d<bd){ bd=d; best=h.stop; }
+  });
+  return best;
+}
+function nearestStopAny(x, y){
+  let best=null, bd=Infinity;
+  stopHits.forEach(h=>{
+    const d=Math.hypot(h.x-x, h.y-y);
+    if(d<bd){ bd=d; best=h.stop; }
+  });
+  return best;
+}
 function tapMap(e){
   if(mode!=="ride" || !PLAN || PLAN===false) return;
   if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daybar")) return;
   const pt=svgPt(e.clientX, e.clientY);
   if(!pt) return;
-  const hit=nearestPlace(pt[0], pt[1]);
-  if(hit){ showPlaceCard(hit); return; }
   if(selDay){
-    const days=planDays();
-    const d=days.find(x=>x.n===selDay);
-    const line=(d&&d.line)||[];
     const svg=document.getElementById("map");
     const r=svg.getBoundingClientRect();
     const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
+    const pinSlop=18*vb[2]/Math.max(r.width,1);
+    const stop=nearestStopHit(pt[0], pt[1], pinSlop);
+    if(stop){ selectStop(stop); return; }
+    const fac=nearestPlace(pt[0], pt[1]);
+    if(fac && fac.kind && fac.kind!=="town"){ showPlaceCard(fac); return; }
+    const days=planDays();
+    const d=days.find(x=>x.n===selDay);
+    const line=(d&&d.line)||[];
     const slop=14*vb[2]/Math.max(r.width,1);
-    let bp=null, bl=slop;
+    let near=false;
     for(let i=1;i<line.length;i++){
       const a=xy(line[i-1][0], line[i-1][1]), b=xy(line[i][0], line[i][1]);
       const dx=b[0]-a[0], dy=b[1]-a[1], L2=dx*dx+dy*dy;
       const t=L2?Math.max(0,Math.min(1,((pt[0]-a[0])*dx+(pt[1]-a[1])*dy)/L2)):0;
       const qx=a[0]+t*dx, qy=a[1]+t*dy, dd=Math.hypot(qx-pt[0], qy-pt[1]);
-      if(dd<bl){ bl=dd; bp=[qx,qy]; }
+      if(dd<slop){ near=true; break; }
     }
-    if(bp){
-      const ll=fromXY(bp[0], bp[1]);
-      showPlaceCard({kind:"point", name:"Point on the route", lat:ll[0], lon:ll[1],
-        sub:(d.frm||"")+" → "+(d.to||"")+" · "+ll[0].toFixed(4)+", "+ll[1].toFixed(4)});
+    if(near){
+      const next=nearestStopAny(pt[0], pt[1]);
+      if(next) selectStop(next);
       return;
     }
+    if(selStop || placeOpen) selectStop(null);
+    else hidePlaceCard();
+    return;
   }
+  const hit=nearestPlace(pt[0], pt[1]);
+  if(hit){ showPlaceCard(hit); return; }
   hidePlaceCard();
 }
 
@@ -2038,7 +2272,7 @@ document.getElementById("vehbtn").onclick=()=>{
 };
 document.getElementById("langbtn").onclick=()=>{ lang=lang==="local"?"en":"local"; draw(); };
 document.getElementById("fitbtn").onclick=()=>{
-  selDay=null; selSeg=null; vbManual=false;
+  selDay=null; selSeg=null; selStop=null; vbManual=false;
   if(ride) openRide(ride.id, null);
   else applyView();
 };
@@ -2070,6 +2304,7 @@ document.addEventListener("keydown",e=>{
   if(typingIn(e)) return;
   if(e.key==="Escape"){
     if(placeOpen){ e.preventDefault(); hidePlaceCard(); return; }
+    if(selStop){ e.preventDefault(); selectStop(null); return; }
     if(mode==="network") return;
     e.preventDefault();
     if(selDay && ride) openRide(ride.id, null);
@@ -2090,13 +2325,13 @@ document.addEventListener("keydown",e=>{
   if(mode==="ride" && PLAN && PLAN!==false){
     if(e.key==="ArrowLeft"){
       e.preventDefault();
-      if(selDay){ if(selDay>1){ vbManual=false; selSeg=null; openRide(ride.id, selDay-1); } }
+      if(selDay){ if(selDay>1){ vbManual=false; selSeg=null; selStop=null; openRide(ride.id, selDay-1); } }
       else filmStep(-1);
     } else if(e.key==="ArrowRight"){
       e.preventDefault();
       if(selDay){
         const n=planDays().filter(d=>d.mode!=="train").length;
-        if(selDay<n){ vbManual=false; selSeg=null; openRide(ride.id, selDay+1); }
+        if(selDay<n){ vbManual=false; selSeg=null; selStop=null; openRide(ride.id, selDay+1); }
       } else filmStep(1);
     }
   }

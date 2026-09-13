@@ -849,7 +849,7 @@ function fitDay(){
     days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
     line=sliceLine(activeSegs().filter(s=>!isSkipped(s.id)), k0, k1);
   }
-  if(line&&line.length>1) fitPts(line, 1.18);
+  if(line&&line.length>1) fitPts(line, filmVisible()?1.36:1.18);
   else fitRide();
 }
 function fitSeg(){
@@ -1088,6 +1088,12 @@ function stopEq(a, b){
   if(a.km==null || b.km==null) return true;
   return Math.abs(a.km-b.km)<0.8;
 }
+function shortStop(name){
+  const s=String(name||"");
+  const m=s.match(/\(([^)]+)\)\s*$/);
+  if(m && m[1] && m[1].length<s.length) return m[1];
+  return s;
+}
 function dayStops(today, days){
   if(!today) return [];
   const segs=activeSegs().filter(s=>!isSkipped(s.id));
@@ -1149,7 +1155,7 @@ function dayPhotoItems(stops, today){
     if(!stop) return;
     const src=(dayPhotos(stop.name)||[])[0];
     if(!src) return;
-    if(items.some(p=>p.name===stop.name)) return;
+    if(items.some(p=>p.src===src)) return;
     items.push({src, name:stop.name, stop});
   };
   if(selStop) add(selStop);
@@ -1183,7 +1189,8 @@ function selectStop(stop){
 }
 function syncDayOverlay(){
   document.querySelectorAll("#dayph .ph").forEach(el=>{
-    el.classList.toggle("on", !!(selStop && el.dataset.name===selStop.name));
+    const mine=!!(selStop && (el.dataset.name===selStop.name || (selStop.photo && el.dataset.src===selStop.photo)));
+    el.classList.toggle("on", mine);
   });
   document.querySelectorAll(".waylist .way").forEach(el=>{
     const km=+el.dataset.km;
@@ -1286,14 +1293,20 @@ function paintRide(){
       disc.setAttribute("stroke-width", ink(on?2.2:1.4));
       disc.style.cursor="pointer";
       disc.addEventListener("click",e=>{ e.stopPropagation(); selectStop(s); });
+      gT.appendChild(disc);
+      const showLab=on || s.role==="start" || s.role==="end";
+      if(!showLab) return;
       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
       tx.setAttribute("x", q[0]+ink(8)); tx.setAttribute("y", q[1]-ink(8));
-      tx.setAttribute("class","townlab"); tx.setAttribute("pointer-events","none");
-      tx.setAttribute("font-size", ink(on?10:8.5));
-      tx.setAttribute("font-weight", on?"700":"500");
+      tx.setAttribute("pointer-events","none");
+      tx.setAttribute("font-size", ink(on?9:8));
+      tx.setAttribute("font-weight", on?"700":"600");
       tx.setAttribute("fill", on?"#1c1916":"#6f675e");
-      tx.textContent=s.name;
-      gT.appendChild(disc);
+      tx.setAttribute("stroke", "#fffdf8");
+      tx.setAttribute("stroke-width", ink(2.2));
+      tx.setAttribute("paint-order", "stroke");
+      tx.setAttribute("stroke-linejoin", "round");
+      tx.textContent=shortStop(s.name);
       gT.appendChild(tx);
     });
   } else {
@@ -1558,7 +1571,7 @@ function plannerSheet(t){
       </div>
       <div class="dayfacts">${today?`${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> baths · <b>${today.rail||0}</b> stations${today.water?` · <b>${today.water}</b> water`:""}`:""}</div>
       <div class="strip daystrip" id="daystrip" title="Friendliness on today's legs">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}" title="${esc(showName(seg.frmName)+" → "+showName(seg.toName))}"></i>`).join("")}</div>
-      <div class="phs" id="dayph">${phItems.map(p=>`<button type="button" class="ph${stopEq(selStop,p.stop)?" on":""}" data-name="${esc(p.name)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
+      <div class="phs" id="dayph">${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
       ${vias.length?`<div class="wayhead">On the way</div><div class="waylist">${vias.map(s=>`<button type="button" class="way${stopEq(selStop,s)?" on":""}" data-km="${s.km}">${esc(s.name)}</button>`).join("")}</div>`:""}
       <button type="button" class="sleep${selStop&&selStop.role==="end"?" on":""}" id="daysleep">Sleep: ${esc(today?today.to:"")} · ${today?today.stay||0:0} beds</button>
       ${forkNote?`<p class="forkline">${esc(forkNote)}</p>`:""}

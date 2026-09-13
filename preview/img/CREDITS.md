@@ -22,4 +22,32 @@ Local copies of Wikimedia Commons photos for the design mock only.
 | constance.jpg | Fähre "Friedrichshafen" auf dem Weg nach Romanshorn (Feb. 2022).jpg | Lake Constance circuit |
 | gotthard.jpg | Historische Reisepostkutsche am St. Gotthardpass.jpg | Gotthard / N–S |
 
+
+## Added 2026-09-13 (Japan and Spain trip heroes)
+
+| File | Commons file | Use |
+|---|---|---|
+| biwa.jpg | Lake Biwa.jpg | Biwaichi |
+| fuji.jpg | Mount Fuji from Lake Kawaguchi.jpg | Fuji-ichi |
+| noto.jpg | Wajima Asaichi ac (10).jpg | Noto |
+| kasumigaura.jpg | Mount Sengen seen from Shimoshizuku, Kasumigaura City | Ring-Ring |
+| aso.jpg | Mount Aso.jpg | Yamanami / Kyushu |
+| choshi.jpg | Inubosaki Lighthouse.jpg | Pacific / Bōsō |
+| naruto.jpg | Naruto Whirlpools taken 4-21-2008.jpg | Awaji |
+| nara.jpg | Tōdai-ji.jpg | Keinawa |
+| nichinan.jpg | Horikiri Pass Miyazaki 2016.JPG | Nichinan Coast |
+| kibi.jpg | Kibitsu Jinja 10.JPG | Kibi Plain |
+| tottori.jpg | Tottori Sand Dunes.jpg | Tottori |
+| toyama.jpg | Toyama Bay002.jpg | Toyama Bay |
+| matsushima.jpg | Matsushima.jpg | Sanriku / Tōhoku |
+| hamana.jpg | Kanzanji Sago Royal Hotel.JPG | Lake Hamana |
+| wakkanai.jpg | Tower of Prayer monument, Cape Soya | Hokkaidō / cape |
+| creus.jpg | Cap de Creus.jpg | East–west Spain |
+| santiago.jpg | Catedral de Santiago de Compostela.jpg | Camino Francés |
+| sansebastian.jpg | Donostia-San Sebastián.jpg | Camino del Norte |
+| ponferrada.jpg | Castillo de Ponferrada.jpg | Invierno |
+| pyrenees.jpg | Pyrenees.jpg | Pyrenean foothills |
+| girona.jpg | Girona.jpg | Ebro / Girona |
+| barcelona.jpg | Sagrada Familia Barcelona.jpg | Via Barcelona |
+
 See each file’s Commons page for author and license (typically CC BY / CC BY-SA / PD).

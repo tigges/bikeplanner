@@ -1570,7 +1570,7 @@ function plannerSheet(t){
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="dayfacts">${today?`${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> baths · <b>${today.rail||0}</b> stations${today.water?` · <b>${today.water}</b> water`:""}`:""}</div>
+      <div class="dayfacts">${today?`${gapKm!=null?gapKm+" km longest gap · ":""}<b>${today.bath||0}</b> bath${(today.bath||0)===1?"":"s"} · <b>${today.rail||0}</b> station${(today.rail||0)===1?"":"s"}${today.water?` · <b>${today.water}</b> water`:""}`:""}</div>
       <div class="strip daystrip" id="daystrip" title="Friendliness on today's legs">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}" title="${esc(showName(seg.frmName)+" → "+showName(seg.toName))}"></i>`).join("")}</div>
       <div class="phs" id="dayph">${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
       ${vias.length?`<div class="wayhead">On the way</div><div class="waylist">${vias.map(s=>`<button type="button" class="way${stopEq(selStop,s)?" on":""}" data-km="${s.km}">${esc(s.name)}</button>`).join("")}</div>`:""}

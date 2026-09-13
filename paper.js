@@ -1664,7 +1664,7 @@ function sheet(){
   if(mode==="network"){
     col.className="";
     const n=visible().length;
-    head.innerHTML=`<a class="back" href="hub.html">‹ Where to ride</a>
+    head.innerHTML=`<a class="back" href="./">‹ Where to ride</a>
       <p class="kicker">${PAPER.kicker(TRIPS.length)}</p>
       <h1>${PAPER.title}</h1>
       <p class="lede">${PAPER.lede}</p>

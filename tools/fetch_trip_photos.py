@@ -2,7 +2,8 @@
 """Download a small set of Wikimedia Commons thumbs for trip heroes."""
 import json, os, urllib.parse, urllib.request
 
-OUT = "/workspace/preview/img"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUT = os.path.join(ROOT, "img")
 UA = "bikeplanner/0.1 (https://github.com/tigges/bikeplanner; photos for a cycle-tour atlas)"
 FILES = {
   "biwa.jpg": "Lake Biwa from Mount Shizugatake.jpg",

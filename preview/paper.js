@@ -804,9 +804,18 @@ function enrichDays(days){
   return days;
 }
 function dayPhotos(to){
-  if(PAPER.places && PAPER.places[to]){
-    const v=PAPER.places[to];
-    return Array.isArray(v)?v:[v];
+  const places=PAPER.places||{};
+  const hit=places[to];
+  if(hit) return Array.isArray(hit)?hit:[hit];
+  const low=String(to||"").toLowerCase();
+  if(low){
+    for(const k of Object.keys(places)){
+      const kl=k.toLowerCase();
+      if(low===kl || low.indexOf(kl)>=0 || kl.indexOf(low)>=0){
+        const v=places[k];
+        return Array.isArray(v)?v:[v];
+      }
+    }
   }
   const src=ride && PHOTO[ride.id];
   return src?[src]:[];
@@ -1113,9 +1122,11 @@ function plannerSheet(t){
   document.getElementById("dtar").oninput=e=>{ document.getElementById("dlv").textContent=+e.target.value?e.target.value+" days":"no limit"; };
   document.getElementById("dtar").onchange=e=>{ dtar=+e.target.value; selDay=null; skipCache=null; draw(); };
   const skipBox=document.getElementById("skips");
+  skipBox.innerHTML="";
   const stt=skipState();
   const book=segBook();
-  if(!stt.cands.length) skipBox.innerHTML='<span class="ghost">No skippable stretch on this route.</span>';
+  const showHops=dtar>0 || Object.keys(skipOn).length>0;
+  if(showHops && stt.cands.length){
   stt.cands.forEach(id=>{
     const s=book[id]; if(!s) return;
     const b=document.createElement("button");
@@ -1133,6 +1144,7 @@ function plannerSheet(t){
     };
     skipBox.appendChild(b);
   });
+  }
   const vnote=document.getElementById("vehnote");
   vnote.textContent=veh==="opium"?"S-pedelec mode: a day is distance only (no climb penalty).":
     veh==="ebike"?"E-bike mode: same roads as the bicycle, climbing counts a third, days capped at one battery.":"";

@@ -143,6 +143,111 @@
       "Flüelen": [
         "img/klausen.jpg",
         "img/lucerne.jpg"
+      ],
+      "Sierre": [
+        "img/gletsch.jpg"
+      ],
+      "Leuk": [
+        "img/gletsch.jpg"
+      ],
+      "Visp": [
+        "img/gletsch.jpg"
+      ],
+      "Goms": [
+        "img/gletsch.jpg"
+      ],
+      "Ernen": [
+        "img/gletsch.jpg"
+      ],
+      "Spiez": [
+        "img/lucerne.jpg"
+      ],
+      "Thun": [
+        "img/lucerne.jpg"
+      ],
+      "Kandersteg": [
+        "img/gletsch.jpg"
+      ],
+      "Goppenstein": [
+        "img/gletsch.jpg"
+      ],
+      "Gstaad": [
+        "img/jaun.jpg"
+      ],
+      "Château-d'Œx": [
+        "img/jaun.jpg"
+      ],
+      "Bern": [
+        "img/murten.jpg"
+      ],
+      "Fribourg": [
+        "img/murten.jpg"
+      ],
+      "Laupen": [
+        "img/murten.jpg"
+      ],
+      "Delémont": [
+        "img/jura.jpg"
+      ],
+      "La Chaux-de-Fonds": [
+        "img/jura.jpg"
+      ],
+      "Davos": [
+        "img/engadin.jpg"
+      ],
+      "Ilanz/Glion": [
+        "img/engadin.jpg"
+      ],
+      "Disentis/Mustér": [
+        "img/engadin.jpg"
+      ],
+      "Locarno": [
+        "img/lugano.jpg"
+      ],
+      "Kreuzlingen": [
+        "img/constance.jpg"
+      ],
+      "Konstanz": [
+        "img/constance.jpg"
+      ],
+      "Koblenz": [
+        "img/rheinfall.jpg"
+      ],
+      "Brugg": [
+        "img/basel.jpg"
+      ],
+      "Baden": [
+        "img/basel.jpg"
+      ],
+      "Aarau": [
+        "img/basel.jpg"
+      ],
+      "Glarus": [
+        "img/klausen.jpg"
+      ],
+      "Altdorf": [
+        "img/klausen.jpg"
+      ],
+      "Brunnen": [
+        "img/lucerne.jpg"
+      ],
+      "Einsiedeln": [
+        "img/lucerne.jpg"
+      ],
+      "Schwyz": [
+        "img/lucerne.jpg"
+      ],
+      "Wassen": [
+        "img/gotthard.jpg"
+      ],
+      "Göschenen": [
+        "img/gotthard.jpg"
+      ],
+      "Préverenges": [
+        "img/lavaux.jpg"
+      ],
+      "Saint-Maurice": [
+        "img/lavaux.jpg"
       ]
     }
   },
@@ -275,6 +380,42 @@
       ],
       "Toyama": [
         "img/toyama.jpg"
+      ],
+      "Hiroshima": [
+        "img/japan.jpg"
+      ],
+      "Osaka": [
+        "img/japan.jpg"
+      ],
+      "Kobe": [
+        "img/naruto.jpg"
+      ],
+      "Aomori": [
+        "img/wakkanai.jpg"
+      ],
+      "Sendai": [
+        "img/matsushima.jpg"
+      ],
+      "Hamamatsu": [
+        "img/hamana.jpg"
+      ],
+      "Nagoya": [
+        "img/fuji.jpg"
+      ],
+      "Tokyo": [
+        "img/choshi.jpg"
+      ],
+      "Cape Sata": [
+        "img/nichinan.jpg"
+      ],
+      "Cape Sōya": [
+        "img/wakkanai.jpg"
+      ],
+      "Moji": [
+        "img/aso.jpg"
+      ],
+      "Ōtsu": [
+        "img/biwa.jpg"
       ]
     }
   },
@@ -319,6 +460,54 @@
       ],
       "Donostia": [
         "img/sansebastian.jpg"
+      ],
+      "Logroño": [
+        "img/santiago.jpg"
+      ],
+      "Astorga": [
+        "img/santiago.jpg"
+      ],
+      "Sarria": [
+        "img/santiago.jpg"
+      ],
+      "Arzúa": [
+        "img/santiago.jpg"
+      ],
+      "Frómista": [
+        "img/santiago.jpg"
+      ],
+      "Sahagún": [
+        "img/santiago.jpg"
+      ],
+      "Bilbao": [
+        "img/sansebastian.jpg"
+      ],
+      "Santander": [
+        "img/sansebastian.jpg"
+      ],
+      "Figueres": [
+        "img/girona.jpg"
+      ],
+      "Lleida": [
+        "img/girona.jpg"
+      ],
+      "Cap de Creus": [
+        "img/creus.jpg"
+      ],
+      "Cabo Fisterra": [
+        "img/fisterra.jpg"
+      ],
+      "Ponferrada": [
+        "img/ponferrada.jpg"
+      ],
+      "O Cebreiro": [
+        "img/santiago.jpg"
+      ],
+      "Pamplona": [
+        "img/sansebastian.jpg"
+      ],
+      "Jaca": [
+        "img/pyrenees.jpg"
       ]
     }
   }

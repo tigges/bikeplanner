@@ -86,6 +86,7 @@ details.netforks summary{cursor:pointer;color:var(--mute)}
 .ends label{font-size:11px;color:var(--mute);display:flex;flex-direction:column;gap:3px}
 .ends select{font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:8px;padding:5px 8px;background:var(--card);color:var(--ink)}
 .row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.row:empty{display:none;margin:0}
 .opt{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;background:transparent;font:inherit;cursor:pointer;color:var(--ink)}
 .opt.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .effort{width:100%;accent-color:var(--route);height:16px}
@@ -134,7 +135,7 @@ details.netforks summary{cursor:pointer;color:var(--mute)}
 footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
 body.planner header,body.planner footer{display:none}
 body.planner main{max-width:none;padding:10px 14px;height:100vh}
-body.planner .split{height:100%;grid-template-columns:minmax(380px,440px) 1fr;gap:12px}
+body.planner .split{height:100%;grid-template-columns:minmax(400px,480px) 1fr;gap:12px}
 #col.sheet{display:flex;flex-direction:column;height:100%;min-height:0;overflow:hidden}
 .sheet-body{flex:1 1 auto;min-height:0;overflow:auto}
 body.planner .sheet-top{flex:0 0 auto}
@@ -159,7 +160,8 @@ body.planner .fold.grow:not(.closed) .foldbody{overflow:visible;flex:none;displa
 body.planner .export{flex:0 0 auto;background:var(--paper);z-index:1;padding:6px 0 0}
 body.planner .export .row{gap:4px}
 body.planner .export .opt{padding:3px 9px;font-size:11px}
-#expnote{font-size:11px;margin:2px 0 0;min-height:14px}
+body.planner .tm{display:none}
+#expnote{font-size:11px;margin:0}
 body.planner .ghost.help{display:none}
 body.planner .day{padding:3px 2px;gap:4px}
 body.planner .day .spark{height:16px}

@@ -1094,7 +1094,7 @@ function plannerSheet(t){
   };
   const dirrow=document.getElementById("dirrow");
   const off=peekDir(!reversed);
-  [[reversed, ends.from, ends.to, st.asc, rideDays.length], [!reversed, ends.to, ends.from, off.asc, off.days]].forEach(row=>{
+  [[true, ends.from, ends.to, st.asc, rideDays.length], [false, ends.to, ends.from, off.asc, off.days]].forEach(row=>{
     const b=document.createElement("button");
     b.type="button";
     const on=row[0];

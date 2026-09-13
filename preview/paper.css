@@ -53,6 +53,9 @@ main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 .legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
 #friendtog{margin-left:auto;border:1px solid var(--line);border-radius:999px;padding:2px 8px;cursor:pointer;background:transparent;font:inherit;font-size:11px;color:var(--mute)}
 #friendtog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+#signedtog{margin:6px 0 0;border:1px solid var(--line);border-radius:999px;padding:2px 8px;cursor:pointer;background:transparent;font:inherit;font-size:11px;color:var(--mute)}
+#signedtog.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+#warn:empty{display:none}
 .segcard{margin:8px 0;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px}
 .segcard .schead{display:flex;justify-content:space-between;align-items:center;font-size:13px}
 .segcard .scx{border:0;background:none;cursor:pointer;font:inherit;color:var(--mute)}

@@ -102,7 +102,7 @@ let TRIPS=[], mode="network", ride=null, hover=null, pick=null, filter="top";
 let PLAN=null, effort=100, veh="bike", selDay=null, filmFocus=1;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
-let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
+let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, preferSigned=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
 try{
   ["plan","days"].forEach(k=>{
     const v=localStorage.getItem("fold:fold-"+k);
@@ -111,6 +111,8 @@ try{
   });
   if(localStorage.getItem("friend")==="1") friendOn=true;
   if(localStorage.getItem("friend")==="0") friendOn=false;
+  if(localStorage.getItem("signed")==="1") preferSigned=true;
+  if(localStorage.getItem("signed")==="0") preferSigned=false;
 }catch(e){}
 const BAND={g:"#97C459",a:"#EF9F27",r:"#E24B4A"};
 const LCOL={shop:"#c9a227",stay:"#3d7ec9",bath:"#7a5ea7",rail:"#1c1916",water:"#4a8fa3"};
@@ -450,8 +452,9 @@ function pickedIds(){
   if(!PLAN.alts) return segs.map(s=>s.id);
   const forks=PLAN.forks||[];
   for(let i=forks.length-1;i>=0;i--){
-    const f=forks[i], def=f.options[0]&&f.options[0].id, p=picks[f.node]||f.pick||def;
-    if(p && p!==def && PLAN.alts[f.node+":"+p]) return PLAN.alts[f.node+":"+p].ids;
+    const f=forks[i], stored=f.pick, def=f.options[0]&&f.options[0].id;
+    const p=picks[f.node]||stored||def;
+    if(p && stored && p!==stored && PLAN.alts[f.node+":"+p]) return PLAN.alts[f.node+":"+p].ids;
   }
   return segs.map(s=>s.id);
 }
@@ -523,6 +526,17 @@ function flipSeg(s){
   return {...s, frm:s.to, to:s.frm, frmName:s.toName, toName:s.frmName,
     ascent, descent, effort, effortR:effortOf(s,false), line, cand, prof};
 }
+function orientWalk(segs, fromId){
+  if(!segs.length) return segs;
+  const out=[];
+  let at=fromId||segs[0].frm;
+  segs.forEach(s=>{
+    const cur=(at && s.frm!==at && s.to===at) ? flipSeg(s) : s;
+    out.push(cur);
+    at=cur.to;
+  });
+  return out;
+}
 function chainSegs(){
   if(!PLAN || PLAN===false) return [];
   const book=segBook();
@@ -534,6 +548,14 @@ function chainSegs(){
       {km:s.km,eff:s.effort,beds:0,node:s.to,label:s.toName,lat:last&&last[0],lon:last&&last[1]}
     ]};
   });
+  if(preferSigned && veh!=="opium"){
+    segs=segs.map(s=>{
+      const a=s.signedAlt; if(!a) return s;
+      return {...s, km:a.km, ascent:a.ascent, descent:a.descent, effort:a.effort, effortR:a.effortR,
+        line:a.line||s.line, cand:a.cand&&a.cand.length?a.cand:s.cand, prof:a.prof||s.prof, signedGeom:true};
+    });
+  }
+  segs=orientWalk(segs, PLAN.start||(segs[0]&&segs[0].frm));
   if(reversed) segs=segs.slice().reverse().map(flipSeg);
   return segs;
 }
@@ -583,6 +605,17 @@ function forkSummary(){
     }
   });
   return extra.length?"Main line · "+extra.join(" · "):(PLAN.forkSummary||"Main line");
+}
+function signedNoteText(){
+  if(veh==="opium") return "Not used by the S-pedelec: it keeps its own line.";
+  const book=segBook();
+  const sl=pickedIds().map(id=>book[id]).filter(s=>s && s.signedAlt);
+  if(!sl.length) return "";
+  const extra=sl.reduce((n,s)=>n+((s.signedAlt.km||0)-(s.km||0)),0);
+  const km=Math.round(extra);
+  return preferSigned
+    ? sl.length+" legs on this journey follow a signed cycle route, "+km+" km longer in total than the direct lines."
+    : "Would move "+sl.length+" legs on this journey onto a signed cycle route, adding "+km+" km.";
 }
 function travelEnds(){
   const segs=activeSegs();
@@ -1178,7 +1211,8 @@ function plannerSheet(t){
     <div id="skips" hidden></div><div id="days" hidden></div>
     <input id="eff" type="hidden" value="${effort}"><input id="dtar" type="hidden" value="${dtar}">
     <span id="slv" hidden></span><span id="dlv" hidden></span><span id="vehnote" hidden></span>
-    <button type="button" id="friendtog" hidden></button><button type="button" id="csv" hidden></button>
+        <button type="button" id="friendtog" hidden></button><button type="button" id="signedtog" hidden></button><button type="button" id="csv" hidden></button>
+    <span id="warn" hidden></span>
     <details id="netforks" hidden></details>`:`
     <aside class="ctx-card hit" id="ctx">
       <div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
@@ -1204,11 +1238,14 @@ function plannerSheet(t){
           </div>
           <div>
             <div class="slrow"><span>Days I have</span><span id="dlv">${dtar?dtar+" days":"no limit"}</span></div>
-            <input class="effort" id="dtar" type="range" min="0" max="20" step="1" value="${dtar}">
+            <input class="effort" id="dtar" type="range" min="0" max="60" step="1" value="${dtar}">
           </div>
         </div>
         <div class="row" id="skips"></div>
+        <p id="warn">${skipWarn?skipWarn:""}</p>
         <p class="ghost" id="vehnote"></p>
+        <button type="button" id="signedtog" class="${preferSigned?"on":""}" ${((PLAN.segs||[]).concat(PLAN.altSegs||[]).some(s=>s.signedAlt))?"":"hidden"}>Prefer signed cycle routes</button>
+        <p class="ghost" id="signednote"></p>
         <p class="forkq">${forkSummary()}</p>
         <div id="forks"></div>
         <details class="netforks" id="netforks" hidden><summary>Other forks</summary><div id="forks-off"></div></details>
@@ -1246,13 +1283,14 @@ function plannerSheet(t){
   if(selSeg) renderSegCard(activeSegs().find(s=>s.id===selSeg));
   const towns=chainTowns();
   const startSel=document.getElementById("start"), endSel=document.getElementById("end");
+  const loop=!!PLAN && PLAN.start===PLAN.end;
   towns.forEach((tn,i)=>{
     const o=document.createElement("option"); o.value=tn.id; o.textContent=showName(tn);
     if(tn.id===startId) o.selected=true;
-    if(i<towns.length-1) startSel.appendChild(o);
+    if(i<towns.length-1 || loop) startSel.appendChild(o);
   });
   towns.forEach((tn,i)=>{
-    if(i===0) return;
+    if(i===0 && !loop) return;
     const o=document.createElement("option"); o.value=tn.id; o.textContent=showName(tn);
     if(tn.id===endId) o.selected=true;
     endSel.appendChild(o);
@@ -1260,13 +1298,13 @@ function plannerSheet(t){
   startSel.onchange=()=>{
     startId=startSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
-    if(i1<=i0) endId=towns[towns.length-1].id;
+    if(i1<i0 || (i1===i0 && !loop)) endId=towns[towns.length-1].id;
     selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   endSel.onchange=()=>{
     endId=endSel.value;
     const i0=towns.findIndex(x=>x.id===startId), i1=towns.findIndex(x=>x.id===endId);
-    if(i1<=i0) startId=towns[0].id;
+    if(i1<i0 || (i1===i0 && !loop)) startId=towns[0].id;
     selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   const dirrow=document.getElementById("dirrow");
@@ -1323,6 +1361,20 @@ function plannerSheet(t){
     document.getElementById("friendtog").classList.toggle("on", friendOn);
     paint();
   };
+  const signedTog=document.getElementById("signedtog");
+  const signedNote=document.getElementById("signednote");
+  if(signedTog && !onDay){
+    const n=((PLAN.segs||[]).concat(PLAN.altSegs||[])).filter(s=>s.signedAlt).length;
+    signedTog.hidden=!n || veh==="opium";
+    if(signedNote) signedNote.textContent=signedTog.hidden?"":signedNoteText();
+    signedTog.onclick=()=>{
+      preferSigned=!preferSigned;
+      try{ localStorage.setItem("signed", preferSigned?"1":"0"); }catch(e){}
+      skipCache=null; selDay=null; vbManual=false; draw();
+    };
+  }
+  const warnEl=document.getElementById("warn");
+  if(warnEl && !onDay) warnEl.textContent=skipWarn||"";
   document.getElementById("gpx").onclick=()=>{
     const pack=onDay && today ? [today] : rideDays;
     const name=onDay && today ? (PLAN.id||"ride")+"-day"+today.n+".gpx" : (PLAN.id||"ride")+".gpx";

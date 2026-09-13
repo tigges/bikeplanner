@@ -9,7 +9,7 @@ The new cycle-tour site: one hub, country galleries, and a paper planner.
 - [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation on the tour sheet, beside a map figure.
 - [preview/hub.html](preview/hub.html) — three country cards. Japan, Switzerland and Spain each open a gallery in this site.
 - [preview/switzerland.html](preview/switzerland.html) — 29 trips.
-- [preview/japan.html](preview/japan.html) — 24 trips (Shimanami, Biwaichi, Fuji-ichi, Awaji, Yamanami, Pacific Cycling Road, cape to cape).
+- [preview/japan.html](preview/japan.html) — 29 trips (Shimanami, Biwaichi, Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road, cape to cape).
 - [preview/spain.html](preview/spain.html) — 8 trips (Camino Francés, Norte, Fisterra, the crossing).
 
 Every trip opens a paper tour sheet from a **ride snapshot** (computed days, elevation, forks, GPX). That is not the full graph — forks rewrite with `alts[node:option]`, last non-default wins. Refresh snapshots with `node tools/extract_ride_snapshots.mjs`. Trip hero photos: `python3 tools/fetch_trip_photos.py`.

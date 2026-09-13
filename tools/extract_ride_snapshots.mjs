@@ -141,6 +141,25 @@ const EXTRACT_JS = `(() => {
         water: thinFac(facSrc.water, s, 10)
       };
     }
+    if (typeof SSEG !== "undefined" && SSEG[id]) {
+      const sg = SSEG[id];
+      const ssd = (typeof SSD !== "undefined" && SSD[id]) || sd;
+      const sprof = (ssd.prof || []).map(p => [rnd(p[0], 1), Math.round(p[1])]);
+      const sfrom = climbFromProf(sprof);
+      rec.signedAlt = {
+        km: rnd(sg.km, 1),
+        ascent: saneClimb(sg.ascent || 0, sg.km, sfrom.up),
+        descent: saneClimb(sg.descent || 0, sg.km, sfrom.down),
+        effort: Math.round(sg.effort || 0),
+        effortR: Math.round(sg.effortR || sg.effort || 0),
+        cand: (sg.cand || []).map(c => {
+          const p = c.x != null ? ll(c.x, c.y) : [null, null];
+          return { km: rnd(c.km, 1), eff: rnd(c.eff, 1), beds: c.beds || 0, node: c.node || null, label: c.label || "", lat: p[0], lon: p[1] };
+        }),
+        prof: thinPts(sprof, 40),
+        line: lineLL(sg.line, false, 48)
+      };
+    }
     return rec;
   }
   function chainIds(ch){

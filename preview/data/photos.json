@@ -276,7 +276,12 @@
       "hokkaido": "img/wakkanai.jpg",
       "tohoku": "img/matsushima.jpg",
       "kansai": "img/japan.jpg",
-      "kyushu": "img/aso.jpg"
+      "kyushu": "img/aso.jpg",
+      "tokapuchi": "img/tokachi.jpg",
+      "okhotsk": "img/okhotsk.jpg",
+      "amaichi": "img/amaichi.jpg",
+      "sapporo-tokachi": "img/tokachi.jpg",
+      "tokachi-okhotsk": "img/okhotsk.jpg"
     },
     "places": {
       "Onomichi": [

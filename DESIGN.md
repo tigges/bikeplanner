@@ -35,7 +35,7 @@ Three self-contained cycle-tour planners behind a dark text list. Screenshot of 
 | Page | What it is | Size | Opens on |
 |---|---|---|---|
 | Hub `/` | Title, blurb, three links | 1 KB | Country list |
-| Japan | Cape Sōya → Cape Sata | 12.2 MB | Trip picker (19 trips, Fuji-ichi Top 5) |
+| Japan | Cape Sōya → Cape Sata | 12.2 MB | Trip picker (29 trips, Fuji-ichi Top 5, Tokapuchi 400 Top 7) |
 | Switzerland | National routes, passes, loops; second graph off the hub | 3.3 + 0.8 MB | Trip picker (29 trips, default `top`) |
 | Spain | Cap de Creus → Cabo Fisterra | 2.4 MB | Trip picker (8 trips: Francés, Norte, …) |
 
@@ -47,10 +47,10 @@ The problem is the **product surface**. Nothing on the hub says Shimanami, Furka
 
 ## 3. What the repository already has (the hub hides this)
 
-As of 2026-09-12 (`tigges/routeplanner` `954e81e`, live hub still a dark 1 KB list):
+As of 2026-09-13 (`tigges/routeplanner` `f4c7f8d`, live hub still a dark 1 KB list):
 
 1. **Trip catalogues**
-   - Japan: **24 trips** as of `954e81e`. Cape-to-cape plus Shimanami (Top 1), **Biwaichi (Top 2)**, Noto, **Ring-Ring Road (Top 4)**, **Fuji-ichi (Top 5)**, Toyama Bay, **Awaji (Awa-ichi)**, **Yamanami Highway**, **Pacific Cycling Road from Chōshi**, Keinawa, Bōsō / Tokyo Bay ferry. Towns Motosu, Kawaguchiko, Yamanakako, Gotemba, Akashi, Iwaya, Sumoto, Fukura, Nara, Gojo, Beppu, Yufuin, Aso, Takachiho, Chōshi.
+   - Japan: **29 trips** as of `f4c7f8d`. Cape-to-cape plus Shimanami (Top 1), **Biwaichi (Top 2)**, Noto, **Ring-Ring Road (Top 4)**, **Fuji-ichi (Top 5)**, Toyama Bay, **Tokapuchi 400 (Top 7)**, **Awaji (Awa-ichi)**, **Yamanami Highway**, **Pacific Cycling Road from Chōshi**, Keinawa, Bōsō / Tokyo Bay ferry, **Amaichi**, **Okhotsk Cycling Road**, Sapporo–Tokachi, Tokachi–Okhotsk. Towns Motosu, Kawaguchiko, Yamanakako, Gotemba, Akashi, Iwaya, Sumoto, Fukura, Nara, Gojo, Beppu, Yufuin, Aso, Takachiho, Chōshi, Obihiro, Abashiri, Misumi, Ushibuka.
    - Switzerland: 29 trips. E–W and N–S crossings, national routes 1–9 and 99, pass days, loops. Fifteen ranked Top 5/10/15.
    - Spain: **8 trips** as of `5e90a38`. East–west crossing plus **Camino Francés (Top 1)**, **Camino del Norte (Top 2)**, Invierno, Fisterra, Pyrenees / Ebro / Barcelona sections.
 
@@ -110,7 +110,7 @@ Switzerland’s second graph stays data, not a second site. Deep links stay in-p
 
 Three country cards, not a list.
 
-- **Japan** — Shimanami bridge or cape light. Overline: 19 trips · Shimanami, Biwaichi, Fuji-ichi, cape to cape.
+- **Japan** — Shimanami bridge or cape light. Overline: 29 trips · Shimanami, Biwaichi, Tokapuchi 400, cape to cape.
 - **Switzerland** — pass road or lake. Overline: 29 trips · national routes 1–9.
 - **Spain** — Fisterra. Overline: 8 trips · Camino Francés, Norte, Cap de Creus to Fisterra.
 
@@ -261,7 +261,7 @@ Clean, bright, simple. One paper design. **All three countries** now have a gall
 |---|---|---|
 | **Hub** | Three country photo cards on `/` / `hub.html` | **this slice** |
 | **CH** | Swiss gallery + paper atlas + ride snapshots for all 29 trips | **done** |
-| **Japan** | Gallery + coastline/lakes atlas + snapshots for 24 trips (including Fuji-ichi, Awaji, Yamanami, Pacific Cycling Road) | **this slice** |
+| **Japan** | Gallery + coastline/lakes atlas + snapshots for 29 trips (including Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road) | **this slice** |
 | **Spain** | Gallery + paper atlas + snapshots for 8 trips (Francés, Norte, …) | **this slice** |
 | **Planner sheet** | Wider left column, one scrollbar, slim export; Plan / Route / Days still mapped from the live planner | **this slice** |
 

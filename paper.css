@@ -16,10 +16,15 @@ h1{font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;font-weight:6
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
 .chip{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--mute);cursor:pointer;font:inherit;background:transparent}
 .chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.cta{border:1.5px solid var(--route);color:#8a3d1c;background:var(--card);font-weight:600;padding:3px 11px}
+.chip.cta-top::before{content:"★";color:var(--gold);margin-right:5px;font-size:11px}
+.chip.cta-cross{border-color:var(--route)}
+.chip.cta.on{background:var(--route);color:#fff;border-color:var(--route)}
+.chip.cta.on::before{color:#fffdf8}
 main{max-width:1120px;margin:0 auto;padding:0 24px 56px}
 .split{display:grid;grid-template-columns:minmax(280px,400px) 1fr;gap:22px;align-items:start}
 .tcard{display:grid;grid-template-columns:120px 1fr;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;margin:0 0 10px;text-decoration:none;color:inherit}
-.tcard.hl{border-color:var(--route)}
+.tcard:hover,.tcard.hl{border-color:var(--route)}
 .tcard .ph{background:#cfc4b4 center/cover no-repeat;min-height:96px}
 .tcard .b{padding:10px 12px}
 .open-tour{margin-top:8px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;background:transparent;color:var(--ink);cursor:pointer}
@@ -160,6 +165,8 @@ body.planner .mapcard{position:absolute;inset:0;top:0;height:100%;min-height:0;b
 body.planner #col.sheet{position:absolute;inset:0;z-index:8;display:block;height:auto;min-height:0;overflow:hidden;pointer-events:none;background:transparent}
 body.planner .hit,body.planner .ctx-card,body.planner .filmwrap,body.planner .daybar,#minimap,#place{pointer-events:auto}
 body.planner .ctx-card{position:absolute;top:56px;left:12px;width:min(340px,calc(100vw - 24px));max-height:calc(100% - 148px);overflow-x:hidden;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 10px;box-shadow:0 8px 28px rgba(28,25,22,.12);transition:width .18s ease}
+body.planner .sheetback{display:block;margin:0 0 8px;padding:0;border:0;background:none;font:inherit;font-size:12px;color:var(--mute);cursor:pointer;text-align:left}
+body.planner .sheetback:hover{color:var(--ink)}
 body.planner.editing .ctx-card{width:min(468px,calc(100vw - 24px))}
 details.edittrip .opt{white-space:normal;line-height:1.35;text-align:left}
 body.planner .oneline{font-size:13px;color:var(--mute);margin:4px 0 8px}

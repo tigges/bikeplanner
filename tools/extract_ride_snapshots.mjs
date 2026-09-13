@@ -11,10 +11,11 @@ import { spawn } from "child_process";
 import { writeFileSync, mkdirSync, existsSync, renameSync } from "fs";
 import { createServer } from "http";
 import { readFile } from "fs/promises";
-import { extname, join } from "path";
+import { extname, join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const ROOT = "/tmp/rp";
-const DATA = "/workspace/preview/data";
+const DATA = join(dirname(fileURLToPath(import.meta.url)), "..", "data");
 const PORT = 8767;
 const CDP = 9224;
 const ALL = process.argv.includes("--all");

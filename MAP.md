@@ -1,7 +1,7 @@
 # Map look and the ride / section / map model
 
 Plan only. The live planner already has this loop (feature reference). The visual pass makes
-it obvious **in this repo**. A clickable mock is at `preview/map.html`. Click stays on our page.
+it obvious **in this repo**. `map.html` still opens the Swiss gallery. Click stays on our page.
 
 ---
 
@@ -118,8 +118,7 @@ list turns gold. Under “On this day”: that day’s spark and 1–3 photos
 Click the same day again, or Escape: back to the whole ride. The atlas
 never leaves the country view.
 
-The clickable mock at `preview/map.html` does this loop (`#network`,
-`#ride=r1`, `#ride=r1&day=3`).
+Country pages do this loop (`#network`, `#trip=r1`, `#trip=r1&day=3`). `map.html` redirects to the Swiss gallery.
 
 ---
 

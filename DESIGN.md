@@ -4,7 +4,7 @@ This repo (`bikeplanner`) is the new site. Hub, country galleries, and the plann
 
 [tigges/routeplanner](https://github.com/tigges/routeplanner) and the published pages at [tigges.github.io/routeplanner](https://tigges.github.io/routeplanner/) are the **input**: graphs, trip catalogues, computed days, forks, vehicles, GPX. They are **not** the result. Do not link a card, map line, or button into that dark planner. Do not reuse its 340 px sidebar, night canvas, or second atmosphere.
 
-Previews: [preview/hub.html](preview/hub.html), [preview/switzerland.html](preview/switzerland.html), [preview/map.html](preview/map.html). Detail notes: [MAP.md](MAP.md), [GRAPHS.md](GRAPHS.md).
+Live: [index.html](index.html), [switzerland.html](switzerland.html), [britain.html](britain.html), [japan.html](japan.html), [spain.html](spain.html). Detail notes: [MAP.md](MAP.md), [GRAPHS.md](GRAPHS.md).
 
 ---
 
@@ -262,12 +262,12 @@ Clean, bright, simple. One paper design. **All four countries** now have a galle
 
 | # | What | Status |
 |---|---|---|
-| **Hub** | Four country photo cards on `/` / `hub.html` | **this slice** |
-| **Britain** | Gallery + GB outline + snapshots for 18 trips (national crossing + London / Ealing), from `43a0325` | **this slice** |
+| **Hub** | Four country photo cards on `/` | **done** (site root, not `/preview/`) |
+| **Britain** | Gallery + GB outline + snapshots for 18 trips (national crossing + London / Ealing), from `43a0325` | **done** |
 | **CH** | Swiss gallery + paper atlas + ride snapshots for all 29 trips | **done** |
 | **Japan** | Gallery + coastline/lakes atlas + snapshots for 29 trips (including Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road) | **done** |
 | **Spain** | Gallery + paper atlas + snapshots for 8 trips (Francés, Norte, …) | **done** |
-| **Print** | Day and tour sheets print a dedicated article (`#printsheet`), not the overlay chrome | **this slice** |
+| **Print** | Day and tour sheets print a dedicated article (`#printsheet`), not the overlay chrome | **done** |
 | **Planner sheet** | Wider left column, one scrollbar, slim export; Plan / Route / Days still mapped from the live planner | **done** |
 | **Place card** | Town / facility tap on the tour sheet: paper card, OpenStreetMap outbound — not Google, not tiles | **done** |
 

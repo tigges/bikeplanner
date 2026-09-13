@@ -515,5 +515,77 @@
         "img/pyrenees.jpg"
       ]
     }
+  },
+  "britain": {
+    "trips": {
+      "lejog-west": "img/landsend.jpg",
+      "lejog-london": "img/london.jpg",
+      "le-london": "img/landsend.jpg",
+      "london-edinburgh": "img/edinburgh.jpg",
+      "london-cambridge": "img/cambridge.jpg",
+      "richmond-park": "img/richmond.jpg",
+      "hampton-court": "img/windsor.jpg",
+      "windsor-river": "img/windsor.jpg",
+      "chilterns-loop": "img/windsor.jpg",
+      "grand-union": "img/london.jpg",
+      "box-hill": "img/boxhill.jpg",
+      "thames-path": "img/london.jpg",
+      "regents-canal": "img/london.jpg",
+      "lee-valley": "img/london.jpg",
+      "london-brighton": "img/brighton.jpg",
+      "epping-forest": "img/london.jpg",
+      "waterlink": "img/london.jpg",
+      "wandle": "img/london.jpg"
+    },
+    "places": {
+      "Land's End": [
+        "img/landsend.jpg"
+      ],
+      "Edinburgh": [
+        "img/edinburgh.jpg"
+      ],
+      "London": [
+        "img/london.jpg"
+      ],
+      "Ealing Broadway": [
+        "img/london.jpg"
+      ],
+      "Ealing": [
+        "img/london.jpg"
+      ],
+      "Richmond": [
+        "img/richmond.jpg"
+      ],
+      "Windsor": [
+        "img/windsor.jpg"
+      ],
+      "Brighton": [
+        "img/brighton.jpg"
+      ],
+      "Cambridge": [
+        "img/cambridge.jpg"
+      ],
+      "Greenwich": [
+        "img/london.jpg"
+      ],
+      "Hampton Court": [
+        "img/windsor.jpg"
+      ],
+      "Box Hill": [
+        "img/boxhill.jpg"
+      ],
+      "Westminster": [
+        "img/london.jpg"
+      ],
+      "Penzance": [
+        "img/landsend.jpg"
+      ],
+      "York": [
+        "img/edinburgh.jpg"
+      ],
+      "Durham": [
+        "img/edinburgh.jpg"
+      ]
+    }
   }
 }

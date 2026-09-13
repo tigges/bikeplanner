@@ -54,3 +54,14 @@ Local copies of Wikimedia Commons photos for the design mock only.
 | amaichi.jpg | SakitsuCatholicChurch.jpg | Amaichi / Amakusa |
 
 See each file’s Commons page for author and license (typically CC BY / CC BY-SA / PD).
+
+## Added 2026-09-13 (Britain trip heroes)
+
+| landsend.jpg | Land's End.jpg | trip / day photo |
+| edinburgh.jpg | Edinburgh Castle from Princes Street Gardens.jpg | trip / day photo |
+| london.jpg | Tower Bridge London.jpg | trip / day photo |
+| richmond.jpg | Richmond Park deer.jpg | trip / day photo |
+| boxhill.jpg | File:A View of Box Hill, Surrey 1733.jpg | trip / day photo |
+| windsor.jpg | Windsor Castle.jpg | trip / day photo |
+| brighton.jpg | Brighton Pier.jpg | trip / day photo |
+| cambridge.jpg | King's College Cambridge.jpg | trip / day photo |

@@ -27,6 +27,14 @@ FILES = {
   "pyrenees.jpg": "Pyrenees from Col du Tourmalet.jpg",
   "girona.jpg": "Girona cathedral river.jpg",
   "barcelona.jpg": "Sagrada Familia Barcelona.jpg",
+  "landsend.jpg": "Land's End Cornwall.jpg",
+  "edinburgh.jpg": "Edinburgh Castle from Princes Street Gardens.jpg",
+  "london.jpg": "Tower Bridge London.jpg",
+  "richmond.jpg": "Richmond Park deer.jpg",
+  "boxhill.jpg": "Box Hill Surrey.jpg",
+  "windsor.jpg": "Windsor Castle.jpg",
+  "brighton.jpg": "Brighton Palace Pier.jpg",
+  "cambridge.jpg": "King's College Cambridge.jpg",
 }
 
 # Fallbacks if the primary filename 404s
@@ -53,6 +61,14 @@ ALT = {
   "pyrenees.jpg": ["Pyrenees.jpg", "Anso Valley Pyrenees.jpg"],
   "girona.jpg": ["Girona.jpg", "Onyar Girona.jpg"],
   "barcelona.jpg": ["Sagrada Família.jpg", "Barcelona Sagrada Familia.jpg"],
+  "landsend.jpg": ["Land's End.jpg", "Land's End signpost.jpg", "Land's End Cornwall 2018.jpg"],
+  "edinburgh.jpg": ["Edinburgh Castle.jpg", "Edinburgh Old Town.jpg", "Calton Hill Edinburgh.jpg"],
+  "london.jpg": ["Tower Bridge.jpg", "Houses of Parliament London.jpg", "St Paul's Cathedral London.jpg"],
+  "richmond.jpg": ["Richmond Park.jpg", "Richmond Park London.jpg", "Isabella Plantation Richmond Park.jpg"],
+  "boxhill.jpg": ["Box Hill.jpg", "Box Hill viewpoint.jpg", "Zig Zag Road Box Hill.jpg"],
+  "windsor.jpg": ["Windsor Castle from the Thames.jpg", "Windsor Castle Berkshire.jpg"],
+  "brighton.jpg": ["Brighton Pier.jpg", "Palace Pier Brighton.jpg", "Brighton seafront.jpg"],
+  "cambridge.jpg": ["Kings College Chapel Cambridge.jpg", "Cambridge River Cam.jpg"],
 }
 
 def api(params):
@@ -96,6 +112,9 @@ credits = []
 os.makedirs(OUT, exist_ok=True)
 for dest, primary in FILES.items():
     path = os.path.join(OUT, dest)
+    if os.path.exists(path) and os.path.getsize(path) > 2000:
+        print("HAVE", dest)
+        continue
     names = [primary] + ALT.get(dest, [])
     url = None
     used = None
@@ -118,8 +137,9 @@ for dest, primary in FILES.items():
     print("OK", dest, os.path.getsize(path), used)
     credits.append((dest, used, url))
 
-open(os.path.join(OUT, "CREDITS.md"), "a").write(
-    "\n## Added 2026-09-13\n\n"
-    + "".join(f"| {a} | {b} | trip / day photo |\n" for a, b, _ in credits)
-)
+if credits:
+    open(os.path.join(OUT, "CREDITS.md"), "a").write(
+        "\n## Added 2026-09-13 (Britain trip heroes)\n\n"
+        + "".join(f"| {a} | {b} | trip / day photo |\n" for a, b, _ in credits)
+    )
 print("done", len(credits))

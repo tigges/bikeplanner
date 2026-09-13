@@ -7,7 +7,8 @@ The new cycle-tour site: one hub, country galleries, and a paper planner.
 - [DESIGN.md](DESIGN.md) — **full design proposal**. One site, three rooms, one paper design.
 - [MAP.md](MAP.md) — schematic paper atlas; network → ride → day.
 - [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation on the tour sheet, beside a map figure.
-- [preview/hub.html](preview/hub.html) — three country cards. Japan, Switzerland and Spain each open a gallery in this site.
+- [preview/hub.html](preview/hub.html) — four country cards. Britain, Japan, Switzerland and Spain each open a gallery in this site.
+- [preview/britain.html](preview/britain.html) — 18 trips (Land's End to Edinburgh, London and Ealing rides).
 - [preview/switzerland.html](preview/switzerland.html) — 29 trips.
 - [preview/japan.html](preview/japan.html) — 29 trips (Shimanami, Biwaichi, Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road, cape to cape).
 - [preview/spain.html](preview/spain.html) — 8 trips (Camino Francés, Norte, Fisterra, the crossing).

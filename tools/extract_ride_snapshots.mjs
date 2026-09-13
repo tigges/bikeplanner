@@ -504,7 +504,9 @@ const PAGES = [
   { country: "switzerland", file: "switzerland.html", wait: 2200 },
   { country: "switzerland", file: "switzerland-ns.html", wait: 1800 },
   { country: "japan", file: "japan.html", wait: 5000 },
-  { country: "spain", file: "spain.html", wait: 2500 }
+  { country: "spain", file: "spain.html", wait: 2500 },
+  { country: "britain", file: "uk.html", wait: 2200 },
+  { country: "britain", file: "london.html", wait: 1800 }
 ];
 
 function rideDir(country) {

@@ -144,7 +144,10 @@ function matches(t){
   return tags.includes(filter);
 }
 function filterChips(){
-  const tags=[...new Set(TRIPS.flatMap(t=>t.tags||[]))].sort();
+  const reserved=new Set(["top","all","d3","d46","d6","d7","e0","easy","e1","e2","moderate","hard"]);
+  const tags=[...new Set(TRIPS.flatMap(t=>t.tags||[]))]
+    .filter(t=>t && !reserved.has(String(t).toLowerCase()))
+    .sort();
   return [
     ["top","top"],["all","all "+TRIPS.length],
     ["d3","up to 3 days"],["d46","4–6 days"],["d7","7+ days"],
@@ -1410,7 +1413,7 @@ function plannerSheet(t){
   };
   const csvBtn=document.getElementById("csv");
   if(csvBtn) csvBtn.onclick=()=>{ download((PLAN.id||"ride")+"-days.csv", csvFor(days), "text/csv"); document.getElementById("expnote").textContent="CSV downloaded."; };
-  document.getElementById("pdf").onclick=()=>window.print();
+  document.getElementById("pdf").onclick=()=>{ fillPrintSheet(); window.print(); };
   document.getElementById("copylink").onclick=()=>{
     const url=location.href;
     const done=()=>{ document.getElementById("expnote").textContent="Link copied."; };
@@ -1549,6 +1552,106 @@ function sparkPoly(d){
   const pts=d.prof.map(p=>(p[0]/d.km*W).toFixed(1)+","+(H-2-(p[1]/top)*(H-6)).toFixed(1)).join(" ");
   return `<polyline points="0,${H-2} ${pts} ${W},${H-2}" fill="#f0713f" fill-opacity=".18" stroke="none"/>
     <polyline points="${pts}" fill="none" stroke="#f0713f" stroke-width="1.2"/>`;
+}
+function printRoot(){
+  let el=document.getElementById("printsheet");
+  if(!el){
+    el=document.createElement("article");
+    el.id="printsheet";
+    el.setAttribute("aria-hidden","true");
+    document.body.appendChild(el);
+  }
+  return el;
+}
+function printProfSvg(days, gold){
+  const W=560,H=72;
+  if(!days||!days.length) return "";
+  if(days.length===1 && days[0].prof && days[0].prof.length>1){
+    const d=days[0], pts=d.prof;
+    let tot=d.km||0, lo=Infinity, hi=-Infinity;
+    pts.forEach(q=>{ lo=Math.min(lo,q[1]); hi=Math.max(hi,q[1]); });
+    if(!(tot>0 && hi>lo)) return "";
+    const span=Math.max(hi-lo,80); lo=Math.max(0,hi-span);
+    const dstr=pts.map(q=>(q[0]/tot*W).toFixed(1)+","+(6+(1-(q[1]-lo)/span)*(H-14)).toFixed(1)).join(" ");
+    const col=gold?"#c9a227":"#f0713f";
+    return `<svg class="print-prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      <polyline points="0,${H} ${dstr} ${W},${H}" fill="${col}" fill-opacity=".22" stroke="none"/>
+      <polyline points="${dstr}" fill="none" stroke="${col}" stroke-width="1.6"/>
+    </svg><p class="print-hi">▲ ${Math.round(hi).toLocaleString()} m · ▼ ${Math.round(lo).toLocaleString()} m</p>`;
+  }
+  const pts=[]; let tot=0, lo=Infinity, hi=-Infinity;
+  activeSegs().filter(s=>!isSkipped(s.id)).forEach(s=>{
+    (s.prof||[]).forEach(q=>{ pts.push([tot+q[0], q[1]]); lo=Math.min(lo,q[1]); hi=Math.max(hi,q[1]); });
+    tot+=s.km;
+  });
+  if(!(tot>0 && hi>lo && pts.length>1)) return "";
+  const span=Math.max(hi-lo,150); lo=Math.max(0,hi-span);
+  const dstr=pts.map(q=>(q[0]/tot*W).toFixed(1)+","+(6+(1-(q[1]-lo)/span)*(H-14)).toFixed(1)).join(" ");
+  return `<svg class="print-prof" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <polyline points="0,${H} ${dstr} ${W},${H}" fill="#f0713f" fill-opacity=".2" stroke="none"/>
+    <polyline points="${dstr}" fill="none" stroke="#f0713f" stroke-width="1.5"/>
+  </svg><p class="print-hi">▲ ${Math.round(hi).toLocaleString()} m · ▼ ${Math.round(lo).toLocaleString()} m</p>`;
+}
+function printDayFig(d){
+  const line=d&&d.line||[];
+  if(line.length<2) return "";
+  let minLat=Infinity,maxLat=-Infinity,minLon=Infinity,maxLon=-Infinity;
+  line.forEach(p=>{
+    const lat=p[0], lon=p[1];
+    if(lat<minLat) minLat=lat; if(lat>maxLat) maxLat=lat;
+    if(lon<minLon) minLon=lon; if(lon>maxLon) maxLon=lon;
+  });
+  const W=560, H=200;
+  const dx=Math.max(maxLon-minLon, 0.01), dy=Math.max(maxLat-minLat, 0.01);
+  const pad=0.08;
+  const x=lon=> ((lon-(minLon-dx*pad))/((dx*(1+2*pad))||1))*W;
+  const y=lat=> ((maxLat+dy*pad-lat)/((dy*(1+2*pad))||1))*H;
+  const pts=line.map(p=>x(p[1]).toFixed(1)+","+y(p[0]).toFixed(1)).join(" ");
+  return `<svg class="print-fig" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+    <polyline points="${pts}" fill="none" stroke="#c9a227" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+function fillPrintSheet(){
+  const ps=printRoot();
+  if(mode!=="ride" || !ride || !PLAN || PLAN===false){
+    ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)}</p><h1>${esc(PAPER.title)}</h1>
+      <p class="print-meta">Open a trip, then print the tour or a day.</p>`;
+    return;
+  }
+  const t=ride;
+  const st=rideStats();
+  const days=planDays();
+  const rideDays=days.filter(d=>d.mode!=="train");
+  const today=selDay?rideDays.find(d=>d.n===selDay):null;
+  const ends=travelEnds();
+  if(today){
+    const ph=dayPhotos(today.to)||[];
+    const climb=Math.round(today.climb||today.eff||0);
+    ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)} · ${esc(t.name)}</p>
+      <h1>Day ${today.n}: ${esc(today.frm)} → ${esc(today.to)}</h1>
+      <p class="print-meta">${rideDays.length} days · ${esc(ends.from)} → ${esc(ends.to)}</p>
+      <div class="print-facts">
+        <div><b>${today.km}</b><span>km today</span></div>
+        <div><b>${climb.toLocaleString()}</b><span>m / effort</span></div>
+        <div><b>${today.shop||0}</b><span>shops</span></div>
+        <div><b>${today.stay||0}</b><span>beds</span></div>
+      </div>
+      ${printProfSvg([today], true)}
+      ${printDayFig(today)}
+      <div class="print-photos">${ph.slice(0,6).map(src=>`<img src="${esc(src)}" alt="">`).join("")}</div>
+      <p class="print-meta">${today.shop||0} shops · ${today.stay||0} beds · ${today.bath||0} baths · ${today.rail||0} stations</p>`;
+    return;
+  }
+  ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)}</p>
+    <h1>${esc(t.name)}</h1>
+    <p class="print-meta">${esc(ends.from)} → ${esc(ends.to)} · ${rideDays.length} days · ${st.km} km · ${st.asc.toLocaleString()} m</p>
+    <div class="print-facts">
+      <div><b>${rideDays.length}</b><span>days</span></div>
+      <div><b>${st.km}</b><span>km</span></div>
+      <div><b>${st.asc.toLocaleString()}</b><span>m climbed</span></div>
+    </div>
+    ${printProfSvg(rideDays, false)}
+    <ol class="print-days">${rideDays.map(d=>`<li><span class="n">${d.n}</span><span>${esc(d.frm)} → ${esc(d.to)}</span><span>${d.km} km · ${Math.round(d.climb||d.eff||0).toLocaleString()} m</span></li>`).join("")}</ol>`;
 }
 
 function sheet(){
@@ -1835,6 +1938,7 @@ document.addEventListener("keydown",e=>{
   }
 });
 window.addEventListener("hashchange", applyHash);
+window.addEventListener("beforeprint", fillPrintSheet);
 
 Promise.all([
   fetch(PAPER.tripsUrl).then(r=>r.json()),

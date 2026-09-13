@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Switzerland by bike</title>
+<title>Britain by bike</title>
 <link rel="stylesheet" href="paper.css?v=21">
 </head>
 <body>
@@ -12,7 +12,7 @@
   <div class="split">
     <div id="col"></div>
     <aside class="mapcard" id="stage">
-      <button type="button" id="mapback" hidden>‹ All 29 trips</button>
+      <button type="button" id="mapback" hidden>‹ All trips</button>
       <div id="maptools" hidden>
         <div class="zoompair">
           <button type="button" id="zout" title="Zoom out">−</button>
@@ -48,6 +48,60 @@
   </div>
 </main>
 <footer></footer>
+<script>
+window.PAPER={
+  id:"britain",
+  title:"Britain by bike",
+  country:"Britain",
+  localLabel:"Local names",
+  kicker:n=>"Britain · "+n+" trips",
+  lede:"Land's End to Edinburgh, or a day from Ealing: Richmond Park, the Thames, Box Hill, London to Brighton. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort.",
+  note:"Same catalogue as the input planner: the national crossing (west side or via London) plus the London and Ealing rides. Two graphs, one country. Snapshots of those graphs, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
+  footer:"Britain · 18 trips. Photos Wikimedia Commons. Days are computed, not stored.",
+  backAll:n=>"‹ All "+n+" trips",
+  tripsUrl:"data/britain-trips.json",
+  landUrl:"data/britain_outline.geojson",
+  waterUrl:null,
+  atlasUrl:null,
+  ridesUrl:"data/rides/britain/",
+  photosUrl:"data/photos.json",
+  landFilter:"Great Britain",
+  landMode:"fill",
+  bbox:{lon0:-6.0, lon1:0.4, lat0:49.85, lat1:56.15},
+  photos:{
+    "lejog-west":"img/landsend.jpg", "lejog-london":"img/london.jpg",
+    "le-london":"img/landsend.jpg", "london-edinburgh":"img/edinburgh.jpg",
+    "london-cambridge":"img/cambridge.jpg", "richmond-park":"img/richmond.jpg",
+    "hampton-court":"img/windsor.jpg", "windsor-river":"img/windsor.jpg",
+    "chilterns-loop":"img/windsor.jpg", "grand-union":"img/london.jpg",
+    "box-hill":"img/boxhill.jpg", "thames-path":"img/london.jpg",
+    "regents-canal":"img/london.jpg", "lee-valley":"img/london.jpg",
+    "london-brighton":"img/brighton.jpg", "epping-forest":"img/london.jpg",
+    "waterlink":"img/london.jpg", "wandle":"img/london.jpg"
+  },
+  places:{
+    "Land's End":["img/landsend.jpg"],
+    Edinburgh:["img/edinburgh.jpg"],
+    London:["img/london.jpg"],
+    "Ealing Broadway":["img/london.jpg"],
+    Ealing:["img/london.jpg"],
+    Richmond:["img/richmond.jpg"],
+    Windsor:["img/windsor.jpg"],
+    Brighton:["img/brighton.jpg"],
+    Cambridge:["img/cambridge.jpg"],
+    Greenwich:["img/london.jpg"],
+    "Hampton Court":["img/windsor.jpg"],
+    "Box Hill":["img/boxhill.jpg"],
+    Westminster:["img/london.jpg"],
+    Penzance:["img/landsend.jpg"],
+    Bath:["img/landsend.jpg"],
+    York:["img/edinburgh.jpg"],
+    Durham:["img/edinburgh.jpg"]
+  },
+  en:{},
+  photoFallback:"img/landsend.jpg"
+};
+</script>
 <script src="paper.js?v=21"></script>
 </body>
 </html>

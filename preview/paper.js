@@ -86,6 +86,14 @@ function xy(lat, lon){
   const y=PAD+(BBOX.lat1-lat)/(BBOX.lat1-BBOX.lat0)*(H-PAD*2);
   return [x,y];
 }
+function fromXY(x, y){
+  const lon=BBOX.lon0+(x-PAD)/(W-PAD*2)*(BBOX.lon1-BBOX.lon0);
+  const lat=BBOX.lat1-(y-PAD)/(H-PAD*2)*(BBOX.lat1-BBOX.lat0);
+  return [lat, lon];
+}
+function esc(s){
+  return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
 function ringPath(ring){
   return ring.map((c,i)=>{ const p=xy(c[1], c[0]); return (i?"L":"M")+p[0].toFixed(1)+","+p[1].toFixed(1); }).join(" ")+" Z";
 }
@@ -99,6 +107,7 @@ const VEH_LABEL={bike:"Bicycle",ebike:"E-bike",opium:"45 km/h"};
 const VB0="0 0 900 640";
 
 let TRIPS=[], mode="network", ride=null, hover=null, pick=null, filter="top";
+let placeOpen=null, placeHits=[];
 let PLAN=null, effort=100, veh="bike", selDay=null, filmFocus=1;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
@@ -356,6 +365,7 @@ function draw(){
     if(!on){ addTrip(t, gG, "off"); return; }
     addTrip(t, gL, "live");
   });
+  if(mode!=="ride") hidePlaceCard();
   sheet();
   paint();
 }
@@ -408,6 +418,7 @@ function openRide(id, day){
 function goNetwork(){
   if(ride) pick=ride.id;
   zoom=1; vbManual=false; selDay=null; selSeg=null;
+  hidePlaceCard();
   applyView();
   if(location.hash!=="#network") location.hash="network";
   else applyHash();
@@ -904,6 +915,7 @@ function paintRide(){
   const gRide=document.getElementById("ride"), gGold=document.getElementById("gold");
   const gT=document.getElementById("towns"), gD=document.getElementById("discs"), gFac=document.getElementById("fac");
   [gRide,gGold,gT,gD,gFac].forEach(g=>{ if(g) g.innerHTML=""; });
+  placeHits=[];
   if(mode!=="ride" || !PLAN || PLAN===false) return;
   const days=planDays();
   const segs=activeSegs();
@@ -966,11 +978,19 @@ function paintRide(){
   labels.forEach(t=>{
     if(t.lat==null || t.lon==null) return;
     const q=xy(t.lat,t.lon);
+    const hit={kind:"town", name:showName(t.name), lat:t.lat, lon:t.lon, sub:"town on the route", x:q[0], y:q[1]};
+    placeHits.push(hit);
+    const disc=document.createElementNS("http://www.w3.org/2000/svg","circle");
+    disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]); disc.setAttribute("r", ink(11));
+    disc.setAttribute("fill","transparent");
+    disc.style.cursor="pointer";
+    disc.addEventListener("click",e=>{ e.stopPropagation(); showPlaceCard(hit); });
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
     tx.setAttribute("x", q[0]+off); tx.setAttribute("y", q[1]-off);
     tx.setAttribute("class","townlab"); tx.setAttribute("pointer-events","none");
     tx.setAttribute("font-size", ink(9));
     tx.textContent=showName(t.name);
+    gT.appendChild(disc);
     gT.appendChild(tx);
   });
   const discR=ink(7);
@@ -1002,11 +1022,18 @@ function paintRide(){
         c.setAttribute("fill-opacity","0.9");
         c.setAttribute("stroke", "#fffdf8");
         c.setAttribute("stroke-width", ink(0.4));
-        if(f.name) c.setAttribute("title", f.name);
+        c.style.cursor="pointer";
+        const kindLab={shop:"shop",stay:"beds",bath:"bath",rail:"station",water:"drinking water"}[k]||k;
+        const nm=(lang==="local"&&f.nameLocal)?f.nameLocal:(f.name||kindLab);
+        const hit={kind:k, name:nm, nameLocal:f.nameLocal||"", lat:f.lat, lon:f.lon,
+          sub:kindLab+(f.off!=null?" · "+f.off+" km off the road":""), x:q[0], y:q[1]};
+        placeHits.push(hit);
+        c.addEventListener("click",e=>{ e.stopPropagation(); showPlaceCard(hit); });
         gFac.appendChild(c);
       });
     });
   });
+  renderPlaceCard();
 }
 function paintMini(){
   const mini=document.getElementById("minimap");
@@ -1600,6 +1627,119 @@ function sheet(){
     }
   }
 }
+function hidePlaceCard(){
+  placeOpen=null;
+  const el=document.getElementById("place");
+  if(!el) return;
+  el.hidden=true;
+  el.innerHTML="";
+}
+function showPlaceCard(hit){
+  if(!hit || hit.lat==null || hit.lon==null) return;
+  placeOpen=hit;
+  renderPlaceCard();
+}
+function renderPlaceCard(){
+  const el=document.getElementById("place");
+  if(!el) return;
+  if(mode!=="ride" || !placeOpen){
+    el.hidden=true;
+    el.innerHTML="";
+    return;
+  }
+  const p=placeOpen;
+  const q=xy(p.lat, p.lon);
+  p.x=q[0]; p.y=q[1];
+  const title=p.name||"Place";
+  const other=p.nameLocal && p.nameLocal!==title ? p.nameLocal : "";
+  const lat=+p.lat, lon=+p.lon;
+  const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
+  const osmSearch="https://www.openstreetmap.org/search?query="+encodeURIComponent(p.nameLocal||p.name||"");
+  const ph=(dayPhotos(p.name)||[])[0];
+  el.hidden=false;
+  el.innerHTML=
+    '<button type="button" class="scx" id="placex" title="close">×</button>'+
+    (ph?`<div class="placeph" style="background-image:url('${esc(ph)}')"></div>`:"")+
+    "<b>"+esc(title)+"</b>"+
+    (other?`<div class="ja">${esc(other)}</div>`:"")+
+    (p.sub?`<div class="sub">${esc(p.sub)}</div>`:"")+
+    '<div class="links">'+
+      `<a target="_blank" rel="noopener" href="${osmMap}">OpenStreetMap ↗</a>`+
+      (title==="Point on the route"?"":`<a target="_blank" rel="noopener" href="${osmSearch}">Search by name ↗</a>`)+
+    "</div>";
+  const svg=document.getElementById("map");
+  const st=document.getElementById("stage").getBoundingClientRect();
+  const r=svg.getBoundingClientRect();
+  const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
+  const px=r.left-st.left+(q[0]-vb[0])/vb[2]*r.width;
+  const py=r.top-st.top+(q[1]-vb[1])/vb[3]*r.height;
+  el.style.left="0px"; el.style.top="0px";
+  const w=el.offsetWidth, h=el.offsetHeight;
+  let left=px+14, top=py-h/2;
+  if(left+w>st.width-8) left=px-w-14;
+  if(left<8) left=8;
+  if(top<8) top=8;
+  if(top+h>st.height-8) top=st.height-h-8;
+  el.style.left=left+"px";
+  el.style.top=top+"px";
+  const xbtn=document.getElementById("placex");
+  if(xbtn) xbtn.onclick=e=>{ e.stopPropagation(); hidePlaceCard(); };
+}
+function svgPt(clientX, clientY){
+  const svg=document.getElementById("map");
+  if(!svg.createSVGPoint) return null;
+  const pt=svg.createSVGPoint();
+  pt.x=clientX; pt.y=clientY;
+  const ctm=svg.getScreenCTM();
+  if(!ctm) return null;
+  const p=pt.matrixTransform(ctm.inverse());
+  return [p.x, p.y];
+}
+function nearestPlace(x, y){
+  const svg=document.getElementById("map");
+  const r=svg.getBoundingClientRect();
+  const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
+  const slop=16*vb[2]/Math.max(r.width,1);
+  let best=null, bd=slop;
+  placeHits.forEach(h=>{
+    const d=Math.hypot(h.x-x, h.y-y);
+    if(d<bd){ bd=d; best=h; }
+  });
+  return best;
+}
+function tapMap(e){
+  if(mode!=="ride" || !PLAN || PLAN===false) return;
+  if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daybar")) return;
+  const pt=svgPt(e.clientX, e.clientY);
+  if(!pt) return;
+  const hit=nearestPlace(pt[0], pt[1]);
+  if(hit){ showPlaceCard(hit); return; }
+  if(selDay){
+    const days=planDays();
+    const d=days.find(x=>x.n===selDay);
+    const line=(d&&d.line)||[];
+    const svg=document.getElementById("map");
+    const r=svg.getBoundingClientRect();
+    const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
+    const slop=14*vb[2]/Math.max(r.width,1);
+    let bp=null, bl=slop;
+    for(let i=1;i<line.length;i++){
+      const a=xy(line[i-1][0], line[i-1][1]), b=xy(line[i][0], line[i][1]);
+      const dx=b[0]-a[0], dy=b[1]-a[1], L2=dx*dx+dy*dy;
+      const t=L2?Math.max(0,Math.min(1,((pt[0]-a[0])*dx+(pt[1]-a[1])*dy)/L2)):0;
+      const qx=a[0]+t*dx, qy=a[1]+t*dy, dd=Math.hypot(qx-pt[0], qy-pt[1]);
+      if(dd<bl){ bl=dd; bp=[qx,qy]; }
+    }
+    if(bp){
+      const ll=fromXY(bp[0], bp[1]);
+      showPlaceCard({kind:"point", name:"Point on the route", lat:ll[0], lon:ll[1],
+        sub:(d.frm||"")+" → "+(d.to||"")+" · "+ll[0].toFixed(4)+", "+ll[1].toFixed(4)});
+      return;
+    }
+  }
+  hidePlaceCard();
+}
+
 function pop(){
   const pop=document.getElementById("pop");
   const id=hover||pick;
@@ -1622,6 +1762,7 @@ function pop(){
 const popEl=document.getElementById("pop");
 popEl.addEventListener("mouseenter",()=>{ if(hoverClear){ clearTimeout(hoverClear); hoverClear=null; } });
 popEl.addEventListener("mouseleave",()=>setHover(null));
+document.getElementById("map").addEventListener("click", tapMap);
 
 document.getElementById("mapback").onclick=goNetwork;
 document.getElementById("vehbtn").onclick=()=>{
@@ -1661,6 +1802,7 @@ document.getElementById("stage").addEventListener("wheel", e=>{
 document.addEventListener("keydown",e=>{
   if(typingIn(e)) return;
   if(e.key==="Escape"){
+    if(placeOpen){ e.preventDefault(); hidePlaceCard(); return; }
     if(mode==="network") return;
     e.preventDefault();
     if(selDay && ride) openRide(ride.id, null);

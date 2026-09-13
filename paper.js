@@ -859,8 +859,8 @@ function overlayFractions(){
     if(coverW>0.55) clip(ctx, "top");
     else clip(ctx, "left");
   }
-  const film=document.getElementById("filmwrap");
-  if(film && !film.hidden && film.offsetHeight) clip(film, "bottom");
+  const dock=document.getElementById("daydock")||document.getElementById("filmwrap");
+  if(dock && !dock.hidden && dock.offsetHeight) clip(dock, "bottom");
   const tools=document.getElementById("maptools");
   if(tools && !tools.hidden){
     const b=tools.getBoundingClientRect();
@@ -1377,6 +1377,78 @@ function dayForkNote(today, days){
   });
   return notes.join(" · ");
 }
+function dayRouteHint(){
+  const note=(ride&&ride.note)||"";
+  const bits=[];
+  const re=/National Route\s+\d+|EuroVelo\s+\d+|Route\s+\d+/gi;
+  let m; while((m=re.exec(note))) bits.push(m[0].replace(/\s+/g," "));
+  return [...new Set(bits)].join(" · ");
+}
+function dayBandPhrase(daySegs){
+  const tot=daySegs.reduce((n,x)=>n+(x.km||0),0)||1;
+  const g=daySegs.filter(x=>x.seg.band==="g").reduce((n,x)=>n+x.km,0);
+  const r=daySegs.filter(x=>x.seg.band==="r").reduce((n,x)=>n+x.km,0);
+  const signed=daySegs.reduce((n,x)=>n+((x.seg.signed||0)*x.km),0)/tot;
+  const parts=[];
+  if(signed>=55) parts.push("mostly signed");
+  else if(signed>=25) parts.push("partly signed");
+  if(g/tot>=0.55) parts.push("quiet roads");
+  else if(r/tot>=0.35) parts.push("busy stretches");
+  else parts.push("mixed roads");
+  return parts.join(" · ");
+}
+function dayCues(today, days){
+  if(!today) return {steps:[], phrase:"", route:"", fork:""};
+  const hops=segsOnDay(today, days);
+  const stops=dayStops(today, days);
+  const vias=stops.filter(s=>s.role==="via");
+  const k0=stops[0]?stops[0].km:0;
+  let steps=[];
+  if(vias.length){
+    stops.forEach(s=>steps.push({kind:s.role, name:s.name, km:+((s.km||0)-k0).toFixed(1)}));
+  } else if(hops.length){
+    let acc=0;
+    hops.forEach(({seg,km},i)=>{
+      if(i===0) steps.push({kind:"start", name:showName(seg.frmName||seg.frm), km:0, band:seg.band});
+      acc+=km||0;
+      steps.push({kind:i===hops.length-1?"end":"hop", name:showName(seg.toName||seg.to), km:+acc.toFixed(1), band:seg.band});
+    });
+  }
+  (daySights(today, days)||[]).filter(p=>/castle|waterfall|cape|peak|mne/.test(p.kind||"")).slice(0,2).forEach(p=>{
+    const km=+((p.km||0)-k0).toFixed(1);
+    const nm=showName(p.name);
+    if(!nm || steps.some(s=>s.name===nm || Math.abs((s.km||0)-km)<1.5 && s.kind!=="sight")) return;
+    steps.push({kind:"sight", name:nm, km, sight:p.kind});
+  });
+  steps.sort((a,b)=>(a.km||0)-(b.km||0));
+  if(steps.length>8){
+    const first=steps[0], last=steps[steps.length-1];
+    const mid=steps.slice(1,-1);
+    const take=[];
+    const n=Math.min(6, mid.length);
+    for(let i=0;i<n;i++){
+      const idx=Math.round(i*(mid.length-1)/Math.max(n-1,1));
+      if(mid[idx] && !take.includes(mid[idx])) take.push(mid[idx]);
+    }
+    steps=[first].concat(take).concat([last]);
+  }
+  return {steps, phrase:dayBandPhrase(hops), route:dayRouteHint(), fork:dayForkNote(today, days)};
+}
+function dayCueHtml(today, days){
+  const c=dayCues(today, days);
+  if(!c.steps.length) return "";
+  const chips=c.steps.map(s=>{
+    const km=Math.round(s.km||0);
+    const tag=s.kind==="start"?"Start":s.kind==="end"?"Sleep":s.kind==="sight"?(SIGHT_KIND[s.sight]||"sight"):km+" km";
+    return `<button type="button" class="cue cue-${s.kind}" data-name="${esc(s.name)}" data-km="${s.km}">`+
+      `<span class="cue-tag">${esc(tag)}</span><span class="cue-who">${esc(s.name)}</span></button>`;
+  }).join('<span class="cue-then" aria-hidden="true">then</span>');
+  return `<div class="cuebar hit" id="daycues">`+
+    (c.route?`<p class="cue-kicker">${esc(c.route)}</p>`:"")+
+    `<div class="cue-row">${chips}</div>`+
+    (c.phrase||c.fork?`<p class="cue-note">${esc([c.phrase,c.fork].filter(Boolean).join(" · "))}</p>`:"")+
+    `</div>`;
+}
 function dayPhotoItems(stops, today){
   const items=[];
   const add=stop=>{
@@ -1799,7 +1871,9 @@ function plannerSheet(t){
       <span class="tile-km">${d.km} km · ${Math.round(d.eff||0)} eff</span>
       ${d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:""}
     </button>`).join("");
-  const filmBlock=rideDays.length>=1?`<div class="filmwrap hit" id="filmwrap">
+  const filmBlock=rideDays.length>=1?`<div class="daydock hit" id="daydock">
+      ${onDay&&today?dayCueHtml(today, days):""}
+      <div class="filmwrap" id="filmwrap">
       <button type="button" class="tile tour-tile${!selDay?" on":""}" id="filmtour" title="Whole tour — edit start, end, and effort">
         <span class="tile-n tour-n">Tour</span>
         <span class="tile-who">All days</span>
@@ -1808,6 +1882,7 @@ function plannerSheet(t){
       <button type="button" class="film-nav" id="filmprev" aria-label="Previous day">‹</button>
       <div class="film-track" id="film">${filmHtml}</div>
       <button type="button" class="film-nav" id="filmnext" aria-label="Next day">›</button>
+    </div>
     </div>`:`<div id="filmwrap" hidden></div>`;
   document.getElementById("head").innerHTML="";
   col.className="sheet";
@@ -2154,6 +2229,13 @@ function plannerSheet(t){
     };
     const dayback=document.getElementById("dayback");
     if(dayback) dayback.onclick=e=>{ e.stopPropagation(); goTour(); };
+    document.querySelectorAll("#daycues .cue").forEach(el=>{
+      el.onclick=e=>{
+        e.stopPropagation();
+        const stop=stops.find(s=>s.name===el.dataset.name);
+        if(stop) selectStop(stop);
+      };
+    });
   }
 }
 function selectSeg(s){
@@ -2357,6 +2439,8 @@ function fillPrintSheet(){
     const phItems=dayPhotoItems(stops, today);
     const daySegs=segsOnDay(today, days);
     const forkNote=dayForkNote(today, days);
+    const cues=dayCues(today, days);
+    const cuesPrint=cues.steps.length?`<div class="print-wayhead">${esc(cues.route||"Today")}</div><div class="print-way">${cues.steps.map(s=>`<span>${esc(s.name)}</span>`).join("")}</div>${cues.phrase?`<p class="print-gap">${esc(cues.phrase)}</p>`:""}`:(vias.length?`<div class="print-wayhead">On the way</div><div class="print-way">${vias.map(s=>`<span>${esc(s.name)}</span>`).join("")}</div>`:"");
     const eff=Math.round(today.eff||0);
     ps.innerHTML=`<p class="print-kicker">${esc(PAPER.country)} · ${esc(t.name)}</p>
       <h1>Day ${today.n}: ${esc(today.frm)} → ${esc(today.to)}</h1>
@@ -2370,7 +2454,7 @@ function fillPrintSheet(){
       <p class="print-gap">${dayGapLine(today)}</p>
       <div class="print-strip">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}"></i>`).join("")}</div>
       ${printDayFig(today)}
-      ${vias.length?`<div class="print-wayhead">On the way</div><div class="print-way">${vias.map(s=>`<span>${esc(s.name)}</span>`).join("")}</div>`:""}
+      ${cuesPrint}
       <p class="print-sleep">Sleep: ${esc(today.to)} · ${today.stay||0} beds</p>
       ${phItems.length?`<div class="print-photos">${phItems.map(p=>`<img src="${esc(p.src)}" alt="${esc(p.name)}">`).join("")}</div>`:""}
       ${forkNote?`<p class="print-fork">${esc(forkNote)}</p>`:""}`;
@@ -2555,7 +2639,7 @@ function nearestStopHit(x, y, slop){
 }
 function tapMap(e){
   if(mode!=="ride" || !PLAN || PLAN===false) return;
-  if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daybar")) return;
+  if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daydock,.cuebar,.daybar")) return;
   const pt=svgPt(e.clientX, e.clientY);
   if(!pt) return;
   if(selDay){
@@ -2605,7 +2689,7 @@ const popEl=document.getElementById("pop");
 popEl.addEventListener("mouseenter",()=>{ if(hoverClear){ clearTimeout(hoverClear); hoverClear=null; } });
 popEl.addEventListener("mouseleave",()=>setHover(null));
 function mapChrome(el){
-  return el && el.closest && el.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daybar");
+  return el && el.closest && el.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daydock,.cuebar,.daybar");
 }
 function readVb(svg){
   return (svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
@@ -2743,7 +2827,7 @@ function typingIn(e){
 let wheelLock=0;
 document.getElementById("stage").addEventListener("wheel", e=>{
   if(mode==="ride" && PLAN && PLAN!==false){
-    if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap")) return;
+    if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daydock,.cuebar")) return;
     e.preventDefault();
     if(Date.now()<wheelLock) return;
     wheelLock=Date.now()+80;

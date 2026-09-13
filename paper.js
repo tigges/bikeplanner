@@ -977,7 +977,7 @@ function planDays(){
   const defaultPick=(PLAN.forks||[]).every(f=>(picks[f.node]||f.pick)===f.pick);
   const full=!reversed && startId===PLAN.start && endId===PLAN.end && !skipped && defaultPick
     && veh==="bike" && effort===PLAN.effort && PLAN.days;
-  if(full) return PLAN.days.map(d=>({...d, mode:"ride", frm:showName(d.frm), to:showName(d.to)}));
+  if(full) return enrichDays(PLAN.days.map(d=>({...d, mode:"ride", frm:showName(d.frm), to:showName(d.to)})));
   const days=[];
   let buf=[];
   const flush=()=>{
@@ -1017,7 +1017,7 @@ function enrichDays(days){
     });
     d.shop=Math.round(shop); d.stay=Math.round(stay); d.bath=Math.round(bath);
     d.rail=Math.round(rail); d.water=Math.round(water);
-    if(!d.line||d.line.length<2) d.line=sliceLine(segs, dayOff, dayOff+d.km);
+    d.line=sliceLine(segs, dayOff, dayOff+d.km);
     if(!d.prof||!d.prof.length){
       const prof=[];
       let k=0;
@@ -1030,7 +1030,7 @@ function enrichDays(days){
       });
       d.prof=prof;
     }
-    if(d.lat==null && d.line&&d.line.length){
+    if(d.line&&d.line.length){
       const last=d.line[d.line.length-1];
       d.lat=last[0]; d.lon=last[1];
     }
@@ -1123,6 +1123,7 @@ function mapSightLabel(p){
   if((p&&p.kind)==="mne"){
     n=n.replace(/^michi[- ]?no[- ]?eki\s*/i,"").replace(/^[「"'“‘（(]+/,"").replace(/[」"'”’）)]+$/,"").trim();
   }
+  if(n && n[0]>="a" && n[0]<="z") n=n[0].toUpperCase()+n.slice(1);
   return shortStop(n) || shortStop(p&&p.name);
 }
 function dayStops(today, days){
@@ -1219,10 +1220,22 @@ function mapLabelPack(){
     take(x, y, text, fs, always){
       const w=Math.max(ink(16), String(text).length*fs*0.56);
       const h=fs*1.35;
-      const lx=x+ink(8), ly=y-ink(7);
-      const box={x:lx, y:ly-h, w, h};
-      if(!always && boxes.some(b=>hits(b, box))) return null;
-      boxes.push(box);
+      const cands=[
+        [x+ink(8), y-ink(7)],
+        [x+ink(8), y+ink(h+2)],
+        [x-w-ink(6), y-ink(7)],
+        [x-w-ink(6), y+ink(h+2)]
+      ];
+      for(let i=0;i<cands.length;i++){
+        const lx=cands[i][0], ly=cands[i][1];
+        const box={x:lx, y:ly-h, w, h};
+        if(boxes.some(b=>hits(b, box))) continue;
+        boxes.push(box);
+        return {x:lx, y:ly};
+      }
+      if(!always) return null;
+      const lx=cands[0][0], ly=cands[0][1];
+      boxes.push({x:lx, y:ly-h, w, h});
       return {x:lx, y:ly};
     }
   };

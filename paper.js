@@ -155,6 +155,7 @@ function matches(t){
   const g=geo(t), n=daysEst(g), tags=t.tags||[];
   if(filter==="top") return t.top>0;
   if(filter==="all") return true;
+  if(filter==="crossing") return t.kind==="crossing" || tags.includes("crossing");
   if(filter==="d3") return n>0 && n<=3;
   if(filter==="d46"||filter==="d6") return n>=4 && n<=6;
   if(filter==="d7") return n>=7;
@@ -164,12 +165,16 @@ function matches(t){
   return tags.includes(filter);
 }
 function filterChips(){
-  const reserved=new Set(["top","all","d3","d46","d6","d7","e0","easy","e1","e2","moderate","hard"]);
+  const reserved=new Set(["top","all","crossing","d3","d46","d6","d7","e0","easy","e1","e2","moderate","hard"]);
   const tags=[...new Set(TRIPS.flatMap(t=>t.tags||[]))]
     .filter(t=>t && !reserved.has(String(t).toLowerCase()))
     .sort();
+  const hasCrossing=TRIPS.some(t=>t.kind==="crossing" || (t.tags||[]).includes("crossing"));
+  const featured=[["top","top"]];
+  if(hasCrossing) featured.push(["crossing","crossing"]);
   return [
-    ["top","top"],["all","all "+TRIPS.length],
+    ...featured,
+    ["all","all "+TRIPS.length],
     ["d3","up to 3 days"],["d46","4–6 days"],["d7","7+ days"],
     ["e0","easy"],["e1","moderate"],["e2","hard"],
     ...tags.map(t=>[t,t])
@@ -2335,13 +2340,18 @@ function sheet(){
   if(mode==="network"){
     col.className="";
     const n=visible().length;
-    head.innerHTML=`<a class="back" href="./">‹ Where to ride</a>
+    head.innerHTML=`<a class="back" href="./">‹ Your Bike Route Planners</a>
       <p class="kicker">${PAPER.kicker(TRIPS.length)}</p>
       <h1>${PAPER.title}</h1>
       <p class="lede">${PAPER.lede}</p>
       <div class="chips" id="filters"></div>`;
     filterChips().forEach(([k,lab])=>{
-      const b=document.createElement("button"); b.className="chip"+(filter===k?" on":""); b.textContent=lab;
+      const b=document.createElement("button");
+      const cta=k==="top"||k==="crossing";
+      b.className="chip"+(cta?" cta":"")+(k==="top"?" cta-top":"")+(k==="crossing"?" cta-cross":"")+(filter===k?" on":"");
+      b.textContent=lab;
+      if(k==="top") b.title="The ranked rides from the guides";
+      if(k==="crossing") b.title="The country-length crossings";
       b.onclick=()=>{ filter=k; if(pick && !visible().some(t=>t.id===pick)) pick=null; draw(); };
       document.getElementById("filters").appendChild(b);
     });

@@ -3,6 +3,7 @@
   --route:#f0713f; --gold:#c9a227; --card:#fffdf8;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{margin:0;background:var(--paper);color:var(--ink);
   font:16px/1.5 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
 html.planner,body.planner{height:100%;overflow:hidden;overflow-x:hidden}

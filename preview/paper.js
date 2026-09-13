@@ -1155,20 +1155,22 @@ function plannerSheet(t){
     selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   const dirrow=document.getElementById("dirrow");
-  const off=peekDir(!reversed);
-  [[true, ends.from, ends.to, st.asc, rideDays.length], [false, ends.to, ends.from, off.asc, off.days]].forEach(row=>{
-    const b=document.createElement("button");
-    b.type="button";
-    const on=row[0];
-    b.className="opt"+(on?" on":"");
-    b.textContent=row[1]+" → "+row[2]+" · ↑"+Math.round(row[3]||0).toLocaleString()+" m · "+row[4]+" d";
-    b.title=on?"the direction you are planning":"ride it the other way";
-    if(!on) b.onclick=()=>{
-      const tmp=startId; startId=endId; endId=tmp;
-      reversed=!reversed; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
-    };
-    dirrow.appendChild(b);
-  });
+  if(dirrow && !dirrow.hidden){
+    const off=peekDir(!reversed);
+    [[true, ends.from, ends.to, st.asc, rideDays.length], [false, ends.to, ends.from, off.asc, off.days]].forEach(row=>{
+      const b=document.createElement("button");
+      b.type="button";
+      const on=row[0];
+      b.className="opt"+(on?" on":"");
+      b.textContent=row[1]+" → "+row[2]+" · ↑"+Math.round(row[3]||0).toLocaleString()+" m · "+row[4]+" d";
+      b.title=on?"the direction you are planning":"ride it the other way";
+      if(!on) b.onclick=()=>{
+        const tmp=startId; startId=endId; endId=tmp;
+        reversed=!reversed; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+      };
+      dirrow.appendChild(b);
+    });
+  }
   document.getElementById("eff").oninput=e=>{ document.getElementById("slv").textContent=e.target.value; };
   document.getElementById("eff").onchange=e=>{ effort=+e.target.value; selDay=null; skipCache=null; draw(); };
   document.getElementById("dtar").oninput=e=>{ document.getElementById("dlv").textContent=+e.target.value?e.target.value+" days":"no limit"; };
@@ -1274,7 +1276,7 @@ function plannerSheet(t){
     }
   });
   const net=document.getElementById("netforks");
-  if(net){ net.hidden=!offN; }
+  if(net){ net.hidden=onDay || !offN; }
   const film=document.getElementById("film");
   if(film){
     film.querySelectorAll(".tile").forEach(btn=>{

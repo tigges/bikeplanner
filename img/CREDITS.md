@@ -65,3 +65,10 @@ See each file’s Commons page for author and license (typically CC BY / CC BY-S
 | windsor.jpg | Windsor Castle.jpg | trip / day photo |
 | brighton.jpg | Brighton Pier.jpg | trip / day photo |
 | cambridge.jpg | King's College Cambridge.jpg | trip / day photo |
+
+## Added 2026-09-13 (new Ealing / EuroVelo photos)
+
+| osterley.jpg | Osterley House.jpg | trip / day photo |
+| strandgreen.jpg | Kew Bridge.jpg | trip / day photo |
+| northala.jpg | File:Northala Fields - the main Mound from Western Ave car park. - geograph.org.uk - 1018925.jpg | trip / day photo |
+| harrowhill.jpg | File:Robert Finlay McIntyre (c.1846-1906) - West Heath Road and Telegraph Hill, Looking from Flagstaff towards Harrow - 086523 - Holborn Library.jpg | trip / day photo |

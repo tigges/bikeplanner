@@ -10,8 +10,8 @@ Live: [tigges.github.io/bikeplanner](https://tigges.github.io/bikeplanner/).
 - [MAP.md](MAP.md) — schematic paper atlas; network → ride → day.
 - [GRAPHS.md](GRAPHS.md) — difficulty, effort and elevation on the tour sheet, beside a map figure.
 - [index.html](index.html) — four country cards. Britain, Japan, Switzerland and Spain each open a gallery on this site.
-- [britain.html](britain.html) — 18 trips (Land's End to Edinburgh, London and Ealing rides).
-- [switzerland.html](switzerland.html) — 29 trips.
+- [britain.html](britain.html) — 23 trips (Land's End to Edinburgh, London and Ealing rides).
+- [switzerland.html](switzerland.html) — 30 trips.
 - [japan.html](japan.html) — 29 trips (Shimanami, Biwaichi, Fuji-ichi, Tokapuchi 400, Amaichi, Okhotsk, Awaji, Yamanami, Pacific Cycling Road, cape to cape).
 - [spain.html](spain.html) — 8 trips (Camino Francés, Norte, Fisterra, the crossing).
 

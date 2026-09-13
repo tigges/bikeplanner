@@ -127,6 +127,7 @@ let placeOpen=null, placeHits=[], stopHits=[];
 let PLAN=null, effort=100, veh="bike", selDay=null, selStop=null, filmFocus=1;
 let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
+let editOpen=false, netForksOpen=false;
 let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, preferSigned=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
 try{
   ["plan","days"].forEach(k=>{
@@ -547,7 +548,7 @@ function applyHash(){
     selDay=day||null;
     vbManual=false;
     if(!(mode==="ride" && ride && ride.id===p.trip)){
-      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; selStop=null; }
+      if(ride && ride.id!==p.trip){ PLAN=null; effort=100; veh="bike"; startId=null; endId=null; zoom=1; folds={plan:true, route:false, days:true}; editOpen=false; netForksOpen=false; reversed=false; dtar=0; skipOn={}; skipOff={}; selSeg=null; selStop=null; }
       ride=TRIPS.find(t=>t.id===p.trip); mode="ride"; hover=null;
       filmFocus=day||1;
       ensurePlan(p.trip);
@@ -1782,6 +1783,14 @@ function plannerSheet(t){
     ${filmBlock}
     <div id="days" hidden></div>`;
     drawProfile(onDay && today ? [today] : rideDays);
+  const edit=document.querySelector("details.edittrip");
+  if(edit){
+    edit.open=!!editOpen;
+    edit.addEventListener("toggle",()=>{
+      editOpen=edit.open;
+      document.body.classList.toggle("editing", !selDay && edit.open);
+    });
+  }
   const strip=document.getElementById("strip");
   if(strip && !strip.hidden){
     activeSegs().forEach(s=>{
@@ -1959,7 +1968,13 @@ function plannerSheet(t){
     }
   });
   const net=document.getElementById("netforks");
-  if(net){ net.hidden=onDay || !offN; }
+  if(net){
+    net.hidden=onDay || !offN;
+    if(!net.hidden){
+      net.open=!!netForksOpen;
+      net.addEventListener("toggle",()=>{ netForksOpen=net.open; });
+    }
+  }
   const film=document.getElementById("film");
   if(film){
     film.querySelectorAll(".tile").forEach(btn=>{
@@ -2243,6 +2258,7 @@ function sheet(){
   document.documentElement.classList.toggle("planner", plannerOn);
   document.body.classList.toggle("planner", plannerOn);
   document.body.classList.toggle("onday", plannerOn && !!selDay);
+  document.body.classList.toggle("editing", plannerOn && !selDay && !!editOpen);
   if(mode==="network"){
     col.className="";
     const n=visible().length;

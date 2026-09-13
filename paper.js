@@ -1401,26 +1401,38 @@ function dayCues(today, days){
   if(!today) return {steps:[], phrase:"", route:"", fork:""};
   const hops=segsOnDay(today, days);
   const stops=dayStops(today, days);
-  const vias=stops.filter(s=>s.role==="via");
+  const startN=showName(today.frm);
+  const endN=showName(today.to);
   const k0=stops[0]?stops[0].km:0;
+  const vias=stops.filter(s=>s.role==="via" && s.name!==startN && s.name!==endN);
   let steps=[];
+  if(startN) steps.push({kind:"start", name:startN, km:0});
   if(vias.length){
-    stops.forEach(s=>steps.push({kind:s.role, name:s.name, km:+((s.km||0)-k0).toFixed(1)}));
-  } else if(hops.length){
+    vias.forEach(s=>steps.push({kind:"via", name:s.name, km:+((s.km||0)-k0).toFixed(1)}));
+  } else if(hops.length>1){
     let acc=0;
     hops.forEach(({seg,km},i)=>{
-      if(i===0) steps.push({kind:"start", name:showName(seg.frmName||seg.frm), km:0, band:seg.band});
       acc+=km||0;
-      steps.push({kind:i===hops.length-1?"end":"hop", name:showName(seg.toName||seg.to), km:+acc.toFixed(1), band:seg.band});
+      if(i===hops.length-1) return;
+      const nm=showName(seg.toName||seg.to);
+      if(nm && nm!==startN && nm!==endN) steps.push({kind:"hop", name:nm, km:+acc.toFixed(1)});
     });
   }
-  (daySights(today, days)||[]).filter(p=>/castle|waterfall|cape|peak|mne/.test(p.kind||"")).slice(0,2).forEach(p=>{
+  if(endN) steps.push({kind:"end", name:endN, km:+((today.km||0)).toFixed(1)});
+  (daySights(today, days)||[]).filter(p=>/castle|waterfall|cape|mne/.test(p.kind||"")).slice(0,2).forEach(p=>{
     const km=+((p.km||0)-k0).toFixed(1);
     const nm=showName(p.name);
-    if(!nm || steps.some(s=>s.name===nm || Math.abs((s.km||0)-km)<1.5 && s.kind!=="sight")) return;
+    if(!nm || steps.some(s=>s.name===nm)) return;
     steps.push({kind:"sight", name:nm, km, sight:p.kind});
   });
   steps.sort((a,b)=>(a.km||0)-(b.km||0));
+  const seen={};
+  steps=steps.filter(s=>{
+    const k=String(s.name||"").toLowerCase();
+    if(!k || seen[k]) return false;
+    seen[k]=1;
+    return true;
+  });
   if(steps.length>8){
     const first=steps[0], last=steps[steps.length-1];
     const mid=steps.slice(1,-1);
@@ -1444,9 +1456,8 @@ function dayCueHtml(today, days){
       `<span class="cue-tag">${esc(tag)}</span><span class="cue-who">${esc(s.name)}</span></button>`;
   }).join('<span class="cue-then" aria-hidden="true">then</span>');
   return `<div class="cuebar hit" id="daycues">`+
-    (c.route?`<p class="cue-kicker">${esc(c.route)}</p>`:"")+
+    ((c.route||c.phrase||c.fork)?`<p class="cue-kicker">${esc([c.route,c.phrase,c.fork].filter(Boolean).join(" · "))}</p>`:"")+
     `<div class="cue-row">${chips}</div>`+
-    (c.phrase||c.fork?`<p class="cue-note">${esc([c.phrase,c.fork].filter(Boolean).join(" · "))}</p>`:"")+
     `</div>`;
 }
 function dayPhotoItems(stops, today){

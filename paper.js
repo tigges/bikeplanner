@@ -141,7 +141,9 @@ try{
   if(localStorage.getItem("signed")==="0") preferSigned=false;
 }catch(e){}
 const BAND={g:"#97C459",a:"#EF9F27",r:"#E24B4A"};
-const BAND_TILE={g:"#2f6a12",a:"#d4880a",r:"#d22727"};
+const BAND_TILE={g:"#ffe34a",a:"#ff8a00",r:"#ff2d55"};
+const RIDE_CORAL="#ff3b1a";
+const DAY_LINE="#ffbf00";
 const LCOL={shop:"#c9a227",stay:"#3d7ec9",bath:"#7a5ea7",rail:"#1c1916",water:"#4a8fa3"};
 
 function geo(t){ return t.geo||{}; }
@@ -573,6 +575,12 @@ function goNetwork(){
   if(location.hash!=="#network") location.hash="network";
   else applyHash();
 }
+function goTour(){
+  if(!ride) return;
+  selDay=null; selSeg=null; selStop=null; vbManual=false;
+  hidePlaceCard();
+  openRide(ride.id, null);
+}
 function ensurePlan(id){
   if(PLAN && PLAN.id===id) return;
   const wanted=id;
@@ -822,19 +830,58 @@ function ridePoints(){
   activeSegs().forEach(s=>{ if(isSkipped(s.id)) return; (s.line||[]).forEach(p=>pts.push(p)); });
   return pts;
 }
+function overlayFractions(){
+  const svg=document.getElementById("map");
+  if(!svg) return {left:0, right:0.02, top:0.06, bottom:0.04, ar:W/H};
+  const r=svg.getBoundingClientRect();
+  const ar=(r.width>8 && r.height>8)? r.width/r.height : W/H;
+  let left=0, right=0.02, top=0.05, bottom=0.03;
+  const clip=(el, edge)=>{
+    if(!el || el.hidden) return;
+    const b=el.getBoundingClientRect();
+    const ox=Math.max(0, Math.min(b.right,r.right)-Math.max(b.left,r.left));
+    const oy=Math.max(0, Math.min(b.bottom,r.bottom)-Math.max(b.top,r.top));
+    if(ox<12 || oy<8) return;
+    if(edge==="left") left=Math.max(left, (Math.min(b.right,r.right)-r.left)/r.width);
+    if(edge==="bottom") bottom=Math.max(bottom, (r.bottom-Math.max(b.top,r.top))/r.height);
+    if(edge==="top") top=Math.max(top, (Math.min(b.bottom,r.bottom)-r.top)/r.height);
+  };
+  const ctx=document.getElementById("ctx");
+  if(ctx && !ctx.hidden){
+    const b=ctx.getBoundingClientRect();
+    const coverW=Math.max(0, Math.min(b.right,r.right)-Math.max(b.left,r.left))/Math.max(r.width,1);
+    if(coverW>0.55) clip(ctx, "top");
+    else clip(ctx, "left");
+  }
+  const film=document.getElementById("filmwrap");
+  if(film && !film.hidden && film.offsetHeight) clip(film, "bottom");
+  const tools=document.getElementById("maptools");
+  if(tools && !tools.hidden){
+    const b=tools.getBoundingClientRect();
+    top=Math.max(top, (Math.min(b.bottom, r.bottom)-r.top+10)/r.height);
+  }
+  return {left, right, top, bottom, ar};
+}
 function fitPts(pts, pad){
   const svg=document.getElementById("map"); if(!svg||!pts||pts.length<2){ if(svg) svg.setAttribute("viewBox", VB0); return; }
   const xypts=pts.map(p=>xy(p[0], p[1]));
-  let x0=Math.min(...xypts.map(p=>p[0])), x1=Math.max(...xypts.map(p=>p[0]));
-  let y0=Math.min(...xypts.map(p=>p[1])), y1=Math.max(...xypts.map(p=>p[1]));
-  const padN=pad||1.2;
-  let w=Math.max((x1-x0)*padN, 28), h=Math.max((y1-y0)*padN, 28);
-  const ar=W/H;
-  if(w/h<ar) w=h*ar; else h=w/ar;
-  let cx=(x0+x1)/2, cy=(y0+y1)/2;
-  let x=cx-w/2, y=cy-h/2;
-  x=Math.max(-120, Math.min(W+80-w, x));
-  y=Math.max(-120, Math.min(H+80-h, y));
+  const x0=Math.min(...xypts.map(p=>p[0])), x1=Math.max(...xypts.map(p=>p[0]));
+  const y0=Math.min(...xypts.map(p=>p[1])), y1=Math.max(...xypts.map(p=>p[1]));
+  const padN=pad||1.1;
+  const rw=Math.max((x1-x0)*padN, 10), rh=Math.max((y1-y0)*padN, 10);
+  const chrome=overlayFractions();
+  const visW=Math.max(0.36, 1-chrome.left-chrome.right);
+  const visH=Math.max(0.42, 1-chrome.top-chrome.bottom);
+  const ar=chrome.ar||(W/H);
+  const w=Math.max(rw/visW, rh/visH*ar, 16);
+  const h=w/ar;
+  const cx=(x0+x1)/2, cy=(y0+y1)/2;
+  let x=cx-(chrome.left+visW/2)*w;
+  let y=cy-(chrome.top+visH/2)*h;
+  if(!bmOnRide()){
+    x=Math.max(-120, Math.min(W+80-w, x));
+    y=Math.max(-120, Math.min(H+80-h, y));
+  }
   zoom=Math.max(1, +(W/w).toFixed(2));
   svg.setAttribute("viewBox", x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
 }
@@ -843,11 +890,30 @@ function ink(n){
   return +Math.max(n/z, 0.04).toFixed(3);
 }
 function rideStroke(band){
-  if(!friendOn) return "#e24b2a";
-  if(bmOnRide()) return BAND_TILE[band]||"#e24b2a";
+  if(!friendOn) return RIDE_CORAL;
+  if(bmOnRide()) return BAND_TILE[band]||RIDE_CORAL;
   return BAND[band]||"#f0713f";
 }
-function fitRide(){ fitPts(ridePoints(), 1.38); }
+function addPoly(g, ptsStr, stroke, w, extra){
+  const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+  p.setAttribute("points", ptsStr);
+  p.setAttribute("fill","none");
+  p.setAttribute("stroke", stroke);
+  p.setAttribute("stroke-width", w);
+  p.setAttribute("stroke-linecap","round");
+  p.setAttribute("stroke-linejoin","round");
+  if(extra) Object.keys(extra).forEach(k=>p.setAttribute(k, extra[k]));
+  g.appendChild(p);
+  return p;
+}
+function strokeOnMap(g, ptsStr, color, w){
+  if(bmOnRide()){
+    addPoly(g, ptsStr, "#1c1916", w*2.7, {opacity:".4"});
+    addPoly(g, ptsStr, "#fffdf8", w*2.05, {opacity:".96"});
+  }
+  addPoly(g, ptsStr, color, w);
+}
+function fitRide(){ fitPts(ridePoints(), 1.1); }
 function fitDay(){
   const days=planDays();
   const d=days.find(x=>x.n===selDay);
@@ -857,7 +923,7 @@ function fitDay(){
     days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
     line=sliceLine(activeSegs().filter(s=>!isSkipped(s.id)), k0, k1);
   }
-  if(line&&line.length>1) fitPts(line, filmVisible()?1.36:1.18);
+  if(line&&line.length>1) fitPts(line, 1.12);
   else fitRide();
 }
 function fitSeg(){
@@ -900,7 +966,15 @@ function syncMapTools(){
   tools.hidden=!on;
   layers.hidden=!on;
   if(!on) return;
-  back.textContent=PAPER.backAll(TRIPS.length);
+  if(selDay && ride){
+    back.textContent="‹ "+ride.name;
+    back.title="Back to the tour";
+    back.onclick=goTour;
+  } else {
+    back.textContent=PAPER.backAll(TRIPS.length);
+    back.title="All trips";
+    back.onclick=goNetwork;
+  }
   document.getElementById("vehbtn").textContent=VEH_LABEL[veh]||"Bicycle";
   document.getElementById("langbtn").textContent=lang==="local"?"English names":(PAPER.localLabel||"Lokale Namen");
   layers.querySelectorAll("button[data-l]").forEach(b=>b.classList.toggle("on", !!layersOn[b.dataset.l]));
@@ -1279,17 +1353,11 @@ function dayPhotoItems(stops, today){
   return items.slice(0,6);
 }
 function selectStop(stop){
-  if(!stop){
+  if(!stop || stopEq(selStop, stop)){
     selStop=null;
     hidePlaceCard();
     paint();
     syncDayOverlay();
-    return;
-  }
-  if(stopEq(selStop, stop)){
-    const role=stop.role==="end"?"Sleep":stop.role==="start"?"Start of the day":"On the way";
-    showPlaceCard({kind:"town", name:stop.name, lat:stop.lat, lon:stop.lon,
-      sub:role+(stop.km!=null?" · km "+Math.round(stop.km):"")});
     return;
   }
   hidePlaceCard();
@@ -1331,25 +1399,7 @@ function paintRide(){
     if(pts.length<2) return;
     const ptsStr=linePts(pts);
     const w=ink(selSeg===seg.id?2.2:1.35);
-    if(bmOnRide()){
-      const cas=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-      cas.setAttribute("points", ptsStr);
-      cas.setAttribute("fill","none");
-      cas.setAttribute("stroke","#fffdf8");
-      cas.setAttribute("stroke-width", w*1.7);
-      cas.setAttribute("stroke-linecap","round");
-      cas.setAttribute("stroke-linejoin","round");
-      cas.setAttribute("opacity",".92");
-      gRide.appendChild(cas);
-    }
-    const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-    p.setAttribute("points", ptsStr);
-    p.setAttribute("fill","none");
-    p.setAttribute("stroke-linecap","round");
-    p.setAttribute("stroke-linejoin","round");
-    p.setAttribute("stroke", rideStroke(seg.band));
-    p.setAttribute("stroke-width", w);
-    gRide.appendChild(p);
+    strokeOnMap(gRide, ptsStr, rideStroke(seg.band), w);
   });
   if(selSeg){
     const s=rideSegs.find(x=>x.id===selSeg);
@@ -1371,18 +1421,7 @@ function paintRide(){
       line=sliceLine(rideSegs, k0, k1);
     }
     if(line && line.length>1){
-      const ptsStr=linePts(line);
-      const cas=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-      cas.setAttribute("points", ptsStr);
-      cas.setAttribute("fill","none"); cas.setAttribute("stroke","#fffdf8");
-      cas.setAttribute("stroke-width", ink(4.2)); cas.setAttribute("stroke-linecap","round");
-      cas.setAttribute("stroke-linejoin","round"); cas.setAttribute("opacity",".88");
-      gGold.appendChild(cas);
-      const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
-      p.setAttribute("points", ptsStr);
-      p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
-      p.setAttribute("stroke-width", ink(2.6)); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
-      gGold.appendChild(p);
+      strokeOnMap(gGold, linePts(line), DAY_LINE, ink(2.6));
     }
   }
   const labels=[];
@@ -1731,6 +1770,7 @@ function plannerSheet(t){
   col.className="sheet";
   col.innerHTML=onDay?`
     <aside class="ctx-card hit" id="ctx">
+      <button type="button" class="sheetback" id="dayback">‹ ${esc(t.name)}</button>
       <div class="tn"><span class="badge">${today?today.n:selDay}</span><h2>${today?today.frm+" → "+today.to:t.name}</h2></div>
       <div class="stats4">
         <div><b>${today?today.km:"—"}</b><span>km</span></div>
@@ -2013,6 +2053,7 @@ function plannerSheet(t){
         const n=Number(btn.dataset.day);
         openRide(ride.id, selDay===n?null:n);
       };
+      btn.title=selDay===Number(btn.dataset.day)?"Show the whole tour":"Open this day";
     });
     const prev=document.getElementById("filmprev");
     const next=document.getElementById("filmnext");
@@ -2052,6 +2093,8 @@ function plannerSheet(t){
       const stop=stops.find(s=>s.role==="end");
       if(stop) selectStop(stop);
     };
+    const dayback=document.getElementById("dayback");
+    if(dayback) dayback.onclick=e=>{ e.stopPropagation(); goTour(); };
   }
 }
 function selectSeg(s){
@@ -2094,9 +2137,9 @@ function syncFilm(){
   let on=null;
   film.querySelectorAll(".tile").forEach(b=>{
     const num=+b.dataset.day;
-    const is=!!n && num===(selDay||filmFocus);
+    const is=!!selDay && num===selDay;
     b.classList.toggle("on", is);
-    if(is) on=b;
+    if(num===(selDay||filmFocus)) on=b;
   });
   if(on){
     const left=on.offsetLeft-(film.clientWidth-on.offsetWidth)/2;
@@ -2318,12 +2361,7 @@ function sheet(){
         <button type="button" class="open-tour">Open tour</button></div>`;
       el.onmouseenter=()=>setHover(t.id);
       el.onmouseleave=()=>setHover(null);
-      el.onclick=e=>{
-        if(e.target.closest(".open-tour")) return;
-        focusTrip(t.id);
-      };
-      el.ondblclick=()=>openRide(t.id);
-      el.querySelector(".open-tour").onclick=e=>{ e.stopPropagation(); openRide(t.id); };
+      el.onclick=()=>openRide(t.id);
       box.appendChild(el);
     });
   } else {
@@ -2446,14 +2484,6 @@ function nearestStopHit(x, y, slop){
   });
   return best;
 }
-function nearestStopAny(x, y){
-  let best=null, bd=Infinity;
-  stopHits.forEach(h=>{
-    const d=Math.hypot(h.x-x, h.y-y);
-    if(d<bd){ bd=d; best=h.stop; }
-  });
-  return best;
-}
 function tapMap(e){
   if(mode!=="ride" || !PLAN || PLAN===false) return;
   if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap,.daybar")) return;
@@ -2474,23 +2504,6 @@ function tapMap(e){
     }
     if(stop){ selectStop(stop); return; }
     if(fac && fac.kind && fac.kind!=="town"){ showPlaceCard(fac); return; }
-    const days=planDays();
-    const d=days.find(x=>x.n===selDay);
-    const line=(d&&d.line)||[];
-    const slop=14*vb[2]/Math.max(r.width,1);
-    let near=false;
-    for(let i=1;i<line.length;i++){
-      const a=xy(line[i-1][0], line[i-1][1]), b=xy(line[i][0], line[i][1]);
-      const dx=b[0]-a[0], dy=b[1]-a[1], L2=dx*dx+dy*dy;
-      const t=L2?Math.max(0,Math.min(1,((pt[0]-a[0])*dx+(pt[1]-a[1])*dy)/L2)):0;
-      const qx=a[0]+t*dx, qy=a[1]+t*dy, dd=Math.hypot(qx-pt[0], qy-pt[1]);
-      if(dd<slop){ near=true; break; }
-    }
-    if(near){
-      const next=nearestStopAny(pt[0], pt[1]);
-      if(next) selectStop(next);
-      return;
-    }
     if(selStop || placeOpen) selectStop(null);
     else hidePlaceCard();
     return;
@@ -2531,8 +2544,7 @@ document.getElementById("vehbtn").onclick=()=>{
 };
 document.getElementById("langbtn").onclick=()=>{ lang=lang==="local"?"en":"local"; draw(); };
 document.getElementById("fitbtn").onclick=()=>{
-  selDay=null; selSeg=null; selStop=null; vbManual=false;
-  if(ride) openRide(ride.id, null);
+  if(ride) goTour();
   else applyView();
 };
 document.getElementById("zin").onclick=()=>bumpZoom(0.78);
@@ -2605,7 +2617,10 @@ document.addEventListener("keydown",e=>{
 });
 window.addEventListener("hashchange", applyHash);
 window.addEventListener("beforeprint", fillPrintSheet);
-window.addEventListener("resize", scheduleTiles);
+window.addEventListener("resize", ()=>{
+  if(mode==="ride" && PLAN && PLAN!==false && !vbManual) applyView();
+  scheduleTiles();
+});
 
 Promise.all([
   fetch(PAPER.tripsUrl).then(r=>r.json()),

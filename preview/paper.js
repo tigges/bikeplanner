@@ -104,7 +104,7 @@ let lang="local", zoom=1, startId=null, endId=null;
 let folds={plan:true, route:false, days:true};
 let picks={}, reversed=false, dtar=0, skipOn={}, skipOff={}, friendOn=false, layersOn={}, selSeg=null, vbManual=false, skipCache=null, skipWarn="";
 try{
-  ["plan","route","days"].forEach(k=>{
+  ["plan","days"].forEach(k=>{
     const v=localStorage.getItem("fold:fold-"+k);
     if(v==="0") folds[k]=false;
     if(v==="1") folds[k]=true;

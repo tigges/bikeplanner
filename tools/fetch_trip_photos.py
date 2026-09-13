@@ -36,6 +36,10 @@ FILES = {
   "windsor.jpg": "Windsor Castle.jpg",
   "brighton.jpg": "Brighton Palace Pier.jpg",
   "cambridge.jpg": "King's College Cambridge.jpg",
+  "osterley.jpg": "Osterley House.jpg",
+  "strandgreen.jpg": "Strand-on-the-Green.jpg",
+  "northala.jpg": "Northala Fields.jpg",
+  "harrowhill.jpg": "Harrow on the Hill from the west.jpg",
 }
 
 # Fallbacks if the primary filename 404s
@@ -70,6 +74,10 @@ ALT = {
   "windsor.jpg": ["Windsor Castle from the Thames.jpg", "Windsor Castle Berkshire.jpg"],
   "brighton.jpg": ["Brighton Pier.jpg", "Palace Pier Brighton.jpg", "Brighton seafront.jpg"],
   "cambridge.jpg": ["Kings College Chapel Cambridge.jpg", "Cambridge River Cam.jpg"],
+  "osterley.jpg": ["Osterley Park.jpg", "Osterley House London.jpg", "Syon House.jpg"],
+  "strandgreen.jpg": ["Strand on the Green.jpg", "Strand-on-the-Green Chiswick.jpg", "Kew Bridge.jpg"],
+  "northala.jpg": ["Northala Fields Ealing.jpg", "Horsenden Hill.jpg", "Horsenden Hill Ealing.jpg"],
+  "harrowhill.jpg": ["Harrow on the Hill.jpg", "St Mary's Harrow on the Hill.jpg", "Harrow School.jpg"],
 }
 
 def api(params):
@@ -140,7 +148,7 @@ for dest, primary in FILES.items():
 
 if credits:
     open(os.path.join(OUT, "CREDITS.md"), "a").write(
-        "\n## Added 2026-09-13 (Britain trip heroes)\n\n"
+        "\n## Added 2026-09-13 (new Ealing / EuroVelo photos)\n\n"
         + "".join(f"| {a} | {b} | trip / day photo |\n" for a, b, _ in credits)
     )
 print("done", len(credits))

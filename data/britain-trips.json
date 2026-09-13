@@ -1,5 +1,5 @@
 {
- "_comment": "Britain catalogue from tigges/routeplanner 43a0325. Two graphs (uk + london) in one gallery. Snapshots in data/rides/britain/.",
+ "_comment": "Britain catalogue from tigges/routeplanner 74a3fa3. Two graphs (uk + london) in one gallery. Snapshots in data/rides/britain/.",
  "trips": [
   {
    "id": "lejog-west",
@@ -2759,7 +2759,7 @@
     }
    ],
    "note": "Kew Bridge, Roehampton Gate, the park road, back along the river",
-   "top": 5,
+   "top": 10,
    "why": "the everyday loop from Ealing: deer, the park road, the Thames back",
    "geo": {
     "km": 23,
@@ -3080,7 +3080,8 @@
       -0.3016
      ]
     ]
-   }
+   },
+   "top": 13
   },
   {
    "slug": "london",
@@ -3096,7 +3097,7 @@
    "s": "ealing",
    "e": "windsor",
    "note": "Thames path to Hampton Court, Staines, the Jubilee River into Windsor; train back",
-   "top": 8,
+   "top": 14,
    "why": "flat all the way, castle at the end",
    "geo": {
     "km": 51,
@@ -3340,7 +3341,7 @@
     }
    ],
    "note": "Out over the Chiltern edge to Marlow, down the Thames to Windsor, home along the river",
-   "top": 6,
+   "top": 7,
    "why": "the best hilly day from Ealing without a train",
    "geo": {
     "km": 120,
@@ -3845,10 +3846,10 @@
    ],
    "note": "Towpath all the way: Bull's Bridge, Uxbridge, the Colne valley lakes",
    "geo": {
-    "km": 47,
-    "asc": 235,
-    "eff": 71,
-    "n": 2,
+    "km": 60,
+    "asc": 152,
+    "eff": 76,
+    "n": 4,
     "line": [
      [
       51.5148,
@@ -3879,120 +3880,176 @@
       -0.3591
      ],
      [
-      51.5418,
-      -0.3701
+      51.5412,
+      -0.3709
      ],
      [
-      51.5561,
-      -0.3619
+      51.5452,
+      -0.3827
      ],
      [
-      51.5646,
-      -0.3661
+      51.5486,
+      -0.3964
      ],
      [
-      51.5729,
-      -0.3714
+      51.5477,
+      -0.4088
      ],
      [
-      51.5821,
-      -0.3728
+      51.5488,
+      -0.4262
      ],
      [
-      51.5897,
-      -0.3788
+      51.5501,
+      -0.4411
      ],
      [
-      51.5965,
-      -0.3875
+      51.5547,
+      -0.4566
      ],
      [
-      51.6027,
-      -0.3974
+      51.5576,
+      -0.4694
      ],
      [
-      51.6086,
-      -0.4073
+      51.5508,
+      -0.4761
      ],
      [
-      51.6115,
-      -0.4211
+      51.5463,
+      -0.4782
      ],
      [
-      51.6268,
-      -0.4332
+      51.5521,
+      -0.4836
      ],
      [
-      51.6326,
-      -0.442
+      51.5608,
+      -0.4821
      ],
      [
-      51.6344,
-      -0.4561
+      51.5693,
+      -0.4814
      ],
      [
-      51.6353,
-      -0.4677
+      51.5793,
+      -0.4836
+     ],
+     [
+      51.5869,
+      -0.4816
+     ],
+     [
+      51.5913,
+      -0.4874
+     ],
+     [
+      51.6074,
+      -0.4976
+     ],
+     [
+      51.6158,
+      -0.4964
+     ],
+     [
+      51.624,
+      -0.4949
+     ],
+     [
+      51.6286,
+      -0.4838
+     ],
+     [
+      51.6346,
+      -0.4775
      ],
      [
       51.639,
       -0.472
      ],
      [
-      51.6353,
-      -0.4677
+      51.6346,
+      -0.4775
      ],
      [
-      51.6344,
-      -0.4561
+      51.6286,
+      -0.4838
      ],
      [
-      51.6326,
-      -0.442
+      51.624,
+      -0.4949
      ],
      [
-      51.6268,
-      -0.4332
+      51.6158,
+      -0.4964
      ],
      [
-      51.6115,
-      -0.4211
+      51.6074,
+      -0.4976
      ],
      [
-      51.6086,
-      -0.4073
+      51.5913,
+      -0.4874
      ],
      [
-      51.6027,
-      -0.3974
+      51.5869,
+      -0.4816
      ],
      [
-      51.5965,
-      -0.3875
+      51.5793,
+      -0.4836
      ],
      [
-      51.5897,
-      -0.3788
+      51.5693,
+      -0.4814
      ],
      [
-      51.5821,
-      -0.3728
+      51.5608,
+      -0.4821
      ],
      [
-      51.5729,
-      -0.3714
+      51.5521,
+      -0.4836
      ],
      [
-      51.5646,
-      -0.3661
+      51.5463,
+      -0.4782
      ],
      [
-      51.5561,
-      -0.3619
+      51.5508,
+      -0.4761
      ],
      [
-      51.5418,
-      -0.3701
+      51.5576,
+      -0.4694
+     ],
+     [
+      51.5547,
+      -0.4566
+     ],
+     [
+      51.5501,
+      -0.4411
+     ],
+     [
+      51.5488,
+      -0.4262
+     ],
+     [
+      51.5477,
+      -0.4088
+     ],
+     [
+      51.5486,
+      -0.3964
+     ],
+     [
+      51.5452,
+      -0.3827
+     ],
+     [
+      51.5412,
+      -0.3709
      ],
      [
       51.5386,
@@ -4023,7 +4080,8 @@
       -0.3016
      ]
     ]
-   }
+   },
+   "top": 11
   },
   {
    "slug": "london",
@@ -4054,7 +4112,7 @@
     }
    ],
    "note": "Kingston, Leatherhead, the Zig Zag Road; the 2012 Olympic climb",
-   "top": 7,
+   "top": 5,
    "why": "London's climb: every club rides it",
    "geo": {
     "km": 81,
@@ -4386,7 +4444,7 @@
     "classic"
    ],
    "note": "Kingston, Richmond, Putney, the Embankment, Tower Bridge, Greenwich",
-   "top": 3,
+   "top": 1,
    "why": "the whole of London from the water, car-free most of the way",
    "legs": [
     {
@@ -4585,7 +4643,7 @@
    "s": "littlevenice",
    "e": "limehouse",
    "note": "Camden, King's Cross, Islington, Victoria Park, Limehouse Basin",
-   "top": 9,
+   "top": 3,
    "why": "the classic towpath through the middle of town",
    "geo": {
     "km": 12,
@@ -4666,7 +4724,7 @@
     "limehouse": "leevalley"
    },
    "note": "Olympic Park, the reservoirs, Waltham Abbey, Broxbourne, Ware",
-   "top": 10,
+   "top": 9,
    "why": "the flat way out of London to Hertfordshire",
    "geo": {
     "km": 44,
@@ -4875,7 +4933,7 @@
     "westminster": "brighton"
    },
    "note": "Redhill, the Weald, Ditchling Beacon, the sea",
-   "top": 4,
+   "top": 2,
    "why": "the charity classic: 90 km, one big hill, the sea",
    "geo": {
     "km": 102,
@@ -5456,7 +5514,8 @@
       -0.0751
      ]
     ]
-   }
+   },
+   "top": 15
   },
   {
    "slug": "london",
@@ -5852,6 +5911,881 @@
      [
       52.2046,
       0.122
+     ]
+    ]
+   }
+  },
+  {
+   "slug": "london",
+   "id": "osterley-syon",
+   "num": "E7",
+   "name": "Osterley Park, Syon Park and Brentford",
+   "sub": "Ealing Broadway → Brentford → Ealing Broadway",
+   "kind": "route",
+   "tags": [
+    "ealing",
+    "parks",
+    "easy"
+   ],
+   "legs": [
+    {
+     "s": "ealing",
+     "e": "brentford",
+     "p": {
+      "ealing": "osterley"
+     }
+    },
+    {
+     "s": "brentford",
+     "e": "ealing",
+     "p": {
+      "ealing": "osterley"
+     }
+    }
+   ],
+   "note": "Two National Trust parks and the Grand Union at Brentford; out and back along the same quiet route",
+   "top": 8,
+   "why": "Osterley House and Syon Park back to back, then the river at Brentford — the closest proper parkland ride from Ealing",
+   "geo": {
+    "km": 25,
+    "asc": 46,
+    "eff": 30,
+    "n": 6,
+    "line": [
+     [
+      51.5148,
+      -0.3016
+     ],
+     [
+      51.5068,
+      -0.2994
+     ],
+     [
+      51.4999,
+      -0.3019
+     ],
+     [
+      51.4924,
+      -0.2999
+     ],
+     [
+      51.4892,
+      -0.3106
+     ],
+     [
+      51.4844,
+      -0.3228
+     ],
+     [
+      51.4826,
+      -0.3366
+     ],
+     [
+      51.4808,
+      -0.3513
+     ],
+     [
+      51.4774,
+      -0.3552
+     ],
+     [
+      51.4749,
+      -0.3427
+     ],
+     [
+      51.477,
+      -0.3289
+     ],
+     [
+      51.479,
+      -0.3216
+     ],
+     [
+      51.483,
+      -0.3089
+     ],
+     [
+      51.4878,
+      -0.3041
+     ],
+     [
+      51.4868,
+      -0.3058
+     ],
+     [
+      51.4878,
+      -0.3041
+     ],
+     [
+      51.483,
+      -0.3089
+     ],
+     [
+      51.479,
+      -0.3216
+     ],
+     [
+      51.477,
+      -0.3289
+     ],
+     [
+      51.4749,
+      -0.3427
+     ],
+     [
+      51.4774,
+      -0.3552
+     ],
+     [
+      51.4808,
+      -0.3513
+     ],
+     [
+      51.4826,
+      -0.3366
+     ],
+     [
+      51.4844,
+      -0.3228
+     ],
+     [
+      51.4892,
+      -0.3106
+     ],
+     [
+      51.4924,
+      -0.2999
+     ],
+     [
+      51.4999,
+      -0.3019
+     ],
+     [
+      51.5068,
+      -0.2994
+     ],
+     [
+      51.5148,
+      -0.3016
+     ]
+    ]
+   }
+  },
+  {
+   "slug": "london",
+   "id": "strand-on-the-green",
+   "num": "E8",
+   "name": "Strand-on-the-Green",
+   "sub": "Ealing Broadway → Chiswick → Ealing Broadway",
+   "kind": "route",
+   "tags": [
+    "ealing",
+    "river",
+    "easy"
+   ],
+   "legs": [
+    {
+     "s": "ealing",
+     "e": "chiswick",
+     "p": {
+      "kew": "chiswick"
+     }
+    },
+    {
+     "s": "chiswick",
+     "e": "ealing"
+    }
+   ],
+   "note": "Kew Bridge and along the towpath to the Georgian riverside terrace at Strand-on-the-Green; pubs on the water",
+   "geo": {
+    "km": 13,
+    "asc": 91,
+    "eff": 22,
+    "n": 4,
+    "line": [
+     [
+      51.5148,
+      -0.3016
+     ],
+     [
+      51.5111,
+      -0.2906
+     ],
+     [
+      51.505,
+      -0.29
+     ],
+     [
+      51.4978,
+      -0.2825
+     ],
+     [
+      51.49,
+      -0.2836
+     ],
+     [
+      51.4881,
+      -0.2879
+     ],
+     [
+      51.4904,
+      -0.2758
+     ],
+     [
+      51.4899,
+      -0.2674
+     ],
+     [
+      51.4899,
+      -0.2679
+     ],
+     [
+      51.4899,
+      -0.2674
+     ],
+     [
+      51.4904,
+      -0.2758
+     ],
+     [
+      51.4881,
+      -0.2879
+     ],
+     [
+      51.49,
+      -0.2836
+     ],
+     [
+      51.4978,
+      -0.2825
+     ],
+     [
+      51.505,
+      -0.29
+     ],
+     [
+      51.5111,
+      -0.2906
+     ],
+     [
+      51.5148,
+      -0.3016
+     ]
+    ]
+   }
+  },
+  {
+   "slug": "london",
+   "id": "northala-horsendon",
+   "num": "E9",
+   "name": "Northala Fields and Horsenden Hill",
+   "sub": "Ealing Broadway loop via Hanwell, Northala Fields, Horsenden Hill, Perivale",
+   "kind": "route",
+   "tags": [
+    "ealing",
+    "hills",
+    "loop"
+   ],
+   "legs": [
+    {
+     "s": "ealing",
+     "e": "perivale",
+     "p": {
+      "ealing": "hills"
+     }
+    },
+    {
+     "s": "perivale",
+     "e": "ealing"
+    }
+   ],
+   "note": "Hanwell locks, the Wembley-rubble hills of Northala Fields, ancient Horsenden Hill; back the same quiet way",
+   "top": 6,
+   "why": "the Ealing Cycling Campaign's own circular: two proper hills and a lot of green space without leaving the borough",
+   "geo": {
+    "km": 40,
+    "asc": 449,
+    "eff": 85,
+    "n": 8,
+    "line": [
+     [
+      51.5148,
+      -0.3016
+     ],
+     [
+      51.5109,
+      -0.3111
+     ],
+     [
+      51.5091,
+      -0.3246
+     ],
+     [
+      51.5106,
+      -0.3347
+     ],
+     [
+      51.5117,
+      -0.3385
+     ],
+     [
+      51.5174,
+      -0.346
+     ],
+     [
+      51.5255,
+      -0.3465
+     ],
+     [
+      51.5324,
+      -0.3496
+     ],
+     [
+      51.5383,
+      -0.3574
+     ],
+     [
+      51.5408,
+      -0.3699
+     ],
+     [
+      51.5447,
+      -0.3817
+     ],
+     [
+      51.5477,
+      -0.3779
+     ],
+     [
+      51.554,
+      -0.3714
+     ],
+     [
+      51.5557,
+      -0.3588
+     ],
+     [
+      51.5578,
+      -0.3465
+     ],
+     [
+      51.5574,
+      -0.3339
+     ],
+     [
+      51.5568,
+      -0.3241
+     ],
+     [
+      51.5507,
+      -0.3284
+     ],
+     [
+      51.5433,
+      -0.327
+     ],
+     [
+      51.535,
+      -0.3243
+     ],
+     [
+      51.5323,
+      -0.3146
+     ],
+     [
+      51.531,
+      -0.3077
+     ],
+     [
+      51.5323,
+      -0.3146
+     ],
+     [
+      51.535,
+      -0.3243
+     ],
+     [
+      51.5433,
+      -0.327
+     ],
+     [
+      51.5507,
+      -0.3284
+     ],
+     [
+      51.5568,
+      -0.3241
+     ],
+     [
+      51.5574,
+      -0.3339
+     ],
+     [
+      51.5578,
+      -0.3465
+     ],
+     [
+      51.5557,
+      -0.3588
+     ],
+     [
+      51.554,
+      -0.3714
+     ],
+     [
+      51.5477,
+      -0.3779
+     ],
+     [
+      51.5447,
+      -0.3817
+     ],
+     [
+      51.5408,
+      -0.3699
+     ],
+     [
+      51.5383,
+      -0.3574
+     ],
+     [
+      51.5324,
+      -0.3496
+     ],
+     [
+      51.5255,
+      -0.3465
+     ],
+     [
+      51.5174,
+      -0.346
+     ],
+     [
+      51.5117,
+      -0.3385
+     ],
+     [
+      51.5106,
+      -0.3347
+     ],
+     [
+      51.5091,
+      -0.3246
+     ],
+     [
+      51.5109,
+      -0.3111
+     ],
+     [
+      51.5148,
+      -0.3016
+     ]
+    ]
+   }
+  },
+  {
+   "slug": "london",
+   "id": "take-to-the-hills",
+   "num": "E10",
+   "name": "Take to the Hills",
+   "sub": "Ealing Broadway loop via Northala Fields, Harrow-on-the-Hill, Horsenden Hill",
+   "kind": "route",
+   "tags": [
+    "ealing",
+    "hills",
+    "classic"
+   ],
+   "legs": [
+    {
+     "s": "ealing",
+     "e": "perivale",
+     "p": {
+      "ealing": "hills",
+      "northala": "harrowvia"
+     }
+    },
+    {
+     "s": "perivale",
+     "e": "ealing"
+    }
+   ],
+   "note": "The three-hills version: Northala Fields, up to Harrow-on-the-Hill for the view, then Horsenden Hill; back the same way",
+   "top": 4,
+   "why": "west London's answer to a hilly day out — three summits and none of them far from home",
+   "geo": {
+    "km": 45,
+    "asc": 486,
+    "eff": 93,
+    "n": 9,
+    "line": [
+     [
+      51.5148,
+      -0.3016
+     ],
+     [
+      51.5109,
+      -0.3111
+     ],
+     [
+      51.5091,
+      -0.3246
+     ],
+     [
+      51.5106,
+      -0.3347
+     ],
+     [
+      51.5117,
+      -0.3385
+     ],
+     [
+      51.5174,
+      -0.346
+     ],
+     [
+      51.5255,
+      -0.3465
+     ],
+     [
+      51.5324,
+      -0.3496
+     ],
+     [
+      51.5383,
+      -0.3574
+     ],
+     [
+      51.5408,
+      -0.3699
+     ],
+     [
+      51.5447,
+      -0.3817
+     ],
+     [
+      51.5477,
+      -0.3779
+     ],
+     [
+      51.554,
+      -0.3714
+     ],
+     [
+      51.5583,
+      -0.3632
+     ],
+     [
+      51.565,
+      -0.3619
+     ],
+     [
+      51.5719,
+      -0.3545
+     ],
+     [
+      51.578,
+      -0.3494
+     ],
+     [
+      51.5787,
+      -0.3383
+     ],
+     [
+      51.5793,
+      -0.3364
+     ],
+     [
+      51.5782,
+      -0.3274
+     ],
+     [
+      51.57,
+      -0.3224
+     ],
+     [
+      51.563,
+      -0.3286
+     ],
+     [
+      51.557,
+      -0.3255
+     ],
+     [
+      51.5568,
+      -0.3241
+     ],
+     [
+      51.5507,
+      -0.3284
+     ],
+     [
+      51.5433,
+      -0.327
+     ],
+     [
+      51.535,
+      -0.3243
+     ],
+     [
+      51.5323,
+      -0.3146
+     ],
+     [
+      51.531,
+      -0.3077
+     ],
+     [
+      51.5323,
+      -0.3146
+     ],
+     [
+      51.535,
+      -0.3243
+     ],
+     [
+      51.5433,
+      -0.327
+     ],
+     [
+      51.5507,
+      -0.3284
+     ],
+     [
+      51.5568,
+      -0.3241
+     ],
+     [
+      51.5574,
+      -0.3339
+     ],
+     [
+      51.5578,
+      -0.3465
+     ],
+     [
+      51.5557,
+      -0.3588
+     ],
+     [
+      51.554,
+      -0.3714
+     ],
+     [
+      51.5477,
+      -0.3779
+     ],
+     [
+      51.5447,
+      -0.3817
+     ],
+     [
+      51.5408,
+      -0.3699
+     ],
+     [
+      51.5383,
+      -0.3574
+     ],
+     [
+      51.5324,
+      -0.3496
+     ],
+     [
+      51.5255,
+      -0.3465
+     ],
+     [
+      51.5174,
+      -0.346
+     ],
+     [
+      51.5117,
+      -0.3385
+     ],
+     [
+      51.5106,
+      -0.3347
+     ],
+     [
+      51.5091,
+      -0.3246
+     ],
+     [
+      51.5109,
+      -0.3111
+     ],
+     [
+      51.5148,
+      -0.3016
+     ]
+    ]
+   }
+  },
+  {
+   "slug": "london",
+   "id": "uxbridge-canal",
+   "num": "E11",
+   "name": "Uxbridge along the canal",
+   "sub": "Ealing Broadway → Uxbridge → Ealing Broadway",
+   "kind": "route",
+   "tags": [
+    "ealing",
+    "canal",
+    "easy"
+   ],
+   "legs": [
+    {
+     "s": "ealing",
+     "e": "uxbridge",
+     "p": {
+      "ealing": "canal"
+     }
+    },
+    {
+     "s": "uxbridge",
+     "e": "ealing"
+    }
+   ],
+   "note": "The Grand Union towpath as far as Uxbridge and back — half the Rickmansworth ride, same quiet water",
+   "top": 12,
+   "why": "the shorter version of the canal ride, for when Rickmansworth is more than you fancy",
+   "geo": {
+    "km": 33,
+    "asc": 109,
+    "eff": 45,
+    "n": 2,
+    "line": [
+     [
+      51.5148,
+      -0.3016
+     ],
+     [
+      51.5167,
+      -0.314
+     ],
+     [
+      51.5215,
+      -0.3202
+     ],
+     [
+      51.5306,
+      -0.3229
+     ],
+     [
+      51.5338,
+      -0.3335
+     ],
+     [
+      51.5359,
+      -0.3465
+     ],
+     [
+      51.5386,
+      -0.3591
+     ],
+     [
+      51.5412,
+      -0.3709
+     ],
+     [
+      51.5452,
+      -0.3827
+     ],
+     [
+      51.5486,
+      -0.3964
+     ],
+     [
+      51.5477,
+      -0.4088
+     ],
+     [
+      51.5488,
+      -0.4262
+     ],
+     [
+      51.5501,
+      -0.4411
+     ],
+     [
+      51.5547,
+      -0.4566
+     ],
+     [
+      51.5576,
+      -0.4694
+     ],
+     [
+      51.5508,
+      -0.4761
+     ],
+     [
+      51.5463,
+      -0.4782
+     ],
+     [
+      51.5508,
+      -0.4761
+     ],
+     [
+      51.5576,
+      -0.4694
+     ],
+     [
+      51.5547,
+      -0.4566
+     ],
+     [
+      51.5501,
+      -0.4411
+     ],
+     [
+      51.5488,
+      -0.4262
+     ],
+     [
+      51.5477,
+      -0.4088
+     ],
+     [
+      51.5486,
+      -0.3964
+     ],
+     [
+      51.5452,
+      -0.3827
+     ],
+     [
+      51.5412,
+      -0.3709
+     ],
+     [
+      51.5386,
+      -0.3591
+     ],
+     [
+      51.5359,
+      -0.3465
+     ],
+     [
+      51.5338,
+      -0.3335
+     ],
+     [
+      51.5306,
+      -0.3229
+     ],
+     [
+      51.5215,
+      -0.3202
+     ],
+     [
+      51.5167,
+      -0.314
+     ],
+     [
+      51.5148,
+      -0.3016
      ]
     ]
    }

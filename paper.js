@@ -3,7 +3,7 @@ const PAPER=Object.assign({
   title:"Switzerland by bike",
   country:"Switzerland",
   kicker:n=>"Switzerland · "+n+" trips",
-  lede:"National routes, pass days and lake loops. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort — the number is a default, not a timetable.",
+  lede:"National routes, pass days, lake loops and the Swiss leg of EuroVelo 6. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort — the number is a default, not a timetable.",
   note:"Same catalogue as the old picker. Scroll or use the arrows to walk the list. Open a tour for a paper sheet — days computed from effort, from a snapshot of the graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
   footer:"Photos Wikimedia Commons. Days are computed, not stored.",
   backAll:n=>"‹ All "+n+" trips",
@@ -25,7 +25,7 @@ const PAPER=Object.assign({
     loetschberg:"img/gletsch.jpg", boatgotthard:"img/lucerne.jpg", alpine:"img/jaun.jpg",
     prealps:"img/lucerne.jpg", bodensee:"img/constance.jpg", leman:"img/chillon.jpg",
     dreiseen:"img/murten.jpg", gotthardx:"img/gotthard.jpg", ticino:"img/lugano.jpg",
-    loopfng:"img/gletsch.jpg"
+    loopfng:"img/gletsch.jpg", ev6:"img/rheinfall.jpg"
   },
   places:{
     Realp:["img/furka.jpg","img/gletsch.jpg"],
@@ -43,6 +43,7 @@ const PAPER=Object.assign({
     Basel:["img/basel.jpg","img/rheinfall.jpg"],
     Schaffhausen:["img/rheinfall.jpg","img/basel.jpg"],
     "Rhine Falls":["img/rheinfall.jpg"],
+    "Stein am Rhein":["img/rheinfall.jpg","img/basel.jpg"],
     Luzern:["img/lucerne.jpg"],
     Lucerne:["img/lucerne.jpg"],
     Interlaken:["img/lucerne.jpg","img/gletsch.jpg"],

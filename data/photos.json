@@ -30,7 +30,8 @@
       "dreiseen": "img/murten.jpg",
       "gotthardx": "img/gotthard.jpg",
       "ticino": "img/lugano.jpg",
-      "loopfng": "img/gletsch.jpg"
+      "loopfng": "img/gletsch.jpg",
+      "ev6": "img/rheinfall.jpg"
     },
     "places": {
       "Realp": [
@@ -209,6 +210,10 @@
       ],
       "Konstanz": [
         "img/constance.jpg"
+      ],
+      "Stein am Rhein": [
+        "img/rheinfall.jpg",
+        "img/basel.jpg"
       ],
       "Koblenz": [
         "img/rheinfall.jpg"
@@ -535,7 +540,12 @@
       "london-brighton": "img/brighton.jpg",
       "epping-forest": "img/london.jpg",
       "waterlink": "img/london.jpg",
-      "wandle": "img/london.jpg"
+      "wandle": "img/london.jpg",
+      "osterley-syon": "img/osterley.jpg",
+      "strand-on-the-green": "img/strandgreen.jpg",
+      "northala-horsendon": "img/northala.jpg",
+      "take-to-the-hills": "img/harrowhill.jpg",
+      "uxbridge-canal": "img/london.jpg"
     },
     "places": {
       "Land's End": [
@@ -585,6 +595,42 @@
       ],
       "Durham": [
         "img/edinburgh.jpg"
+      ],
+      "Brentford": [
+        "img/osterley.jpg",
+        "img/richmond.jpg"
+      ],
+      "Osterley": [
+        "img/osterley.jpg"
+      ],
+      "Syon Park": [
+        "img/osterley.jpg"
+      ],
+      "Chiswick": [
+        "img/strandgreen.jpg",
+        "img/london.jpg"
+      ],
+      "Strand-on-the-Green": [
+        "img/strandgreen.jpg"
+      ],
+      "Perivale": [
+        "img/northala.jpg",
+        "img/london.jpg"
+      ],
+      "Horsenden Hill": [
+        "img/northala.jpg"
+      ],
+      "Northala Fields": [
+        "img/northala.jpg"
+      ],
+      "Harrow-on-the-Hill": [
+        "img/harrowhill.jpg"
+      ],
+      "Harrow": [
+        "img/harrowhill.jpg"
+      ],
+      "Uxbridge": [
+        "img/london.jpg"
       ]
     }
   }

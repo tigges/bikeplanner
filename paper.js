@@ -141,6 +141,7 @@ try{
   if(localStorage.getItem("signed")==="0") preferSigned=false;
 }catch(e){}
 const BAND={g:"#97C459",a:"#EF9F27",r:"#E24B4A"};
+const BAND_TILE={g:"#2f6a12",a:"#d4880a",r:"#d22727"};
 const LCOL={shop:"#c9a227",stay:"#3d7ec9",bath:"#7a5ea7",rail:"#1c1916",water:"#4a8fa3"};
 
 function geo(t){ return t.geo||{}; }
@@ -839,7 +840,12 @@ function fitPts(pts, pad){
 }
 function ink(n){
   const z=Math.max(zoom,1);
-  return +Math.max(n/z, n*0.09).toFixed(2);
+  return +Math.max(n/z, 0.04).toFixed(3);
+}
+function rideStroke(band){
+  if(!friendOn) return "#e24b2a";
+  if(bmOnRide()) return BAND_TILE[band]||"#e24b2a";
+  return BAND[band]||"#f0713f";
 }
 function fitRide(){ fitPts(ridePoints(), 1.38); }
 function fitDay(){
@@ -876,11 +882,12 @@ function bumpZoom(f){
   const svg=document.getElementById("map"); if(!svg) return;
   const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
   const cx=vb[0]+vb[2]/2, cy=vb[1]+vb[3]/2;
-  let w=Math.min(Math.max(vb[2]*f, 90), W*1.45);
+  let w=Math.min(Math.max(vb[2]*f, 16), W*1.6);
   let h=w*(H/W);
   vbManual=true;
   zoom=Math.max(1, +(W/w).toFixed(2));
   svg.setAttribute("viewBox", (cx-w/2).toFixed(1)+" "+(cy-h/2).toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
+  paintRide();
   paintMini();
   scheduleTiles();
 }
@@ -1074,7 +1081,7 @@ function rideDayCount(){
   return planDays().filter(d=>d.mode!=="train").length;
 }
 function filmVisible(){
-  return mode==="ride" && PLAN && PLAN!==false && rideDayCount()>1;
+  return mode==="ride" && PLAN && PLAN!==false && rideDayCount()>=1;
 }
 function dayKmRange(days, n){
   let k0=0, k1=0;
@@ -1323,16 +1330,16 @@ function paintRide(){
     const pts=seg.line||[];
     if(pts.length<2) return;
     const ptsStr=linePts(pts);
-    const w=ink(selSeg===seg.id?3.2:2.1);
+    const w=ink(selSeg===seg.id?2.2:1.35);
     if(bmOnRide()){
       const cas=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       cas.setAttribute("points", ptsStr);
       cas.setAttribute("fill","none");
       cas.setAttribute("stroke","#fffdf8");
-      cas.setAttribute("stroke-width", w*2.4);
+      cas.setAttribute("stroke-width", w*1.7);
       cas.setAttribute("stroke-linecap","round");
       cas.setAttribute("stroke-linejoin","round");
-      cas.setAttribute("opacity",".9");
+      cas.setAttribute("opacity",".92");
       gRide.appendChild(cas);
     }
     const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
@@ -1340,7 +1347,7 @@ function paintRide(){
     p.setAttribute("fill","none");
     p.setAttribute("stroke-linecap","round");
     p.setAttribute("stroke-linejoin","round");
-    p.setAttribute("stroke", friendOn?(BAND[seg.band]||"#f0713f"):"#f0713f");
+    p.setAttribute("stroke", rideStroke(seg.band));
     p.setAttribute("stroke-width", w);
     gRide.appendChild(p);
   });
@@ -1368,13 +1375,13 @@ function paintRide(){
       const cas=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       cas.setAttribute("points", ptsStr);
       cas.setAttribute("fill","none"); cas.setAttribute("stroke","#fffdf8");
-      cas.setAttribute("stroke-width", ink(7.2)); cas.setAttribute("stroke-linecap","round");
+      cas.setAttribute("stroke-width", ink(4.2)); cas.setAttribute("stroke-linecap","round");
       cas.setAttribute("stroke-linejoin","round"); cas.setAttribute("opacity",".88");
       gGold.appendChild(cas);
       const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       p.setAttribute("points", ptsStr);
       p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
-      p.setAttribute("stroke-width", ink(5.2)); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
+      p.setAttribute("stroke-width", ink(2.6)); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
       gGold.appendChild(p);
     }
   }
@@ -1465,20 +1472,43 @@ function paintRide(){
     const hit={kind:"town", name:showName(t.name), lat:t.lat, lon:t.lon, sub:"town on the route", x:q[0], y:q[1]};
     placeHits.push(hit);
     const disc=document.createElementNS("http://www.w3.org/2000/svg","circle");
-    disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]); disc.setAttribute("r", ink(11));
+    disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]); disc.setAttribute("r", ink(5));
     disc.setAttribute("fill","transparent");
     disc.style.cursor="pointer";
     disc.addEventListener("click",e=>{ e.stopPropagation(); showPlaceCard(hit); });
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
     tx.setAttribute("x", q[0]+off); tx.setAttribute("y", q[1]-off);
     tx.setAttribute("class","townlab"); tx.setAttribute("pointer-events","none");
-    tx.setAttribute("font-size", ink(9));
+    tx.setAttribute("font-size", ink(8));
+    tx.setAttribute("stroke", "#fffdf8");
+    tx.setAttribute("stroke-width", ink(2.2));
+    tx.setAttribute("paint-order", "stroke");
+    tx.setAttribute("stroke-linejoin", "round");
     tx.textContent=showName(t.name);
     gT.appendChild(disc);
     gT.appendChild(tx);
   });
-  const discR=ink(7);
+  const discR=ink(5.2);
   if(!selDay){
+    const start=rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0];
+    if(start){
+      const q=xy(start[0], start[1]);
+      if(q[0]!=null){
+        const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
+        c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", ink(4.2));
+        c.setAttribute("fill", "#fffdf8");
+        c.setAttribute("stroke", "#e24b2a");
+        c.setAttribute("stroke-width", ink(1.6));
+        c.style.cursor="pointer";
+        c.addEventListener("click",e=>{
+          e.stopPropagation();
+          const d0=days.find(x=>x.mode!=="train");
+          vbManual=false; selSeg=null; selStop=null;
+          openRide(ride.id, d0?d0.n:1);
+        });
+        gD.appendChild(c);
+      }
+    }
     days.forEach(d=>{
       if(d.mode==="train" || d.lat==null) return;
       const q=xy(d.lat,d.lon);
@@ -1692,7 +1722,7 @@ function plannerSheet(t){
       <span class="tile-km">${d.km} km · ${Math.round(d.eff||0)} eff</span>
       ${d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:""}
     </button>`).join("");
-  const filmBlock=rideDays.length>1?`<div class="filmwrap hit" id="filmwrap">
+  const filmBlock=rideDays.length>=1?`<div class="filmwrap hit" id="filmwrap">
       <button type="button" class="film-nav" id="filmprev" aria-label="Previous day">‹</button>
       <div class="film-track" id="film">${filmHtml}</div>
       <button type="button" class="film-nav" id="filmnext" aria-label="Next day">›</button>
@@ -2521,6 +2551,14 @@ function typingIn(e){
 }
 let wheelLock=0;
 document.getElementById("stage").addEventListener("wheel", e=>{
+  if(mode==="ride" && PLAN && PLAN!==false){
+    if(e.target.closest && e.target.closest("#place,#maptools,#maplayers,#mapback,#minimap,.ctx-card,.filmwrap")) return;
+    e.preventDefault();
+    if(Date.now()<wheelLock) return;
+    wheelLock=Date.now()+80;
+    bumpZoom(e.deltaY>0?1.16:0.84);
+    return;
+  }
   if(mode!=="network") return;
   if(Math.abs(e.deltaY)<2 && Math.abs(e.deltaX)<2) return;
   e.preventDefault();

@@ -301,8 +301,8 @@ function paint(){
   });
   paintBadge();
   pop();
-  paintRide();
   applyView();
+  paintRide();
   syncMapTools();
 }
 function draw(){
@@ -596,18 +596,22 @@ function fitPts(pts, pad){
   const xypts=pts.map(p=>xy(p[0], p[1]));
   let x0=Math.min(...xypts.map(p=>p[0])), x1=Math.max(...xypts.map(p=>p[0]));
   let y0=Math.min(...xypts.map(p=>p[1])), y1=Math.max(...xypts.map(p=>p[1]));
-  const padN=pad||1.4;
-  let w=Math.max((x1-x0)*padN, W*0.34), h=Math.max((y1-y0)*padN, H*0.34);
+  const padN=pad||1.2;
+  let w=Math.max((x1-x0)*padN, 28), h=Math.max((y1-y0)*padN, 28);
   const ar=W/H;
   if(w/h<ar) w=h*ar; else h=w/ar;
   let cx=(x0+x1)/2, cy=(y0+y1)/2;
   let x=cx-w/2, y=cy-h/2;
-  x=Math.max(-40, Math.min(W+40-w, x));
-  y=Math.max(-40, Math.min(H+40-h, y));
+  x=Math.max(-120, Math.min(W+80-w, x));
+  y=Math.max(-120, Math.min(H+80-h, y));
   zoom=Math.max(1, +(W/w).toFixed(2));
   svg.setAttribute("viewBox", x.toFixed(1)+" "+y.toFixed(1)+" "+w.toFixed(1)+" "+h.toFixed(1));
 }
-function fitRide(){ fitPts(ridePoints(), 1.35); }
+function ink(n){
+  const z=Math.max(zoom,1);
+  return +Math.max(n/z, n*0.09).toFixed(2);
+}
+function fitRide(){ fitPts(ridePoints(), 1.38); }
 function fitDay(){
   const days=planDays();
   const d=days.find(x=>x.n===selDay);
@@ -617,12 +621,12 @@ function fitDay(){
     days.forEach(x=>{ if(x.mode==="train") return; if(x.n<selDay) k0+=x.km; if(x.n<=selDay) k1+=x.km; });
     line=sliceLine(activeSegs().filter(s=>!isSkipped(s.id)), k0, k1);
   }
-  if(line&&line.length>1) fitPts(line, 1.55);
+  if(line&&line.length>1) fitPts(line, 1.18);
   else fitRide();
 }
 function fitSeg(){
   const s=activeSegs().find(x=>x.id===selSeg);
-  if(s&&s.line&&s.line.length>1) fitPts(s.line, 1.65);
+  if(s&&s.line&&s.line.length>1) fitPts(s.line, 1.1);
   else fitRide();
 }
 function applyView(){
@@ -843,7 +847,7 @@ function paintRide(){
     p.setAttribute("stroke-linecap","round");
     p.setAttribute("stroke-linejoin","round");
     p.setAttribute("stroke", friendOn?(BAND[seg.band]||"#f0713f"):"#f0713f");
-    p.setAttribute("stroke-width", selSeg===seg.id?"3.2":"2.1");
+    p.setAttribute("stroke-width", ink(selSeg===seg.id?3.2:2.1));
     gRide.appendChild(p);
   });
   if(selSeg){
@@ -852,7 +856,7 @@ function paintRide(){
       const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       p.setAttribute("points", linePts(s.line));
       p.setAttribute("fill","none"); p.setAttribute("stroke","#1c1916");
-      p.setAttribute("stroke-width","3.6"); p.setAttribute("stroke-opacity",".28");
+      p.setAttribute("stroke-width", ink(3.6)); p.setAttribute("stroke-opacity",".28");
       p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
       gGold.appendChild(p);
     }
@@ -869,36 +873,48 @@ function paintRide(){
       const p=document.createElementNS("http://www.w3.org/2000/svg","polyline");
       p.setAttribute("points", linePts(line));
       p.setAttribute("fill","none"); p.setAttribute("stroke","#c9a227");
-      p.setAttribute("stroke-width","6"); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
+      p.setAttribute("stroke-width", ink(5.2)); p.setAttribute("stroke-linecap","round"); p.setAttribute("stroke-linejoin","round");
       gGold.appendChild(p);
     }
   }
   const labels=[];
   const c0=rideSegs[0]&&rideSegs[0].cand&&rideSegs[0].cand[0];
   const ends=travelEnds();
-  if(c0&&c0.lat!=null) labels.push({name:ends.from, lat:c0.lat, lon:c0.lon});
-  else if(rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0]) labels.push({name:ends.from, lat:rideSegs[0].line[0][0], lon:rideSegs[0].line[0][1]});
-  days.forEach(d=>{ if(d.mode==="train") return; if(d.lat!=null) labels.push({name:d.to, lat:d.lat, lon:d.lon}); });
+  if(selDay){
+    const d=days.find(x=>x.n===selDay);
+    if(d){
+      const a=d.line&&d.line[0];
+      if(a) labels.push({name:d.frm, lat:a[0], lon:a[1]});
+      labels.push({name:d.to, lat:d.lat, lon:d.lon});
+    }
+  } else {
+    if(c0&&c0.lat!=null) labels.push({name:ends.from, lat:c0.lat, lon:c0.lon});
+    else if(rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0]) labels.push({name:ends.from, lat:rideSegs[0].line[0][0], lon:rideSegs[0].line[0][1]});
+    days.forEach(d=>{ if(d.mode==="train") return; if(d.lat!=null) labels.push({name:d.to, lat:d.lat, lon:d.lon}); });
+  }
+  const off=ink(8);
   labels.forEach(t=>{
     if(t.lat==null || t.lon==null) return;
     const q=xy(t.lat,t.lon);
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-    tx.setAttribute("x", q[0]+8); tx.setAttribute("y", q[1]-8);
+    tx.setAttribute("x", q[0]+off); tx.setAttribute("y", q[1]-off);
     tx.setAttribute("class","townlab"); tx.setAttribute("pointer-events","none");
+    tx.setAttribute("font-size", ink(9));
     tx.textContent=showName(t.name);
     gT.appendChild(tx);
   });
+  const discR=ink(7);
   days.forEach(d=>{
     if(d.mode==="train" || d.lat==null) return;
     const q=xy(d.lat,d.lon);
     const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-    c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", 8);
+    c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", discR);
     c.setAttribute("fill", selDay===d.n?"#c9a227":"#f0713f");
     c.style.cursor="pointer";
     c.addEventListener("click",e=>{ e.stopPropagation(); vbManual=false; selSeg=null; openRide(ride.id, selDay===d.n?null:d.n); });
     const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-    tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+4);
-    tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size","10");
+    tx.setAttribute("x", q[0]); tx.setAttribute("y", q[1]+ink(3.4));
+    tx.setAttribute("text-anchor","middle"); tx.setAttribute("font-size", ink(9));
     tx.setAttribute("font-weight","700"); tx.setAttribute("fill","#fff"); tx.setAttribute("pointer-events","none");
     tx.textContent=d.n;
     gD.appendChild(c); gD.appendChild(tx);
@@ -911,11 +927,11 @@ function paintRide(){
         if(f.lat==null||f.lon==null) return;
         const q=xy(f.lat,f.lon);
         const c=document.createElementNS("http://www.w3.org/2000/svg","circle");
-        c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]); c.setAttribute("r", "1.6");
+        c.setAttribute("cx", q[0]); c.setAttribute("cy", q[1]);         c.setAttribute("r", ink(1.6));
         c.setAttribute("fill", LCOL[k]);
         c.setAttribute("fill-opacity","0.9");
         c.setAttribute("stroke", "#fffdf8");
-        c.setAttribute("stroke-width","0.4");
+        c.setAttribute("stroke-width", ink(0.4));
         if(f.name) c.setAttribute("title", f.name);
         gFac.appendChild(c);
       });
@@ -951,6 +967,23 @@ function drawProfile(days){
   const g=document.getElementById("prof"); if(!g) return;
   g.innerHTML="";
   const W=300,H=56;
+  if(days && days.length===1 && days[0].prof && days[0].prof.length>1){
+    const d=days[0];
+    const pts=d.prof;
+    let tot=d.km||0, lo=Infinity, hi=-Infinity;
+    pts.forEach(q=>{ lo=Math.min(lo,q[1]); hi=Math.max(hi,q[1]); });
+    if(!(tot>0 && hi>lo)) return;
+    const span=Math.max(hi-lo,80); lo=Math.max(0,hi-span);
+    const dstr=pts.map(q=>(q[0]/tot*W).toFixed(1)+","+(4+(1-(q[1]-lo)/span)*(H-12)).toFixed(1)).join(" ");
+    const f=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+    f.setAttribute("points","0,"+H+" "+dstr+" "+W+","+H); f.setAttribute("fill","#c9a227"); f.setAttribute("fill-opacity",".22"); g.appendChild(f);
+    const l=document.createElementNS("http://www.w3.org/2000/svg","polyline");
+    l.setAttribute("points",dstr); l.setAttribute("fill","none"); l.setAttribute("stroke","#c9a227"); l.setAttribute("stroke-width","1.4"); g.appendChild(l);
+    const hiEl=document.getElementById("profhi"), loEl=document.getElementById("proflo");
+    if(hiEl) hiEl.textContent="▲ "+Math.round(hi).toLocaleString()+" m";
+    if(loEl) loEl.textContent="▼ "+Math.round(lo).toLocaleString()+" m";
+    return;
+  }
   const pts=[]; let tot=0, lo=Infinity, hi=-Infinity;
   activeSegs().filter(s=>!isSkipped(s.id)).forEach(s=>{
     (s.prof||[]).forEach(q=>{ pts.push([tot+q[0], q[1]]); lo=Math.min(lo,q[1]); hi=Math.max(hi,q[1]); });
@@ -989,36 +1022,65 @@ function plannerSheet(t){
   const ends=travelEnds();
   const rng=(PLAN.vehicles&&PLAN.vehicles.targetRange||{})[veh]||[55,300];
   const kmDay=rideDays.length?Math.round(st.km/rideDays.length):st.km;
+  const onDay=!!selDay;
+  const today=rideDays.find(d=>d.n===selDay);
+  const todayPh=today?dayPhotos(today.to):[];
+  const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
+      <span class="tile-n">${d.n}</span>
+      <span class="tile-who">${d.frm} → ${d.to}</span>
+      <span class="tile-km">${d.km} km · ${Math.round(d.eff||0)} eff</span>
+      ${d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:""}
+    </button>`).join("");
   document.getElementById("head").innerHTML="";
   col.className="sheet";
-  col.innerHTML=`
-    <div class="sheet-body">
-    <div class="sheet-top">
-      <div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
-        <span class="dl dl${d0}">${DNAME[d0]}</span>${t.top?`<span class="top">${topLabel(t.top)}</span>`:""}</div>
-      <p class="tm" style="margin:4px 0 0">${t.sub}${t.note?" · "+t.note:""}</p>
+  col.innerHTML=onDay?`
+    <div class="daybar hit" id="daybar">
+      <button type="button" class="opt" id="alldays">All days</button>
+      <button type="button" class="opt" id="prevday" ${selDay<=1?"disabled":""}>‹</button>
+      <span>Day ${selDay} of ${rideDays.length} · ${today?today.frm+" → "+today.to:ends.from+" → "+ends.to}</span>
+      <button type="button" class="opt" id="nextday" ${selDay>=rideDays.length?"disabled":""}>›</button>
+    </div>
+    <aside class="ctx-card hit" id="ctx">
+      <div class="tn"><span class="badge">${today?today.n:selDay}</span><h2>${today?today.frm+" → "+today.to:t.name}</h2></div>
       <div class="stats4">
-        <div><b id="sd">${rideDays.length}</b><span>days</span></div>
-        <div><b>${st.km}</b><span>km</span></div>
-        <div><b>${st.asc.toLocaleString()}</b><span>m climbed</span></div>
-        <div><b>${st.signed}%</b><span>signed route</span></div>
+        <div><b>${today?today.km:"—"}</b><span>km today</span></div>
+        <div><b>${today?Math.round(today.climb||today.eff||0).toLocaleString():"—"}</b><span>m / effort</span></div>
+        <div><b>${today?today.stay||0:0}</b><span>beds</span></div>
+        <div><b>${today?today.shop||0:0}</b><span>shops</span></div>
       </div>
       <div class="profwrap">
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="strip" id="strip" title="Click a colour band for that segment — start here / end here"></div>
-      <div class="legend">
-        <span><i style="background:#97C459"></i>signed / quiet</span>
-        <span><i style="background:#EF9F27"></i>minor / mixed</span>
-        <span><i style="background:#E24B4A"></i>busy road</span>
-        <button type="button" id="friendtog" class="${friendOn?"on":""}" title="colour the route line on the map the same way">colour the map line</button>
+      <div class="dayfacts">${today?`<b>${today.shop||0}</b> shops · <b>${today.stay||0}</b> beds · <b>${today.bath||0}</b> baths · <b>${today.rail||0}</b> stations`:""}</div>
+      <div class="phs" id="dayph">${todayPh.map(src=>`<div style="background-image:url('${src}')"></div>`).join("")}</div>
+      <div class="export"><div class="row">
+        <button class="opt" id="gpx">GPX today</button>
+        <button class="opt" id="pdf">Print</button>
+        <button class="opt" id="copylink">Copy link</button>
+        <span class="ghost" id="expnote"></span>
+      </div></div>
+    </aside>
+    <div id="strip" hidden></div><div id="segcard" hidden></div>
+    <select id="start" hidden></select><select id="end" hidden></select>
+    <div id="dirrow" hidden></div><div id="forks" hidden></div><div id="forks-off" hidden></div>
+    <div id="skips" hidden></div><div id="days" hidden></div>
+    <input id="eff" type="hidden" value="${effort}"><input id="dtar" type="hidden" value="${dtar}">
+    <span id="slv" hidden></span><span id="dlv" hidden></span><span id="vehnote" hidden></span>
+    <button type="button" id="friendtog" hidden></button><button type="button" id="csv" hidden></button>
+    <details id="netforks" hidden></details>`:`
+    <aside class="ctx-card hit" id="ctx">
+      <div class="tn"><span class="badge">${t.num}</span><h2>${t.name}</h2>
+        <span class="dl dl${d0}">${DNAME[d0]}</span></div>
+      <p class="oneline">${ends.from} → ${ends.to} · ${rideDays.length} d · ${st.km} km · ${st.asc.toLocaleString()} m</p>
+      <div class="profwrap">
+        <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
+        <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="segcard" id="segcard" hidden></div>
-    </div>
-    <div class="fold${folds.plan?"":" closed"}" id="foldplan">
-      <button class="foldhead" type="button" data-fold="plan"><b>Plan</b> <span>${ends.from} → ${ends.to} · ${rideDays.length} days</span></button>
-      <div class="foldbody">
+      <div class="strip" id="strip" title="Click a colour band"></div>
+      <button type="button" id="friendtog" class="${friendOn?"on":""}">colour the map line</button>
+      <details class="edittrip">
+        <summary>Edit trip</summary>
         <div class="ends">
           <label>From <select id="start"></select></label>
           <label>To <select id="end"></select></label>
@@ -1031,51 +1093,41 @@ function plannerSheet(t){
           </div>
           <div>
             <div class="slrow"><span>Days I have</span><span id="dlv">${dtar?dtar+" days":"no limit"}</span></div>
-            <input class="effort" id="dtar" type="range" min="0" max="20" step="1" value="${dtar}" title="Set a limit and the planner proposes train hops until the days fit">
+            <input class="effort" id="dtar" type="range" min="0" max="20" step="1" value="${dtar}">
           </div>
         </div>
         <div class="row" id="skips"></div>
         <p class="ghost" id="vehnote"></p>
-      </div>
-    </div>
-    <div class="fold${folds.route?"":" closed"}" id="foldroute">
-      <button class="foldhead" type="button" data-fold="route"><b>Route</b> <span>${forkSummary()}</span></button>
-      <div class="foldbody">
-        <p class="ghost help">${st.signed}% of this journey is on a signed cycle route. Forks rewrite the coral line.</p>
+        <p class="forkq">${forkSummary()}</p>
         <div id="forks"></div>
-        <details class="netforks" id="netforks" hidden><summary>Other forks on the network</summary><div id="forks-off"></div></details>
-      </div>
-    </div>
-    <div class="fold grow${folds.days?"":" closed"}" id="folddays">
-      <button class="foldhead" type="button" data-fold="days"><b>Days</b> <span>click a day to zoom to it</span></button>
-      <div class="foldbody">
-        <div id="warn">${skipWarn||""}</div>
-        <ol class="dlist" id="days"></ol>
-      </div>
-    </div>
-    </div>
-    <div class="export">
-      <div class="row">
-        <button class="opt" id="gpx" title="Download the computed days as a GPX track">GPX</button>
-        <button class="opt" id="csv" title="Day list as CSV">CSV</button>
-        <button class="opt" id="pdf" title="Print — save as PDF from the browser dialog">Print</button>
-        <button class="opt" id="copylink" title="Copy a link to this ride">Copy link</button>
+        <details class="netforks" id="netforks" hidden><summary>Other forks</summary><div id="forks-off"></div></details>
+      </details>
+      <div class="segcard" id="segcard" hidden></div>
+      <div class="export"><div class="row">
+        <button class="opt" id="gpx">GPX</button>
+        <button class="opt" id="csv">CSV</button>
+        <button class="opt" id="pdf">Print</button>
+        <button class="opt" id="copylink">Copy link</button>
         <span class="ghost" id="expnote"></span>
-      </div>
-    </div>`;
-  drawProfile(rideDays);
+      </div></div>
+    </aside>
+    <div class="film hit" id="film">${filmHtml}</div>
+    <div id="days" hidden></div>`;
+    drawProfile(onDay && today ? [today] : rideDays);
   const strip=document.getElementById("strip");
-  activeSegs().forEach(s=>{
-    if(isSkipped(s.id)) return;
-    const i=document.createElement("i");
-    i.style.flexGrow=Math.max(s.km,1);
-    i.style.background=BAND[s.band]||"#c4b8a8";
-    i.dataset.seg=s.id;
-    i.classList.toggle("sel", selSeg===s.id);
-    i.title=showName(s.frmName)+" → "+showName(s.toName)+" · "+Math.round(s.km)+" km · signed "+Math.round(s.signed||0)+"% · busy "+Math.round(s.busy||0)+"%";
-    i.onclick=e=>{ e.stopPropagation(); selectSeg(s); };
-    strip.appendChild(i);
-  });
+  if(strip && !strip.hidden){
+    activeSegs().forEach(s=>{
+      if(isSkipped(s.id)) return;
+      const i=document.createElement("i");
+      i.style.flexGrow=Math.max(s.km,1);
+      i.style.background=BAND[s.band]||"#c4b8a8";
+      i.dataset.seg=s.id;
+      i.classList.toggle("sel", selSeg===s.id);
+      i.title=showName(s.frmName)+" → "+showName(s.toName)+" · "+Math.round(s.km)+" km · signed "+Math.round(s.signed||0)+"% · busy "+Math.round(s.busy||0)+"%";
+      i.onclick=e=>{ e.stopPropagation(); selectSeg(s); };
+      strip.appendChild(i);
+    });
+  }
   if(selSeg) renderSegCard(activeSegs().find(s=>s.id===selSeg));
   const towns=chainTowns();
   const startSel=document.getElementById("start"), endSel=document.getElementById("end");
@@ -1103,20 +1155,22 @@ function plannerSheet(t){
     selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
   };
   const dirrow=document.getElementById("dirrow");
-  const off=peekDir(!reversed);
-  [[true, ends.from, ends.to, st.asc, rideDays.length], [false, ends.to, ends.from, off.asc, off.days]].forEach(row=>{
-    const b=document.createElement("button");
-    b.type="button";
-    const on=row[0];
-    b.className="opt"+(on?" on":"");
-    b.textContent=row[1]+" → "+row[2]+" · ↑"+Math.round(row[3]||0).toLocaleString()+" m · "+row[4]+" d";
-    b.title=on?"the direction you are planning":"ride it the other way";
-    if(!on) b.onclick=()=>{
-      const tmp=startId; startId=endId; endId=tmp;
-      reversed=!reversed; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
-    };
-    dirrow.appendChild(b);
-  });
+  if(dirrow && !dirrow.hidden){
+    const off=peekDir(!reversed);
+    [[true, ends.from, ends.to, st.asc, rideDays.length], [false, ends.to, ends.from, off.asc, off.days]].forEach(row=>{
+      const b=document.createElement("button");
+      b.type="button";
+      const on=row[0];
+      b.className="opt"+(on?" on":"");
+      b.textContent=row[1]+" → "+row[2]+" · ↑"+Math.round(row[3]||0).toLocaleString()+" m · "+row[4]+" d";
+      b.title=on?"the direction you are planning":"ride it the other way";
+      if(!on) b.onclick=()=>{
+        const tmp=startId; startId=endId; endId=tmp;
+        reversed=!reversed; selDay=null; selSeg=null; vbManual=false; skipCache=null; draw();
+      };
+      dirrow.appendChild(b);
+    });
+  }
   document.getElementById("eff").oninput=e=>{ document.getElementById("slv").textContent=e.target.value; };
   document.getElementById("eff").onchange=e=>{ effort=+e.target.value; selDay=null; skipCache=null; draw(); };
   document.getElementById("dtar").oninput=e=>{ document.getElementById("dlv").textContent=+e.target.value?e.target.value+" days":"no limit"; };
@@ -1154,8 +1208,14 @@ function plannerSheet(t){
     document.getElementById("friendtog").classList.toggle("on", friendOn);
     paint();
   };
-  document.getElementById("gpx").onclick=()=>{ download((PLAN.id||"ride")+".gpx", gpxFor(rideDays), "application/gpx+xml"); document.getElementById("expnote").textContent="GPX downloaded."; };
-  document.getElementById("csv").onclick=()=>{ download((PLAN.id||"ride")+"-days.csv", csvFor(days), "text/csv"); document.getElementById("expnote").textContent="CSV downloaded."; };
+  document.getElementById("gpx").onclick=()=>{
+    const pack=onDay && today ? [today] : rideDays;
+    const name=onDay && today ? (PLAN.id||"ride")+"-day"+today.n+".gpx" : (PLAN.id||"ride")+".gpx";
+    download(name, gpxFor(pack), "application/gpx+xml");
+    document.getElementById("expnote").textContent=onDay?"GPX for today downloaded.":"GPX downloaded.";
+  };
+  const csvBtn=document.getElementById("csv");
+  if(csvBtn) csvBtn.onclick=()=>{ download((PLAN.id||"ride")+"-days.csv", csvFor(days), "text/csv"); document.getElementById("expnote").textContent="CSV downloaded."; };
   document.getElementById("pdf").onclick=()=>window.print();
   document.getElementById("copylink").onclick=()=>{
     const url=location.href;
@@ -1216,32 +1276,19 @@ function plannerSheet(t){
     }
   });
   const net=document.getElementById("netforks");
-  if(net){ net.hidden=!offN; }
-  const box=document.getElementById("days");
-  const maxE=Math.max(1, ...rideDays.map(d=>d.eff||0));
-  days.forEach(d=>{
-    const li=document.createElement("li");
-    if(d.mode==="train"){
-      li.className="day trn";
-      li.innerHTML=`<span class="n"></span><div><div class="who">train: ${d.frm} to ${d.to}</div>
-        <div class="meta">${d.km} km skipped</div></div>`;
-      box.appendChild(li);
-      return;
-    }
-    const open=selDay===d.n;
-    li.className="day"+(open?" sel":"");
-    const spark=d.prof&&d.prof.length>1?`<svg class="spark" viewBox="0 0 300 26" preserveAspectRatio="none">${sparkPoly(d)}</svg>`:"";
-    const gap=d.gap?` · longest gap ${Math.round(d.gap)} km`:"";
-    const photos=open?dayPhotos(d.to):[];
-    li.innerHTML=`<span class="n">${d.n}</span><div><div class="who">${d.frm} → ${d.to}</div>
-      <div class="meta">${d.km} km · ${Math.round(d.eff||0)} eff</div></div>
-      <div class="bar"><i style="width:${Math.round(100*(d.eff||0)/maxE)}%"></i></div>
-      ${spark}
-      <div class="sup"><b>${d.shop||0}</b> shops · <b>${d.stay||0}</b> beds · <b>${d.bath||0}</b> baths · <b>${d.rail||0}</b> stations${gap}</div>
-      ${open?`<div class="phs">${photos.map(src=>`<div style="background-image:url('${src}')"></div>`).join("")}</div>`:""}`;
-    li.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, selDay===d.n?null:d.n); };
-    box.appendChild(li);
-  });
+  if(net){ net.hidden=onDay || !offN; }
+  const film=document.getElementById("film");
+  if(film){
+    film.querySelectorAll(".tile").forEach(btn=>{
+      btn.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, Number(btn.dataset.day)); };
+    });
+  }
+  const alldays=document.getElementById("alldays");
+  if(alldays) alldays.onclick=()=>{ vbManual=false; selSeg=null; openRide(ride.id, null); };
+  const prevd=document.getElementById("prevday");
+  if(prevd) prevd.onclick=()=>{ if(selDay>1){ vbManual=false; selSeg=null; openRide(ride.id, selDay-1); } };
+  const nextd=document.getElementById("nextday");
+  if(nextd) nextd.onclick=()=>{ if(selDay<rideDays.length){ vbManual=false; selSeg=null; openRide(ride.id, selDay+1); } };
 }
 function selectSeg(s){
   if(!s){ selSeg=null; const c=document.getElementById("segcard"); if(c) c.hidden=true; vbManual=false; paint(); return; }
@@ -1281,6 +1328,7 @@ function sheet(){
   const plannerOn=mode==="ride" && PLAN && PLAN!==false && PLAN.id===ride.id;
   document.documentElement.classList.toggle("planner", plannerOn);
   document.body.classList.toggle("planner", plannerOn);
+  document.body.classList.toggle("onday", plannerOn && !!selDay);
   if(mode==="network"){
     col.className="";
     const n=visible().length;
@@ -1385,7 +1433,12 @@ document.getElementById("maplayers").addEventListener("click", e=>{
   paint();
 });
 
-document.addEventListener("keydown",e=>{ if(e.key==="Escape" && mode!=="network") goNetwork(); });
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Escape" || mode==="network") return;
+  e.preventDefault();
+  if(selDay && ride) openRide(ride.id, null);
+  else goNetwork();
+});
 window.addEventListener("hashchange", applyHash);
 
 Promise.all([

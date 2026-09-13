@@ -1090,8 +1090,9 @@ function stopEq(a, b){
 }
 function shortStop(name){
   const s=String(name||"");
+  if(s.length<=22) return s;
   const m=s.match(/\(([^)]+)\)\s*$/);
-  if(m && m[1] && m[1].length<s.length) return m[1];
+  if(m && m[1] && m[1].length>=3 && m[1].length<s.length) return m[1];
   return s;
 }
 function dayStops(today, days){
@@ -1294,7 +1295,7 @@ function paintRide(){
       disc.style.cursor="pointer";
       disc.addEventListener("click",e=>{ e.stopPropagation(); selectStop(s); });
       gT.appendChild(disc);
-      const showLab=on || s.role==="start" || s.role==="end";
+      const showLab=s.role==="start" || s.role==="end" || (on && !stops.some(o=>o!==s && (o.role==="start"||o.role==="end") && Math.abs((o.km||0)-(s.km||0))<4));
       if(!showLab) return;
       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
       tx.setAttribute("x", q[0]+ink(8)); tx.setAttribute("y", q[1]-ink(8));

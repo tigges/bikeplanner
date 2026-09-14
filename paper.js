@@ -1676,7 +1676,9 @@ function paintRide(){
       const lab=mapStopLabel(s.name, cues.map(o=>o.name));
       const pos=pack.take(q[0], q[1], lab, ink(on?9:8), always);
       if(!pos) return;
-      stopHits.push({x:pos.x, y:pos.y, stop});
+      const fs=ink(on?9:8);
+      const labW=Math.max(ink(16), String(lab).length*fs*0.56);
+      stopHits.push({x:pos.x, y:pos.y, w:labW, h:fs*1.35, stop});
       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
       tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
       tx.style.cursor="pointer";
@@ -2748,10 +2750,19 @@ function nearestPlace(x, y){
 function nearestStopHit(x, y, slop){
   let best=null, bd=slop;
   stopHits.forEach(h=>{
-    const d=Math.hypot(h.x-x, h.y-y);
+    const d=stopHitDist(h, x, y);
     if(d<bd){ bd=d; best=h.stop; }
   });
   return best;
+}
+function stopHitDist(h, x, y){
+  if(h.w && h.h){
+    const x0=h.x, x1=h.x+h.w, y1=h.y, y0=h.y-h.h;
+    const dx=x<x0?x0-x:x>x1?x-x1:0;
+    const dy=y<y0?y0-y:y>y1?y-y1:0;
+    return Math.hypot(dx, dy);
+  }
+  return Math.hypot(h.x-x, h.y-y);
 }
 function tapMap(e){
   if(mode!=="ride" || !PLAN || PLAN===false) return;
@@ -2769,7 +2780,7 @@ function tapMap(e){
       let dStop=Infinity;
       stopHits.forEach(h=>{
         if(h.stop!==stop) return;
-        dStop=Math.min(dStop, Math.hypot(h.x-pt[0], h.y-pt[1]));
+        dStop=Math.min(dStop, stopHitDist(h, pt[0], pt[1]));
       });
       const dFac=Math.hypot(fac.x-pt[0], fac.y-pt[1]);
       if(dFac<=dStop){ showPlaceCard(fac); return; }

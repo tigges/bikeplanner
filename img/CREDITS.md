@@ -270,3 +270,43 @@ Remaining overnight towns, plus cities that still wore a neighbour’s trip-hero
 | img/ch/aarau.jpg | File:Aarau Altstadt.jpg | CC BY-SA 3.0 | Aarau |
 | img/ch/fribourg.jpg | File:Altstadt Fribourg mit Kathedalenturm und Saane (2019).jpg | CC BY-SA 4.0 | Fribourg |
 | img/ch/davos.jpg | File:Davos2.jpg | CC BY-SA 3.0 | Davos |
+
+## Added 2026-09-14 (LEJOG graph-town faces)
+
+Overnight towns on the national crossing. York and Durham no longer wear Edinburgh. Bath is the Crescent, not Land's End. Hamlets that are day ends but not graph towns are still skipped.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/lejog/truro.jpg | File:Truro Cathedral - Truro.jpg | CC BY-SA 2.0 | Truro |
+| img/lejog/bodmin.jpg | File:Church of St Petroc, Bodmin.jpg | CC BY-SA 4.0 | Bodmin |
+| img/lejog/okehampton.jpg | File:Okehampton Castle - geograph.org.uk - 7760989.jpg | CC BY-SA 2.0 | Okehampton |
+| img/lejog/exeter.jpg | File:Exeter Cathedral, west front - geograph.org.uk - 1664600.jpg | CC BY-SA 2.0 | Exeter |
+| img/lejog/taunton.jpg | File:Castle Green and Castle Bow, Taunton - geograph.org.uk - 5286392.jpg | CC BY-SA 2.0 | Taunton |
+| img/lejog/bath.jpg | File:2023-09-15 Bath Royal Crescent 05.jpg | CC BY-SA 4.0 | Bath |
+| img/lejog/bristol.jpg | File:Clifton Suspension Bridge-9350.jpg | CC BY-SA 3.0 | Bristol |
+| img/lejog/gloucester.jpg | File:Gloucester Cathedral exterior 2019.JPG | CC BY-SA 4.0 | Gloucester |
+| img/lejog/ludlow.jpg | File:Ludlow Castle from Whitcliffe, 2011.jpg | CC BY-SA 2.0 | Ludlow |
+| img/lejog/shrewsbury.jpg | File:English Bridge Shrewsbury 2.jpg | CC BY 3.0 | Shrewsbury |
+| img/lejog/chester.jpg | File:00 3453 Eastgate Clock - Chester, England.jpg | CC BY-SA 4.0 | Chester |
+| img/lejog/preston.jpg | File:The Harris Museum, Art Gallery & Library.jpg | CC0 | Preston |
+| img/lejog/lancaster.jpg | File:Lancaster Castle - 2023-03-25.jpg | CC BY-SA 4.0 | Lancaster |
+| img/lejog/kendal.jpg | File:Kendal Castle at sunset.jpg | CC BY-SA 2.0 | Kendal |
+| img/lejog/penrith.jpg | File:Penrith Castle - geograph.org.uk - 1584255.jpg | CC BY-SA 2.0 | Penrith |
+| img/lejog/carlisle.jpg | File:Carlisle Castle - geograph.org.uk - 60471.jpg | CC BY-SA 2.0 | Carlisle |
+| img/lejog/moffat.jpg | File:Town Hall, High Street, Moffat (geograph 4447301).jpg | CC BY-SA 2.0 | Moffat |
+| img/lejog/peebles.jpg | File:Tweed Bridge, Peebles.jpg | CC BY 2.5 | Peebles |
+| img/lejog/honiton.jpg | File:Honiton High Street - geograph.org.uk - 2293350.jpg | CC BY-SA 2.0 | Honiton |
+| img/lejog/dorchester.jpg | File:Dorchester, View of High West Street - geograph.org.uk - 1834521.jpg | CC BY-SA 2.0 | Dorchester |
+| img/lejog/salisbury.jpg | File:Salisbury Cathedral, west end - geograph.org.uk - 5629961.jpg | CC BY-SA 2.0 | Salisbury |
+| img/lejog/winchester.jpg | File:Winchester Cathedral - West front - geograph.org.uk - 5612451.jpg | CC BY-SA 2.0 | Winchester |
+| img/lejog/guildford.jpg | File:Guildford castle 1.jpg | Public domain | Guildford |
+| img/lejog/hertford.jpg | File:Hertford Castle.jpg | CC BY 2.0 | Hertford |
+| img/lejog/peterborough.jpg | File:Peterborough Cathedral, west front 02.jpg | CC0 | Peterborough |
+| img/lejog/lincoln.jpg | File:Lincoln Cathedral - West Front - geograph.org.uk - 8023224.jpg | CC BY-SA 2.0 | Lincoln |
+| img/lejog/selby.jpg | File:Selby Abbey west front - geograph.org.uk - 6381875.jpg | CC BY-SA 2.0 | Selby |
+| img/lejog/northallerton.jpg | File:Northallerton High Street.jpg | CC BY-SA 2.0 | Northallerton |
+| img/lejog/newcastle.jpg | File:Tyne Bridge, Newcastle upon Tyne (geograph 3394344).jpg | CC BY-SA 2.0 | Newcastle |
+| img/lejog/alnwick.jpg | File:Alnwick Castle 2011.JPG | CC BY-SA 3.0 | Alnwick |
+| img/lejog/berwick.jpg | File:Berwick-upon-Tweed MMB 17 Royal Tweed Bridge.jpg | CC BY-SA 4.0 | Berwick-upon-Tweed |
+| img/lejog/durham.jpg | File:Durham Cathedral from the river - geograph.org.uk - 5351542.jpg | CC BY-SA 2.0 | Durham |
+| img/lejog/york.jpg | File:York Minster - geograph.org.uk - 2295889.jpg | CC BY-SA 2.0 | York |

@@ -960,10 +960,103 @@
         "img/landsend.jpg"
       ],
       "York": [
-        "img/edinburgh.jpg"
+        "img/lejog/york.jpg"
       ],
       "Durham": [
-        "img/edinburgh.jpg"
+        "img/lejog/durham.jpg"
+      ],
+      "Truro": [
+        "img/lejog/truro.jpg"
+      ],
+      "Bodmin": [
+        "img/lejog/bodmin.jpg"
+      ],
+      "Okehampton": [
+        "img/lejog/okehampton.jpg"
+      ],
+      "Exeter": [
+        "img/lejog/exeter.jpg"
+      ],
+      "Taunton": [
+        "img/lejog/taunton.jpg"
+      ],
+      "Bath": [
+        "img/lejog/bath.jpg"
+      ],
+      "Bristol": [
+        "img/lejog/bristol.jpg"
+      ],
+      "Gloucester": [
+        "img/lejog/gloucester.jpg"
+      ],
+      "Ludlow": [
+        "img/lejog/ludlow.jpg"
+      ],
+      "Shrewsbury": [
+        "img/lejog/shrewsbury.jpg"
+      ],
+      "Chester": [
+        "img/lejog/chester.jpg"
+      ],
+      "Preston": [
+        "img/lejog/preston.jpg"
+      ],
+      "Lancaster": [
+        "img/lejog/lancaster.jpg"
+      ],
+      "Kendal": [
+        "img/lejog/kendal.jpg"
+      ],
+      "Penrith": [
+        "img/lejog/penrith.jpg"
+      ],
+      "Carlisle": [
+        "img/lejog/carlisle.jpg"
+      ],
+      "Moffat": [
+        "img/lejog/moffat.jpg"
+      ],
+      "Peebles": [
+        "img/lejog/peebles.jpg"
+      ],
+      "Honiton": [
+        "img/lejog/honiton.jpg"
+      ],
+      "Dorchester": [
+        "img/lejog/dorchester.jpg"
+      ],
+      "Salisbury": [
+        "img/lejog/salisbury.jpg"
+      ],
+      "Winchester": [
+        "img/lejog/winchester.jpg"
+      ],
+      "Guildford": [
+        "img/lejog/guildford.jpg"
+      ],
+      "Hertford": [
+        "img/lejog/hertford.jpg"
+      ],
+      "Peterborough": [
+        "img/lejog/peterborough.jpg"
+      ],
+      "Lincoln": [
+        "img/lejog/lincoln.jpg"
+      ],
+      "Selby": [
+        "img/lejog/selby.jpg"
+      ],
+      "Northallerton": [
+        "img/lejog/northallerton.jpg"
+      ],
+      "Newcastle": [
+        "img/lejog/newcastle.jpg"
+      ],
+      "Alnwick": [
+        "img/lejog/alnwick.jpg"
+      ],
+      "Berwick-upon-Tweed": [
+        "img/lejog/berwick.jpg"
       ],
       "Brentford": [
         "img/osterley.jpg",
@@ -1063,7 +1156,10 @@
       "Osterley Park": "Osterley",
       "Richmond Park (Roehampton Gate)": "Richmond",
       "Roehampton Gate": "Richmond",
-      "Kew": "Kew Bridge"
+      "Kew": "Kew Bridge",
+      "Berwick": "Berwick-upon-Tweed",
+      "Newcastle upon Tyne": "Newcastle",
+      "Newcastle-upon-Tyne": "Newcastle"
     }
   }
 }

@@ -553,7 +553,7 @@ function applyHash(){
   if(p.trip && TRIPS.some(t=>t.id===p.trip)){
     const day=p.day?+p.day:null;
     const same=ride && ride.id===p.trip && (selDay||null)===(day||null);
-    if(!same){ selStop=null; hidePlaceCard(); filmOpen=false; }
+    if(!same){ selStop=null; hidePlaceCard(); filmOpen=false; if(isNarrowSheet()) ctxSlim=true; }
     selDay=day||null;
     vbManual=false;
     if(!(mode==="ride" && ride && ride.id===p.trip)){
@@ -795,8 +795,19 @@ function signedNoteText(){
 }
 function travelEnds(){
   const segs=activeSegs();
-  if(!segs.length) return {from:PLAN.startName, to:PLAN.endName, fromId:startId, toId:endId};
-  return {from:showName(segs[0].frmName||segs[0].frm), to:showName(segs[segs.length-1].toName||segs[segs.length-1].to), fromId:segs[0].frm, toId:segs[segs.length-1].to};
+  const fromT=(PLAN.towns||[]).find(t=>t.id===startId);
+  const toT=(PLAN.towns||[]).find(t=>t.id===endId);
+  if(!segs.length) return {
+    from:showName(fromT?fromT.name:PLAN.startName),
+    to:showName(toT?toT.name:PLAN.endName),
+    fromId:startId, toId:endId
+  };
+  return {
+    from:fromT?showName(fromT.name):showName(segs[0].frmName||segs[0].frm),
+    to:toT?showName(toT.name):showName(segs[segs.length-1].toName||segs[segs.length-1].to),
+    fromId:startId||segs[0].frm,
+    toId:endId||segs[segs.length-1].to
+  };
 }
 function peekDir(rev){
   if(rev===reversed){
@@ -817,13 +828,31 @@ function isSkipped(id){
 }
 function activeSegs(){
   const segs=chainSegs();
-  const towns=segs.flatMap(s=>[s.frm,s.to]);
   let i0=segs.findIndex(s=>s.frm===startId);
   let i1=segs.findIndex(s=>s.to===endId);
+  if(i0<0){
+    const after=segs.findIndex(s=>s.to===startId);
+    if(after>=0) i0=after+1;
+  }
+  if(i1<0){
+    const before=segs.findIndex(s=>s.frm===endId);
+    if(before>0) i1=before-1;
+  }
   if(i0<0) i0=0;
   if(i1<0) i1=segs.length-1;
+  if(i0>=segs.length) return [];
   if(i1<i0){ i0=0; i1=segs.length-1; }
   return segs.slice(i0, i1+1);
+}
+function nodePoint(id){
+  if(!id) return null;
+  const segs=chainSegs();
+  for(let i=0;i<segs.length;i++){
+    const s=segs[i], line=s.line||[];
+    if(s.frm===id && line[0]) return line[0];
+    if(s.to===id && line.length) return line[line.length-1];
+  }
+  return null;
 }
 function rideStats(){
   const segs=activeSegs().filter(s=>!isSkipped(s.id));
@@ -833,6 +862,8 @@ function rideStats(){
 }
 function ridePoints(){
   const pts=[];
+  const startPt=nodePoint(startId);
+  if(startPt) pts.push(startPt);
   activeSegs().forEach(s=>{ if(isSkipped(s.id)) return; (s.line||[]).forEach(p=>pts.push(p)); });
   return pts;
 }
@@ -1211,8 +1242,10 @@ function syncFilmCollapse(){
   tog.setAttribute("aria-expanded", filmOpen?"true":"false");
   const who=today?(today.frm+" → "+today.to):"";
   tog.innerHTML=filmOpen
-    ? `<span class="filmtog-lab">Hide days</span><span class="filmtog-ch" aria-hidden="true">▾</span>`
+    ? `<span class="filmtog-ch" aria-hidden="true">▾</span>`
     : `<span class="filmtog-lab">Day ${selDay} of ${n}</span><span class="filmtog-who">${esc(who)}</span><span class="filmtog-ch" aria-hidden="true">▴</span>`;
+  tog.title=filmOpen?"Hide days":"Show days";
+  tog.setAttribute("aria-label", filmOpen?"Hide days":("Day "+selDay+" of "+n));
 }
 function bindCtxScrollHint(){
   const ctx=document.getElementById("ctx");
@@ -1245,7 +1278,7 @@ function segsOnDay(today, days){
   let k=0;
   segs.forEach(s=>{
     const a=Math.max(k0,k), b=Math.min(k1, k+(s.km||0));
-    if(b>a+0.05) out.push({seg:s, km:b-a});
+    if(b>a+0.8) out.push({seg:s, km:b-a});
     k+=s.km||0;
   });
   return out;
@@ -1292,7 +1325,13 @@ function dayHopLine(today, days){
       names.push(n);
     });
   });
-  return names.length>1?names.join(" → "):"";
+  const endK=stopNameKey(today && today.to);
+  const cut=[];
+  for(let i=0;i<names.length;i++){
+    cut.push(names[i]);
+    if(endK && stopNameKey(names[i])===endK) break;
+  }
+  return cut.length>1?cut.join(" → "):"";
 }
 function dayStops(today, days){
   if(!today) return [];
@@ -1571,6 +1610,13 @@ function paintRide(){
     const w=ink(selSeg===seg.id?2.2:1.35);
     strokeOnMap(gRide, ptsStr, rideStroke(seg.band), w);
   });
+  if(!selDay){
+    const gapA=nodePoint(startId);
+    const firstPt=rideSegs[0]&&rideSegs[0].line&&rideSegs[0].line[0];
+    if(gapA && firstPt && (Math.abs(gapA[0]-firstPt[0])>0.04 || Math.abs(gapA[1]-firstPt[1])>0.04)){
+      addPoly(gRide, linePts([gapA, firstPt]), "#c4b8a8", ink(1.1), {opacity:".5", "stroke-dasharray":"5 6"});
+    }
+  }
   if(selSeg){
     const s=rideSegs.find(x=>x.id===selSeg);
     if(s&&s.line&&s.line.length>1){

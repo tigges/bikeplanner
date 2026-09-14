@@ -280,6 +280,8 @@ body.planner #maplayers{left:auto;right:12px;top:56px}
   body.planner.onday .ctx-card{max-height:32%}
   body.planner.onday .ctx-card:not(.slim){max-height:42%}
   body.planner.onday .filmtog{display:flex;flex:0 0 auto;max-width:42%}
+  body.planner.onday:not(.film-collapsed) .filmtog{width:36px;height:36px;max-width:36px;padding:0;justify-content:center;border-radius:999px;align-self:center;box-shadow:0 4px 16px rgba(28,25,22,.1)}
+  body.planner.onday:not(.film-collapsed) .filmtog-ch{margin:0}
   body.planner.onday.film-collapsed .cuebar,
   body.planner.onday.film-collapsed .film-nav,
   body.planner.onday.film-collapsed .film-track{display:none!important}

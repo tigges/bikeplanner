@@ -310,3 +310,43 @@ Overnight towns on the national crossing. York and Durham no longer wear Edinbur
 | img/lejog/berwick.jpg | File:Berwick-upon-Tweed MMB 17 Royal Tweed Bridge.jpg | CC BY-SA 4.0 | Berwick-upon-Tweed |
 | img/lejog/durham.jpg | File:Durham Cathedral from the river - geograph.org.uk - 5351542.jpg | CC BY-SA 2.0 | Durham |
 | img/lejog/york.jpg | File:York Minster - geograph.org.uk - 2295889.jpg | CC BY-SA 2.0 | York |
+
+## Added 2026-09-14 (Swiss towns that wore a neighbour’s trip-hero)
+
+Chapel Bridge is Lucerne only. Schwyz, Einsiedeln, Brunnen and Flüelen get their own faces. Other leftover trip-hero mappings are replaced or dropped so the place card stays blank rather than showing the wrong town.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/ch/schwyz.jpg | File:Hauptplatz in Schwyz mit Rathaus und Wysses Rössli.jpg | CC BY-SA 4.0 | Schwyz |
+| img/ch/einsiedeln.jpg | File:Kloster Einsiedeln Frontansicht.jpg | CC BY-SA 3.0 | Einsiedeln |
+| img/ch/brunnen.jpg | File:Brunnen see.jpg | CC BY-SA 4.0 | Brunnen |
+| img/ch/flueelen.jpg | File:Flüelen Hafen am Urnersee.jpg | CC BY-SA 4.0 | Flüelen |
+| img/ch/altdorf.jpg | File:Altdorf Türmli.JPG | CC BY-SA 3.0 | Altdorf |
+| img/ch/glarus.jpg | File:Stadt Glarus mit Glärnisch, Kanton Glarus.jpg | CC BY 2.0 | Glarus |
+| img/ch/andermatt.jpg | File:00 0372 Andermatt im Urserental - Schweiz.jpg | CC BY-SA 4.0 | Andermatt |
+| img/ch/brig.jpg | File:Brig Stockalperpalast (Nov. 2013).jpg | CC BY-SA 4.0 | Brig |
+| img/ch/aigle.jpg | File:2010-05 aigle chateau vignes vu depuis fontaney.jpg | CC BY-SA 3.0 | Aigle |
+| img/ch/lausanne.jpg | File:Lausanne-cathe7.JPG | CC BY-SA 2.0 | Lausanne |
+| img/ch/biel.jpg | File:CH Biel Altstadt-5.JPG | CC BY-SA 3.0 | Biel/Bienne |
+| img/ch/locarno.jpg | File:Piazza Grande di Locarno.jpg | CC BY-SA 4.0 | Locarno |
+| img/ch/steinamrhein.jpg | File:Stein am Rhein Altstadt 04.JPG | CC BY-SA 3.0 | Stein am Rhein |
+| img/ch/baden.jpg | File:Baden AG Altstadt von der Limmat Hochbrücke.jpg | CC BY-SA 4.0 | Baden |
+| img/ch/brugg.jpg | File:Brugg AG Altstadt mit Aare.jpg | CC BY-SA 4.0 | Brugg |
+| img/ch/gstaad.jpg | File:GstaadPanoramaVillage.jpg | CC BY-SA 3.0 | Gstaad |
+| img/ch/chateaudoex.jpg | File:Château d'Oex (veduta generale).JPG | Public domain | Château-d'Œx |
+| img/ch/delemont.jpg | File:Château épiscopal de Delémont.jpg | CC BY-SA 3.0 | Delémont |
+| img/ch/lachaux.jpg | File:La Chaux-de-Fonds - Place du Marché.jpg | CC0 | La Chaux-de-Fonds |
+| img/ch/muestair.jpg | File:Kloster Müstair April11.JPG | CC BY-SA 3.0 | Müstair |
+| img/ch/disentis.jpg | File:Kloster Disentis Mai 2011.JPG | CC BY-SA 1.0 | Disentis/Mustér |
+| img/ch/sierre.jpg | File:Sierre depuis Beauregard (2).jpg | CC BY-SA 4.0 | Sierre |
+| img/ch/kandersteg.jpg | File:Kandersteg from south west.jpg | CC BY-SA 4.0 | Kandersteg |
+| img/ch/schaffhausen.jpg | File:Schaffhausen mit Munot, Rhein & MS Munot 20150419-IMG 0194.JPG | CC BY-SA 4.0 | Schaffhausen |
+| img/ch/wassen.jpg | File:Kirche Wassen UR mit Zug.jpg | CC BY-SA 4.0 | Wassen |
+| img/ch/airolo.jpg | File:Airolo.jpg | CC BY-SA 3.0 | Airolo |
+| img/ch/laupen.jpg | File:Ansicht von Westen auf Schloss Laupen.jpg | CC BY-SA 4.0 | Laupen |
+| img/ch/goeschenen.jpg | File:2016-Goeschenen-Dorf.jpg | CC BY-SA 4.0 | Göschenen |
+| img/ch/kreuzlingen.jpg | File:Kreuzlingen-Seeburg-Seeseite.jpg | CC BY-SA 3.0 | Kreuzlingen |
+| img/ch/rorschach.jpg | File:Kornhaus Hafen Rorschach.jpg | CC BY-SA 4.0 | Rorschach |
+| img/ch/romanshorn.jpg | File:Hafen Romanshorn 3.JPG | CC BY-SA 2.5 | Romanshorn |
+| img/ch/koblenz.jpg | File:Koblenz AG.jpg | CC BY-SA 3.0 | Koblenz |
+

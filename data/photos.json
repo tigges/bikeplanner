@@ -47,27 +47,23 @@
         "img/furka.jpg"
       ],
       "Brig": [
-        "img/gletsch.jpg",
-        "img/furka.jpg"
+        "img/ch/brig.jpg"
       ],
       "Andermatt": [
-        "img/furka.jpg",
-        "img/gotthard.jpg"
+        "img/ch/andermatt.jpg"
       ],
       "Martigny": [
         "img/ch/martigny.jpg"
       ],
       "Aigle": [
-        "img/chillon.jpg",
-        "img/lavaux.jpg"
+        "img/ch/aigle.jpg"
       ],
       "Montreux": [
         "img/chillon.jpg",
         "img/lavaux.jpg"
       ],
       "Lausanne": [
-        "img/lavaux.jpg",
-        "img/chillon.jpg"
+        "img/ch/lausanne.jpg"
       ],
       "Genève": [
         "img/ch/geneva.jpg",
@@ -85,8 +81,7 @@
         "img/rheinfall.jpg"
       ],
       "Schaffhausen": [
-        "img/rheinfall.jpg",
-        "img/basel.jpg"
+        "img/ch/schaffhausen.jpg"
       ],
       "Rhine Falls": [
         "img/rheinfall.jpg"
@@ -107,27 +102,24 @@
         "img/engadin.jpg"
       ],
       "Müstair": [
-        "img/engadin.jpg"
+        "img/ch/muestair.jpg"
       ],
       "Rorschach": [
-        "img/constance.jpg"
+        "img/ch/rorschach.jpg"
       ],
       "Romanshorn": [
-        "img/constance.jpg"
+        "img/ch/romanshorn.jpg"
       ],
       "Murten": [
         "img/murten.jpg"
       ],
       "Biel/Bienne": [
-        "img/murten.jpg"
+        "img/ch/biel.jpg"
       ],
       "Biel": [
-        "img/murten.jpg"
+        "img/ch/biel.jpg"
       ],
       "Lugano": [
-        "img/lugano.jpg"
-      ],
-      "Chiasso": [
         "img/lugano.jpg"
       ],
       "Bellinzona": [
@@ -135,29 +127,13 @@
         "img/gotthard.jpg"
       ],
       "Airolo": [
-        "img/gotthard.jpg"
-      ],
-      "Linthal": [
-        "img/klausen.jpg"
+        "img/ch/airolo.jpg"
       ],
       "Flüelen": [
-        "img/klausen.jpg",
-        "img/lucerne.jpg"
+        "img/ch/flueelen.jpg"
       ],
       "Sierre": [
-        "img/gletsch.jpg"
-      ],
-      "Leuk": [
-        "img/gletsch.jpg"
-      ],
-      "Visp": [
-        "img/gletsch.jpg"
-      ],
-      "Goms": [
-        "img/gletsch.jpg"
-      ],
-      "Ernen": [
-        "img/gletsch.jpg"
+        "img/ch/sierre.jpg"
       ],
       "Spiez": [
         "img/ch/spiez.jpg"
@@ -166,16 +142,13 @@
         "img/ch/thun.jpg"
       ],
       "Kandersteg": [
-        "img/gletsch.jpg"
-      ],
-      "Goppenstein": [
-        "img/gletsch.jpg"
+        "img/ch/kandersteg.jpg"
       ],
       "Gstaad": [
-        "img/jaun.jpg"
+        "img/ch/gstaad.jpg"
       ],
       "Château-d'Œx": [
-        "img/jaun.jpg"
+        "img/ch/chateaudoex.jpg"
       ],
       "Bern": [
         "img/ch/bern.jpg"
@@ -184,74 +157,61 @@
         "img/ch/fribourg.jpg"
       ],
       "Laupen": [
-        "img/murten.jpg"
+        "img/ch/laupen.jpg"
       ],
       "Delémont": [
-        "img/jura.jpg"
+        "img/ch/delemont.jpg"
       ],
       "La Chaux-de-Fonds": [
-        "img/jura.jpg"
+        "img/ch/lachaux.jpg"
       ],
       "Davos": [
         "img/ch/davos.jpg"
       ],
-      "Ilanz/Glion": [
-        "img/engadin.jpg"
-      ],
       "Disentis/Mustér": [
-        "img/engadin.jpg"
+        "img/ch/disentis.jpg"
       ],
       "Locarno": [
-        "img/lugano.jpg"
+        "img/ch/locarno.jpg"
       ],
       "Kreuzlingen": [
-        "img/constance.jpg"
-      ],
-      "Konstanz": [
-        "img/constance.jpg"
+        "img/ch/kreuzlingen.jpg"
       ],
       "Stein am Rhein": [
-        "img/rheinfall.jpg",
-        "img/basel.jpg"
+        "img/ch/steinamrhein.jpg"
       ],
       "Koblenz": [
-        "img/rheinfall.jpg"
+        "img/ch/koblenz.jpg"
       ],
       "Brugg": [
-        "img/basel.jpg"
+        "img/ch/brugg.jpg"
       ],
       "Baden": [
-        "img/basel.jpg"
+        "img/ch/baden.jpg"
       ],
       "Aarau": [
         "img/ch/aarau.jpg"
       ],
       "Glarus": [
-        "img/klausen.jpg"
+        "img/ch/glarus.jpg"
       ],
       "Altdorf": [
-        "img/klausen.jpg"
+        "img/ch/altdorf.jpg"
       ],
       "Brunnen": [
-        "img/lucerne.jpg"
+        "img/ch/brunnen.jpg"
       ],
       "Einsiedeln": [
-        "img/lucerne.jpg"
+        "img/ch/einsiedeln.jpg"
       ],
       "Schwyz": [
-        "img/lucerne.jpg"
+        "img/ch/schwyz.jpg"
       ],
       "Wassen": [
-        "img/gotthard.jpg"
+        "img/ch/wassen.jpg"
       ],
       "Göschenen": [
-        "img/gotthard.jpg"
-      ],
-      "Préverenges": [
-        "img/lavaux.jpg"
-      ],
-      "Saint-Maurice": [
-        "img/lavaux.jpg"
+        "img/ch/goeschenen.jpg"
       ],
       "Zürich": [
         "img/ch/zurich.jpg"

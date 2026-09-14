@@ -98,8 +98,7 @@ On the tiled ride/day map the strokes are brighter so they read on Esri/CyclOSM:
 ## How to work
 
 - Small, one-topic changes. Commit, push, and report as soon as it works.
-- Default proof: stills or the live site. Do not record a walkthrough unless asked, or the change is motion a screenshot cannot show.
-- If a recording is needed, start it only after push.
+- Do not take screenshots or recordings. The user checks the live site after they push.
 - Bump `paper.css?v=` and `paper.js?v=` together when those files change.
 - Snapshots: `node tools/extract_ride_snapshots.mjs`. Photos: `python3 tools/fetch_trip_photos.py`.
 - `DESIGN.md` / `MAP.md` lag the live sheet in places. Trust `paper.js` + this note over those docs unless you are asked to update them.

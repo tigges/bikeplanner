@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Copy country graphs into graphs/ from a local tigges/routeplanner checkout.
+"""Optional: copy country graphs into graphs/ from an archived local checkout.
 
-Does not fetch github.io. Caches and OSM extracts are left behind.
-Spain and Switzerland N–S have no examples/ dir: freeze P/SD/SC from the
-published HTML in that checkout (docs/<slug>/index.html).
+The site does not need this. Serve and extract from graphs/ already in
+the repo. Does not fetch github.io. Caches and OSM extracts are left behind.
 
-  ROUTEPLANNER=/path/to/routeplanner python3 tools/import_graphs.py
+  ROUTEPLANNER=/path/to/archived-routeplanner python3 tools/import_graphs.py
 """
 from __future__ import annotations
 
@@ -153,7 +152,7 @@ def freeze_html(rp: Path, spec: dict) -> dict:
 def main() -> int:
     rp = Path(os.environ.get("ROUTEPLANNER", "/tmp/routeplanner")).resolve()
     if not (rp / "config").is_dir():
-        print("set ROUTEPLANNER to a tigges/routeplanner checkout", file=sys.stderr)
+        print("set ROUTEPLANNER to an archived routeplanner checkout", file=sys.stderr)
         return 1
     DEST.mkdir(parents=True, exist_ok=True)
     tpl = rp / "planner" / "template.html"

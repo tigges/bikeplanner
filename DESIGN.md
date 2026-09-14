@@ -1,8 +1,6 @@
 # Design proposal — one paper product, rebuilt here
 
-This repo (`bikeplanner`) is the new site. Hub, country galleries, and the planner all live here, on one navigation, one layout, one colour system.
-
-[tigges/routeplanner](https://github.com/tigges/routeplanner) and the published pages at [tigges.github.io/routeplanner](https://tigges.github.io/routeplanner/) are the **input**: graphs, trip catalogues, computed days, forks, vehicles, GPX. They are **not** the result. Do not link a card, map line, or button into that dark planner. Do not reuse its 340 px sidebar, night canvas, or second atmosphere.
+This repo (`bikeplanner`) is the site. Hub, country galleries, and the planner all live here, on one navigation, one layout, one colour system. Country graphs live in [`graphs/`](graphs/). [tigges/routeplanner](https://github.com/tigges/routeplanner) is archived provenance, not a live dependency. Do not link a card, map line, or button into that dark planner. Do not restyle `graphs/planner-template.html`.
 
 Live: [index.html](index.html), [switzerland.html](switzerland.html), [britain.html](britain.html), [japan.html](japan.html), [spain.html](spain.html). Detail notes: [MAP.md](MAP.md), [GRAPHS.md](GRAPHS.md).
 

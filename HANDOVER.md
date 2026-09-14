@@ -14,11 +14,13 @@ Paper atlas: **hub → country gallery → tour sheet → day**. One atmosphere.
 python3 -m http.server 8766
 ```
 
-Pages: `index.html`, `japan.html`, `switzerland.html`, `britain.html`, `spain.html`. Shared UI is `paper.js` + `paper.css` (cache-bust `?v=44` on the country pages). Ride data is snapshots under `data/rides/{country}/{id}.json`, not the full graph.
+Pages: `index.html`, `japan.html`, `switzerland.html`, `britain.html`, `spain.html`. Shared UI is `paper.js` + `paper.css` (cache-bust `?v=47` on the country pages).
 
-**tigges/routeplanner** and `planner/template.html` are **input only**. Do not restyle the navy GIS planner. Do not link cards, map lines, or buttons into it.
+This repo is independent. Country graphs live in `graphs/`. Ride snapshots live under `data/rides/{country}/{id}.json`. Rebuild snapshots with `node tools/extract_ride_snapshots.mjs` (assembles local HTML from `graphs/planner-template.html`; does not fetch github.io). `graphs/planner-template.html` is **build input only** — do not restyle it. Do not link hub, gallery, or tour sheet into `tigges/routeplanner` or `tigges.github.io/routeplanner`. That repo is archived provenance (`graphs/manifest.json`).
 
 Days are **computed, not stored**. Snapshots do not store OSM way refs or turn-by-turn. Do not invent “turn left at the church” or road surface.
+
+Independence check: `bash tools/check_independence.sh`.
 
 ---
 
@@ -55,14 +57,18 @@ On the tiled ride/day map the strokes are brighter so they read on Esri/CyclOSM:
 
 - **Day card ≠ cue strip.** Do not merge them again.
 - Card = numbers and character: km, effort, beds, profile, one character line (`signed/quiet/busy` + longest shop gap + fork), colour strip, ≤2 photos, Sleep, GPX/KML/Print. No On-the-way chips. No hop line leaking the whole-graph hop (`Aomori → Fukaura` was that bug).
-- Cue strip = **that day’s towns + sleep**, with a signed-route kicker. **Not peaks** (Sakae Yama / Bouzu Hatakeyama were noise).
+- Cue strip = **that day’s towns + sleep**, with a signed-route kicker. **Not peaks**.
 - Cue chips open the place card.
-- Cue towns are gold discs + labels on the map; they are meant to be tappable too.
+- Cue towns are gold discs + labels on the map; they are tappable (`tapMap` on pointerup when `!panMoved`).
 
 **Place card**
 
 - Two links only: **OpenStreetMap pin** and **Google Search**. No toggle. No Google pin. No OSM search.
-- OSM pin is useful. Google search is useful. Keep that split.
+
+**Day map layers**
+
+- Shop, beds, food, camp, bath, rail, water, toilet. Hidden when the ride has none.
+- S-pedelec (`45 km/h`) follows `mopedAlt` when the snapshot has one.
 
 **Mobile**
 
@@ -73,14 +79,8 @@ On the tiled ride/day map the strokes are brighter so they read on Esri/CyclOSM:
 **Hub**
 
 - Title: Your Bike Route Planners by CT.
-- About footer with the live catalogue.
+- About footer. Credit line does **not** link to routeplanner.
 - Top / crossing pills: coral frame when unselected, not a fill.
-
----
-
-## Known leftover (not proven on merge)
-
-Tapping **gold discs on the map** may not open the place card. Cue chips do. Pan-default can swallow the click (`panMoved` / 8px drag; `#map` click handler returns early if `panMoved`). If you fix it: fire `tapMap` on pointerup when `!panMoved`, and prove it with stills on Cape to cape day Aomori → Ajigasawa. Do not treat this as a redesign.
 
 ---
 
@@ -90,6 +90,8 @@ Tapping **gold discs on the map** may not open the place card. Cue chips do. Pan
 - OSM surface
 - Turn-by-turn
 - A Settings page
+- Full-graph any start/end and packed `#r=` share links
+- Vendoring the OSM rebuild pipeline from the archived routeplanner checkout
 
 ---
 
@@ -100,7 +102,7 @@ Tapping **gold discs on the map** may not open the place card. Cue chips do. Pan
 - If a recording is needed, start it only after push.
 - Bump `paper.css?v=` and `paper.js?v=` together when those files change.
 - Snapshots: `node tools/extract_ride_snapshots.mjs`. Photos: `python3 tools/fetch_trip_photos.py`.
-- `DESIGN.md` / `MAP.md` lag the live sheet in places (place cards, ghost-off, day card). Trust `paper.js` + this note over those docs unless you are asked to update them.
+- `DESIGN.md` / `MAP.md` lag the live sheet in places. Trust `paper.js` + this note over those docs unless you are asked to update them.
 
 ## Canonical check ride
 

@@ -8,8 +8,8 @@ Start a new thread from `main`. Paste [HANDOVER.md](HANDOVER.md) as the first me
 
 ## Testing during the paper-atlas design loop
 
-- Commit, push, and report as soon as the change works. Do not wait on screen recordings.
-- Default proof: stills (or the live site). Do not record a walkthrough unless the user asks, or the change is motion/interaction a screenshot cannot show.
-- If a recording is needed, start it only after push, and write the summary without waiting for ffmpeg.
-- Serve: `python3 -m http.server 8766`
+- Commit, push, and report as soon as the change works.
+- Do **not** take screenshots or screen recordings. Do not upload walkthrough stills or videos.
+- Proof is the **live site** after the user pushes: https://tigges.github.io/bikeplanner/
+- Serve locally with `python3 -m http.server 8766` only if you need to confirm a file exists. Do not capture the browser.
 - Independence: `bash tools/check_independence.sh`

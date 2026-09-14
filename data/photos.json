@@ -258,7 +258,7 @@
   },
   "japan": {
     "trips": {
-      "ns": "img/japan.jpg",
+      "ns": "img/ns/cape-soya.jpg",
       "shimanami": "img/japan.jpg",
       "biwaichi": "img/biwa.jpg",
       "fujiichi": "img/fuji.jpg",
@@ -290,10 +290,10 @@
     },
     "places": {
       "Onomichi": [
-        "img/japan.jpg"
+        "img/ns/onomichi.jpg"
       ],
       "Imabari": [
-        "img/japan.jpg"
+        "img/ns/imabari.jpg"
       ],
       "Hikone": [
         "img/biwa.jpg"
@@ -302,10 +302,10 @@
         "img/biwa.jpg"
       ],
       "Makino": [
-        "img/biwa.jpg"
+        "img/ns/makino.jpg"
       ],
       "Otsu": [
-        "img/biwa.jpg"
+        "img/ns/otsu.jpg"
       ],
       "Kawaguchiko": [
         "img/fuji.jpg"
@@ -320,13 +320,13 @@
         "img/fuji.jpg"
       ],
       "Wajima": [
-        "img/noto.jpg"
+        "img/ns/wajima.jpg"
       ],
       "Suzu": [
-        "img/noto.jpg"
+        "img/ns/suzu.jpg"
       ],
       "Chirihama": [
-        "img/noto.jpg"
+        "img/ns/chirihama.jpg"
       ],
       "Tsuchiura": [
         "img/kasumigaura.jpg"
@@ -335,7 +335,7 @@
         "img/kasumigaura.jpg"
       ],
       "Beppu": [
-        "img/aso.jpg"
+        "img/ns/beppu.jpg"
       ],
       "Aso": [
         "img/aso.jpg"
@@ -347,19 +347,19 @@
         "img/aso.jpg"
       ],
       "Wakkanai": [
-        "img/wakkanai.jpg"
+        "img/ns/wakkanai.jpg"
       ],
       "Sapporo": [
-        "img/wakkanai.jpg"
+        "img/ns/ishikari.jpg"
       ],
       "Hakodate": [
-        "img/wakkanai.jpg"
+        "img/ns/hakodate.jpg"
       ],
       "Nara": [
         "img/nara.jpg"
       ],
       "Kyoto": [
-        "img/nara.jpg"
+        "img/ns/kyoto.jpg"
       ],
       "Matsushima": [
         "img/matsushima.jpg"
@@ -368,10 +368,10 @@
         "img/tottori.jpg"
       ],
       "Nichinan": [
-        "img/nichinan.jpg"
+        "img/ns/nichinan.jpg"
       ],
       "Kushima": [
-        "img/nichinan.jpg"
+        "img/ns/kushima.jpg"
       ],
       "Choshi": [
         "img/choshi.jpg"
@@ -386,22 +386,22 @@
         "img/naruto.jpg"
       ],
       "Okayama": [
-        "img/kibi.jpg"
+        "img/ns/okayama.jpg"
       ],
       "Toyama": [
         "img/toyama.jpg"
       ],
       "Hiroshima": [
-        "img/japan.jpg"
+        "img/ns/hiroshima.jpg"
       ],
       "Osaka": [
-        "img/japan.jpg"
+        "img/ns/osaka.jpg"
       ],
       "Kobe": [
-        "img/naruto.jpg"
+        "img/ns/kobe.jpg"
       ],
       "Aomori": [
-        "img/wakkanai.jpg"
+        "img/ns/aomori.jpg"
       ],
       "Sendai": [
         "img/matsushima.jpg"
@@ -416,17 +416,189 @@
         "img/choshi.jpg"
       ],
       "Cape Sata": [
-        "img/nichinan.jpg"
+        "img/ns/cape-sata.jpg"
       ],
       "Cape Sōya": [
-        "img/wakkanai.jpg"
+        "img/ns/cape-soya.jpg"
       ],
       "Moji": [
-        "img/aso.jpg"
+        "img/ns/moji.jpg"
       ],
       "Ōtsu": [
-        "img/biwa.jpg"
+        "img/ns/otsu.jpg"
+      ],
+      "Cape Soya": [
+        "img/ns/cape-soya.jpg"
+      ],
+      "Enbetsu": [
+        "img/ns/ororon.jpg"
+      ],
+      "Haboro": [
+        "img/ns/ororon.jpg"
+      ],
+      "Rumoi": [
+        "img/ns/rumoi.jpg"
+      ],
+      "Mashike": [
+        "img/ns/ougon.jpg"
+      ],
+      "Atsuta": [
+        "img/ns/ishikari.jpg"
+      ],
+      "Otaru": [
+        "img/ns/otaru.jpg"
+      ],
+      "Kutchan": [
+        "img/ns/kutchan.jpg"
+      ],
+      "Niseko": [
+        "img/ns/kutchan.jpg"
+      ],
+      "Suttsu": [
+        "img/ns/yakumo.jpg"
+      ],
+      "Oshamambe": [
+        "img/ns/oshamambe.jpg"
+      ],
+      "Yakumo": [
+        "img/ns/yakumo.jpg"
+      ],
+      "Fukaura": [
+        "img/ns/fukaura.jpg"
+      ],
+      "Noshiro": [
+        "img/ns/noshiro.jpg"
+      ],
+      "Akita": [
+        "img/ns/akita.jpg"
+      ],
+      "Nikaho": [
+        "img/ns/sakata.jpg"
+      ],
+      "Sakata": [
+        "img/ns/sakata.jpg"
+      ],
+      "Tsuruoka": [
+        "img/ns/tsuruoka.jpg"
+      ],
+      "Murakami": [
+        "img/ns/murakami.jpg"
+      ],
+      "Niigata": [
+        "img/ns/niigata.jpg"
+      ],
+      "Kashiwazaki": [
+        "img/ns/kashiwazaki.jpg"
+      ],
+      "Itoigawa": [
+        "img/ns/itoigawa.jpg"
+      ],
+      "Joetsu": [
+        "img/ns/joetsu.jpg"
+      ],
+      "Uozu": [
+        "img/ns/uozu.jpg"
+      ],
+      "Himi": [
+        "img/ns/himi.jpg"
+      ],
+      "Nanao": [
+        "img/ns/nanao.jpg"
+      ],
+      "Kanazawa": [
+        "img/ns/kanazawa.jpg"
+      ],
+      "Tōjinbō": [
+        "img/ns/tojinbo.jpg"
+      ],
+      "Tojinbo": [
+        "img/ns/tojinbo.jpg"
+      ],
+      "Fukui": [
+        "img/ns/fukui.jpg"
+      ],
+      "Tsuruga": [
+        "img/ns/tsuruga.jpg"
+      ],
+      "Akashi": [
+        "img/ns/akashi.jpg"
+      ],
+      "Himeji": [
+        "img/ns/himeji.jpg"
+      ],
+      "Kurashiki": [
+        "img/ns/kurashiki.jpg"
+      ],
+      "Fukuyama": [
+        "img/ns/fukuyama.jpg"
+      ],
+      "Okamura": [
+        "img/ns/okamura.jpg"
+      ],
+      "Kure": [
+        "img/ns/kure.jpg"
+      ],
+      "Iwakuni": [
+        "img/ns/iwakuni.jpg"
+      ],
+      "Yanai": [
+        "img/ns/yanai.jpg"
+      ],
+      "Hōfu": [
+        "img/ns/hofu.jpg"
+      ],
+      "Hofu": [
+        "img/ns/hofu.jpg"
+      ],
+      "Shimonoseki": [
+        "img/ns/shimonoseki.jpg"
+      ],
+      "Nakatsu": [
+        "img/ns/nakatsu.jpg"
+      ],
+      "Usa": [
+        "img/ns/usa.jpg"
+      ],
+      "Usuki": [
+        "img/ns/usuki.jpg"
+      ],
+      "Nobeoka": [
+        "img/ns/nobeoka.jpg"
+      ],
+      "Miyazaki": [
+        "img/ns/miyazaki.jpg"
+      ],
+      "Kanoya": [
+        "img/ns/kanoya.jpg"
+      ],
+      "Nejime": [
+        "img/ns/nejime.jpg"
       ]
+    },
+    "photoAliases": {
+      "Kyujincho (Yurihonjō)": "Nikaho",
+      "Yurihonjō": "Nikaho",
+      "Ootori (Tsuruoka)": "Tsuruoka",
+      "Monzenmachi-Nakanoya (Wajima)": "Wajima",
+      "Oritomachi (Suzu)": "Suzu",
+      "Hana Aze (Ishikari)": "Atsuta",
+      "Ishikari": "Atsuta",
+      "Shimonohama (Hatsukaichi)": "Hiroshima",
+      "Hatsukaichi": "Hiroshima",
+      "Yamakawa (Sanyo-Onoda)": "Shimonoseki",
+      "Sanyo-Onoda": "Shimonoseki",
+      "Sanmoncho (Kitakyushu)": "Moji",
+      "Kitakyushu": "Moji",
+      "Mochizuki (Usuki)": "Usuki",
+      "Honmachi (Hyuga)": "Nobeoka",
+      "Hyuga": "Nobeoka",
+      "Hyūga": "Nobeoka",
+      "Yoichi": "Otaru",
+      "Kyowa": "Kutchan",
+      "Mori": "Yakumo",
+      "Ajigasawa": "Fukaura",
+      "Anamizu": "Nanao",
+      "Obira": "Rumoi"
     }
   },
   "spain": {

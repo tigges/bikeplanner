@@ -47,7 +47,7 @@ const EXTRACT_JS = `(() => {
     if (!line) return [];
     let pts = String(line).split(" ").filter(Boolean).map(q => { const a = q.split(","); return ll(+a[0], +a[1]); });
     if (rev) pts = pts.slice().reverse();
-    return thinPts(pts, max || 48);
+    return thinPts(pts, max || 96);
   }
   function climbFromProf(prof){
     if (!prof || prof.length < 2) return { up: 0, down: 0 };
@@ -189,37 +189,49 @@ const EXTRACT_JS = `(() => {
       rail: (facSrc.rail || []).length,
       sights: sc.sights || 0,
       cand: packCand(s),
-      poi: packPoi(s, sd, sc, withFac ? 10 : 5),
-      prof: thinPts(prof, 40),
-      line: lineLL(s.line, false, 48)
+      eat: (facSrc.eat || []).length,
+      wc: (facSrc.wc || []).length,
+      camp: (facSrc.camp || []).length,
+      poi: packPoi(s, sd, sc, withFac ? 16 : 8),
+      prof: thinPts(prof, 60),
+      line: lineLL(s.line, false, 96)
     };
     if (withFac){
       rec.fac = {
-        shop: thinFac(facSrc.shop, s, 14),
-        stay: thinFac(facSrc.stay, s, 14),
-        bath: thinFac(facSrc.bath, s, 10),
-        rail: thinFac(facSrc.rail, s, 10),
-        water: thinFac(facSrc.water, s, 10)
+        shop: thinFac(facSrc.shop, s, 40),
+        stay: thinFac(facSrc.stay, s, 40),
+        eat: thinFac(facSrc.eat, s, 28),
+        bath: thinFac(facSrc.bath, s, 20),
+        rail: thinFac(facSrc.rail, s, 20),
+        water: thinFac(facSrc.water, s, 20),
+        wc: thinFac(facSrc.wc, s, 16),
+        camp: thinFac(facSrc.camp, s, 16)
       };
     }
-    if (typeof SSEG !== "undefined" && SSEG[id]) {
-      const sg = SSEG[id];
-      const ssd = (typeof SSD !== "undefined" && SSD[id]) || sd;
-      const sprof = (ssd.prof || []).map(p => [rnd(p[0], 1), Math.round(p[1])]);
-      const sfrom = climbFromProf(sprof);
-      rec.signedAlt = {
-        km: rnd(sg.km, 1),
-        ascent: saneClimb(sg.ascent || 0, sg.km, sfrom.up),
-        descent: saneClimb(sg.descent || 0, sg.km, sfrom.down),
-        effort: Math.round(sg.effort || 0),
-        effortR: Math.round(sg.effortR || sg.effort || 0),
-        cand: (sg.cand || []).map(c => {
+    function packAlt(src, srcSd){
+      if (!src) return null;
+      const altSd = srcSd || sd;
+      const aprof = (altSd.prof || []).map(p => [rnd(p[0], 1), Math.round(p[1])]);
+      const afrom = climbFromProf(aprof);
+      return {
+        km: rnd(src.km, 1),
+        ascent: saneClimb(src.ascent || 0, src.km, afrom.up),
+        descent: saneClimb(src.descent || 0, src.km, afrom.down),
+        effort: Math.round(src.effort || 0),
+        effortR: Math.round(src.effortR || src.effort || 0),
+        cand: (src.cand || []).map(c => {
           const p = c.x != null ? ll(c.x, c.y) : [null, null];
           return { km: rnd(c.km, 1), eff: rnd(c.eff, 1), beds: c.beds || 0, node: c.node || null, label: c.label || "", lat: p[0], lon: p[1] };
         }),
-        prof: thinPts(sprof, 40),
-        line: lineLL(sg.line, false, 48)
+        prof: thinPts(aprof, 60),
+        line: lineLL(src.line, false, 96)
       };
+    }
+    if (typeof SSEG !== "undefined" && SSEG[id]) {
+      rec.signedAlt = packAlt(SSEG[id], (typeof SSD !== "undefined" && SSD[id]) || sd);
+    }
+    if (typeof MSEG !== "undefined" && MSEG[id]) {
+      rec.mopedAlt = packAlt(MSEG[id], (typeof MSD !== "undefined" && MSD[id]) || sd);
     }
     return rec;
   }
@@ -373,7 +385,7 @@ const EXTRACT_JS = `(() => {
       stats: { days: days.length, km: fw.km, asc: fw.asc },
       days,
       segs: ids.map(id => packSeg(id, true)).filter(Boolean),
-      altSegs: altIds.map(id => packSeg(id, false)).filter(Boolean),
+      altSegs: altIds.map(id => packSeg(id, true)).filter(Boolean),
       alts,
       towns: townsSet,
       forks,

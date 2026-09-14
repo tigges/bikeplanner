@@ -145,7 +145,8 @@ const BAND={g:"#97C459",a:"#EF9F27",r:"#E24B4A"};
 const BAND_TILE={g:"#ffe34a",a:"#ff8a00",r:"#ff2d55"};
 const RIDE_CORAL="#ff3b1a";
 const DAY_LINE="#ffbf00";
-const LCOL={shop:"#c9a227",stay:"#3d7ec9",bath:"#7a5ea7",rail:"#1c1916",water:"#4a8fa3"};
+const LCOL={shop:"#c9a227",stay:"#3d7ec9",eat:"#b85c38",camp:"#3d8b6e",bath:"#7a5ea7",rail:"#1c1916",water:"#4a8fa3",wc:"#6b7280"};
+const LAYER_LAB={shop:"shop",stay:"beds",eat:"food",camp:"camp",bath:"bath",rail:"station",water:"drinking water",wc:"toilet"};
 
 function geo(t){ return t.geo||{}; }
 function daysEst(g){
@@ -724,7 +725,13 @@ function chainSegs(){
       {km:s.km,eff:s.effort,beds:0,node:s.to,label:s.toName,lat:last&&last[0],lon:last&&last[1]}
     ]};
   });
-  if(preferSigned && veh!=="opium"){
+  if(veh==="opium"){
+    segs=segs.map(s=>{
+      const a=s.mopedAlt; if(!a) return s;
+      return {...s, km:a.km, ascent:a.ascent, descent:a.descent, effort:a.effort, effortR:a.effortR,
+        line:a.line||s.line, cand:a.cand&&a.cand.length?a.cand:s.cand, prof:a.prof||s.prof, mopedGeom:true};
+    });
+  } else if(preferSigned){
     segs=segs.map(s=>{
       const a=s.signedAlt; if(!a) return s;
       return {...s, km:a.km, ascent:a.ascent, descent:a.descent, effort:a.effort, effortR:a.effortR,
@@ -1042,7 +1049,13 @@ function syncMapTools(){
   }
   document.getElementById("vehbtn").textContent=VEH_LABEL[veh]||"Bicycle";
   document.getElementById("langbtn").textContent=lang==="local"?"English names":(PAPER.localLabel||"Lokale Namen");
-  layers.querySelectorAll("button[data-l]").forEach(b=>b.classList.toggle("on", !!layersOn[b.dataset.l]));
+  const facSegs=(PLAN.segs||[]).concat(PLAN.altSegs||[]);
+  layers.querySelectorAll("button[data-l]").forEach(b=>{
+    const k=b.dataset.l;
+    const has=facSegs.some(s=>(s.fac&&s.fac[k]&&s.fac[k].length)||s[k]);
+    b.hidden=!has;
+    b.classList.toggle("on", !!layersOn[k]);
+  });
   const pan=document.getElementById("panbtn");
   if(pan){
     pan.classList.toggle("on", panMode);
@@ -1157,19 +1170,23 @@ function enrichDays(days){
   let dayOff=0;
   days.forEach(d=>{
     if(d.mode==="train") return;
-    let shop=0,stay=0,bath=0,rail=0,water=0,k=0;
+    let shop=0,stay=0,bath=0,rail=0,water=0,eat=0,wc=0,camp=0,k=0;
     segs.forEach(s=>{
       const a=Math.max(dayOff,k), b=Math.min(dayOff+d.km, k+s.km);
       if(b>a+0.05){
         const frac=(b-a)/s.km;
         shop+=(s.shop||0)*frac; stay+=(s.stay||0)*frac; bath+=(s.bath||0)*frac;
         rail+=(s.rail||0)*frac; water+=(s.water||0)*frac;
+        eat+=(s.eat||0)*frac; wc+=(s.wc||0)*frac; camp+=(s.camp||0)*frac;
       }
       k+=s.km;
     });
     if(d.shop==null){
       d.shop=Math.round(shop); d.stay=Math.round(stay); d.bath=Math.round(bath);
       d.rail=Math.round(rail); d.water=Math.round(water);
+    }
+    if(d.eat==null){
+      d.eat=Math.round(eat); d.wc=Math.round(wc); d.camp=Math.round(camp);
     }
     d.line=sliceLine(segs, dayOff, dayOff+d.km);
     if(!d.prof||!d.prof.length){
@@ -1772,7 +1789,7 @@ function paintRide(){
         c.setAttribute("stroke", "#fffdf8");
         c.setAttribute("stroke-width", ink(0.4));
         c.style.cursor="pointer";
-        const kindLab={shop:"shop",stay:"beds",bath:"bath",rail:"station",water:"drinking water"}[k]||k;
+        const kindLab=LAYER_LAB[k]||k;
         const nm=(lang==="local"&&f.nameLocal)?f.nameLocal:(f.name||kindLab);
         const hit={kind:k, name:nm, nameLocal:f.nameLocal||"", lat:f.lat, lon:f.lon,
           sub:kindLab+(f.off!=null?" · "+f.off+" km off the road":""), x:q[0], y:q[1]};
@@ -1886,8 +1903,8 @@ function kmlFor(days){
   return k+'</Document></kml>';
 }
 function csvFor(days){
-  const rows=[["day","from","to","mode","km","climb_m","effort","shops","beds","baths","stations"]];
-  days.forEach(d=>rows.push([d.n||"",d.frm,d.to,d.mode||"ride",d.km,d.climb||0,d.eff||"",d.shop||0,d.stay||0,d.bath||0,d.rail||0]));
+  const rows=[["day","from","to","mode","km","climb_m","effort","shops","beds","food","camps","baths","stations","toilets"]];
+  days.forEach(d=>rows.push([d.n||"",d.frm,d.to,d.mode||"ride",d.km,d.climb||0,d.eff||"",d.shop||0,d.stay||0,d.eat||0,d.camp||0,d.bath||0,d.rail||0,d.wc||0]));
   return rows.map(r=>r.join(",")).join("\n");
 }
 function download(name, text, mime){
@@ -2175,8 +2192,14 @@ function plannerSheet(t){
   });
   }
   const vnote=document.getElementById("vehnote");
-  vnote.textContent=veh==="opium"?"S-pedelec mode: a day is distance only (no climb penalty).":
-    veh==="ebike"?"E-bike mode: same roads as the bicycle, climbing counts a third, days capped at one battery.":"";
+  if(veh==="opium"){
+    const n=((PLAN.segs||[]).concat(PLAN.altSegs||[])).filter(s=>s.mopedAlt).length;
+    vnote.textContent=n
+      ? "S-pedelec: a day is distance only. "+n+" segments follow the moped line (cycle-only paths dropped)."
+      : "S-pedelec mode: a day is distance only (no climb penalty).";
+  } else {
+    vnote.textContent=veh==="ebike"?"E-bike mode: same roads as the bicycle, climbing counts a third, days capped at one battery.":"";
+  }
   document.getElementById("friendtog").onclick=()=>{
     friendOn=!friendOn;
     try{ localStorage.setItem("friend", friendOn?"1":"0"); }catch(e){}

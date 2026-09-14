@@ -29,5 +29,7 @@ ROUTEPLANNER=/path/to/routeplanner python3 tools/import_graphs.py
 Rebuild snapshots (Chrome, local assembled HTML, no github.io):
 
 ```
-node tools/extract_ride_snapshots.mjs --country britain --all
+node tools/extract_ride_snapshots.mjs --all
 ```
+
+Snapshots keep eat / wc / camp as well as shops and beds, thin less than the old github.io scrape, and store signed and moped alternate lines when the graph has them.

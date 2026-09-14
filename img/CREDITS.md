@@ -201,3 +201,112 @@ Commons and Geograph thumbs, copied locally. Towns on the Ealing rides — not L
 | img/ealing/uxbridge.jpg | File:Grand Union Canal, Uxbridge - geograph.org.uk - 3500694.jpg | CC BY-SA 2.0 | Uxbridge |
 | img/ealing/syon.jpg | File:Syon House West Aspect.JPG | CC BY-SA 3.0 | Syon Park |
 | img/ealing/horsenden.jpg | File:Horsenden Hill - geograph.org.uk - 312820.jpg | CC BY-SA 2.0 | Horsenden Hill |
+
+## Added 2026-09-14 (Swiss graph-town faces)
+
+Commons thumbs copied locally. Towns that had no key, plus cities that were wearing a neighbour’s trip-hero.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/ch/zurich.jpg | File:Zürich view Quaibrücke 20200702.jpg | CC BY-SA 3.0 | Zürich |
+| img/ch/zug.jpg | File:Evening sunshine in the old town of Zug.jpg | CC BY-SA 4.0 | Zug |
+| img/ch/olten.jpg | File:Olten Alte Brücke 02.jpg | CC BY-SA 3.0 | Olten |
+| img/ch/stgallen.jpg | File:Stiftskirche St. Gallen (April 2017).jpg | CC BY-SA 4.0 | St. Gallen |
+| img/ch/neuchatel.jpg | File:Château de Neuchatel et de la collégiale.jpg | CC BY 4.0 | Neuchâtel |
+| img/ch/rapperswil.jpg | File:Rapperswil SG Panorama Februar 2011.jpg | CC BY-SA 2.5 | Rapperswil |
+| img/ch/meiringen.jpg | File:Aareschlucht 159 7 8.jpg | CC BY-SA 2.0 | Meiringen |
+| img/ch/yverdon.jpg | File:Yverdon - Place Pestalozzi mit Denkmal, Schloss & Rathaus (2026).jpg | CC BY-SA 4.0 | Yverdon-les-Bains |
+| img/ch/sargans.jpg | File:Sargans asv2022-10 img1 Schloss.jpg | FAL | Sargans |
+| img/ch/zernez.jpg | File:Zernez, Unterengadin, Graubünden. 20-09-2023. (actm.) 01.jpg | CC BY-SA 4.0 | Zernez |
+| img/ch/evian.jpg | File:Anciens thermes Evian 2.jpg | CC BY-SA 3.0 | Évian-les-Bains |
+| img/ch/thonon.jpg | File:Thonon-les-Bains Ripaille.jpg | CC BY-SA 3.0 | Thonon-les-Bains |
+| img/ch/bregenz.jpg | File:Bregenz-view from Pfaender to Bregen harbour, central station-caserne-lake constance-01ASD.jpg | CC BY-SA 4.0 | Bregenz |
+| img/ch/lindau.jpg | File:Lindau Harbor Lake Constance 01.jpg | CC BY 4.0 | Lindau |
+| img/ch/friedrichshafen.jpg | File:Uferpromenade Friedrichshafen.JPG | CC BY-SA 3.0 | Friedrichshafen |
+| img/ch/geneva.jpg | File:Jet d'eau de Genève (swiss).jpg | CC BY-SA 4.0 | Genève |
+| img/ch/bern.jpg | File:Bern - Kramgasse mit Zytglogge (2014).jpg | CC BY-SA 4.0 | Bern |
+| img/ch/interlaken.jpg | File:2011-07-21-Interlaken (Foto Dietrich Michael Weidmann) 033.JPG | CC BY-SA 3.0 | Interlaken |
+| img/ch/thun.jpg | File:Thun Castle.jpg | CC BY 4.0 | Thun |
+| img/ch/spiez.jpg | File:Blick auf Schloss Spiez und Thunersee.jpg | CC BY-SA 4.0 | Spiez |
+| img/ch/chur.jpg | File:Chur in Graubünden (Zwitserland) 41.jpg | CC BY-SA 4.0 | Chur |
+| img/ch/bellinzona.jpg | File:Piazza del Sole and Castelgrande, Bellinzona, Ticino.jpg | CC BY-SA 4.0 | Bellinzona |
+| img/ch/winterthur.jpg | File:Winterthur Stadtkirche nordost.jpg | CC BY-SA 3.0 | Winterthur |
+
+## Added 2026-09-14 (Swiss graph-town faces, batch 2)
+
+Remaining overnight towns, plus cities that still wore a neighbour’s trip-hero. Zweisimmen is the church, not the station.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/ch/altstaetten.jpg | File:Altstätten Marktgasse 2024a.jpg | CC BY 4.0 | Altstätten |
+| img/ch/appenzell.jpg | File:Hauptgasse in Appenzell (2017).jpg | CC BY-SA 4.0 | Appenzell |
+| img/ch/beckenried.jpg | File:Schweiz - Vierwaldstättersee - Beckenried 0236.jpg | CC BY-SA 3.0 | Beckenried |
+| img/ch/bulle.jpg | File:Bulle-Chateau.jpg | CC BY-SA 3.0 | Bulle |
+| img/ch/burgdorf.jpg | File:Schloss Burgdorf.jpg | CC BY-SA 3.0 | Burgdorf |
+| img/ch/gersau.jpg | File:Gersau-Vierwaldstaettersee-01ASD.jpg | CC BY-SA 4.0 | Gersau |
+| img/ch/herisau.jpg | File:Herisau Platz Reformierte Kirche Suedfassade 02.jpg | CC BY-SA 4.0 | Herisau |
+| img/ch/langnau.jpg | File:Langnau im Emmental, Haldenstrasse mit reformierter Kirche.jpg | CC BY 4.0 | Langnau im Emmental |
+| img/ch/laufenburg.jpg | File:Altstadt mit Rheinbrücke Laufenburg AG 20230601 0018.jpg | CC BY-SA 4.0 | Laufenburg |
+| img/ch/nyon.jpg | File:Château de Nyon 2015.jpg | CC BY-SA 4.0 | Nyon |
+| img/ch/radolfzell.jpg | File:Obertorstraße und Münster Radolfzell.jpg | CC BY-SA 4.0 | Radolfzell |
+| img/ch/romont.jpg | File:Romontchateau.jpg | CC BY-SA 3.0 | Romont |
+| img/ch/saintcroix.jpg | File:View of Sainte-Croix (Vaud) 02.jpg | CC0 | Sainte-Croix |
+| img/ch/sanbernardino.jpg | File:San Bernardino Villagio.jpg | CC BY-SA 3.0 | San Bernardino |
+| img/ch/sarnen.jpg | File:Rathaus Sarnen OW, Nordwestansicht (2018).jpg | CC BY-SA 4.0 | Sarnen |
+| img/ch/stmargrethen.jpg | File:2022-St-Margrethen-Kath-Kirche.jpg | CC BY-SA 4.0 | St. Margrethen |
+| img/ch/stans.jpg | File:Ortsmitte Stans.JPG | Public domain | Stans |
+| img/ch/sustenpass.jpg | File:Am Sustenpass.jpg | CC BY-SA 4.0 | Sustenpass |
+| img/ch/soerenberg.jpg | File:Sörenberg01.JPG | CC BY-SA 3.0 | Sörenberg |
+| img/ch/thusis.jpg | File:Kirche Thusis 2022.jpg | CC0 | Thusis |
+| img/ch/tiefencastel.jpg | File:Tiefencastel Dorf.jpg | CC BY-SA 3.0 | Tiefencastel |
+| img/ch/vallorbe.jpg | File:Vallorbe-Village.jpg | CC BY-SA 3.0 | Vallorbe |
+| img/ch/wattwil.jpg | File:Wattwil-Kirche-R.jpg | CC BY 3.0 | Wattwil |
+| img/ch/wil.jpg | File:Altstadt (Marktgasse) in Wil SG.jpg | CC BY-SA 4.0 | Wil SG |
+| img/ch/willisau.jpg | File:Untertor in Willisau, Kanton Luzern.jpg | CC BY-SA 4.0 | Willisau |
+| img/ch/zweisimmen.jpg | File:Zweisimmen Eglise canton Berne Suisse.jpg | CC BY-SA 3.0 | Zweisimmen |
+| img/ch/ueberlingen.jpg | File:Überlingen, Promenade IMG 4755.JPG | CC BY-SA 3.0 | Überlingen |
+| img/ch/sion.jpg | File:Panorama of Sion, Switzerland from the north-west, with Tourbillon Castle and Valère Basilica (2022).jpg | CC BY-SA 4.0 | Sion |
+| img/ch/martigny.jpg | File:Château de La Bâtiaz depuis Chemin-Dessous.jpg | CC BY-SA 4.0 | Martigny |
+| img/ch/aarau.jpg | File:Aarau Altstadt.jpg | CC BY-SA 3.0 | Aarau |
+| img/ch/fribourg.jpg | File:Altstadt Fribourg mit Kathedalenturm und Saane (2019).jpg | CC BY-SA 4.0 | Fribourg |
+| img/ch/davos.jpg | File:Davos2.jpg | CC BY-SA 3.0 | Davos |
+
+## Added 2026-09-14 (LEJOG graph-town faces)
+
+Overnight towns on the national crossing. York and Durham no longer wear Edinburgh. Bath is the Crescent, not Land's End. Hamlets that are day ends but not graph towns are still skipped.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/lejog/truro.jpg | File:Truro Cathedral - Truro.jpg | CC BY-SA 2.0 | Truro |
+| img/lejog/bodmin.jpg | File:Church of St Petroc, Bodmin.jpg | CC BY-SA 4.0 | Bodmin |
+| img/lejog/okehampton.jpg | File:Okehampton Castle - geograph.org.uk - 7760989.jpg | CC BY-SA 2.0 | Okehampton |
+| img/lejog/exeter.jpg | File:Exeter Cathedral, west front - geograph.org.uk - 1664600.jpg | CC BY-SA 2.0 | Exeter |
+| img/lejog/taunton.jpg | File:Castle Green and Castle Bow, Taunton - geograph.org.uk - 5286392.jpg | CC BY-SA 2.0 | Taunton |
+| img/lejog/bath.jpg | File:2023-09-15 Bath Royal Crescent 05.jpg | CC BY-SA 4.0 | Bath |
+| img/lejog/bristol.jpg | File:Clifton Suspension Bridge-9350.jpg | CC BY-SA 3.0 | Bristol |
+| img/lejog/gloucester.jpg | File:Gloucester Cathedral exterior 2019.JPG | CC BY-SA 4.0 | Gloucester |
+| img/lejog/ludlow.jpg | File:Ludlow Castle from Whitcliffe, 2011.jpg | CC BY-SA 2.0 | Ludlow |
+| img/lejog/shrewsbury.jpg | File:English Bridge Shrewsbury 2.jpg | CC BY 3.0 | Shrewsbury |
+| img/lejog/chester.jpg | File:00 3453 Eastgate Clock - Chester, England.jpg | CC BY-SA 4.0 | Chester |
+| img/lejog/preston.jpg | File:The Harris Museum, Art Gallery & Library.jpg | CC0 | Preston |
+| img/lejog/lancaster.jpg | File:Lancaster Castle - 2023-03-25.jpg | CC BY-SA 4.0 | Lancaster |
+| img/lejog/kendal.jpg | File:Kendal Castle at sunset.jpg | CC BY-SA 2.0 | Kendal |
+| img/lejog/penrith.jpg | File:Penrith Castle - geograph.org.uk - 1584255.jpg | CC BY-SA 2.0 | Penrith |
+| img/lejog/carlisle.jpg | File:Carlisle Castle - geograph.org.uk - 60471.jpg | CC BY-SA 2.0 | Carlisle |
+| img/lejog/moffat.jpg | File:Town Hall, High Street, Moffat (geograph 4447301).jpg | CC BY-SA 2.0 | Moffat |
+| img/lejog/peebles.jpg | File:Tweed Bridge, Peebles.jpg | CC BY 2.5 | Peebles |
+| img/lejog/honiton.jpg | File:Honiton High Street - geograph.org.uk - 2293350.jpg | CC BY-SA 2.0 | Honiton |
+| img/lejog/dorchester.jpg | File:Dorchester, View of High West Street - geograph.org.uk - 1834521.jpg | CC BY-SA 2.0 | Dorchester |
+| img/lejog/salisbury.jpg | File:Salisbury Cathedral, west end - geograph.org.uk - 5629961.jpg | CC BY-SA 2.0 | Salisbury |
+| img/lejog/winchester.jpg | File:Winchester Cathedral - West front - geograph.org.uk - 5612451.jpg | CC BY-SA 2.0 | Winchester |
+| img/lejog/guildford.jpg | File:Guildford castle 1.jpg | Public domain | Guildford |
+| img/lejog/hertford.jpg | File:Hertford Castle.jpg | CC BY 2.0 | Hertford |
+| img/lejog/peterborough.jpg | File:Peterborough Cathedral, west front 02.jpg | CC0 | Peterborough |
+| img/lejog/lincoln.jpg | File:Lincoln Cathedral - West Front - geograph.org.uk - 8023224.jpg | CC BY-SA 2.0 | Lincoln |
+| img/lejog/selby.jpg | File:Selby Abbey west front - geograph.org.uk - 6381875.jpg | CC BY-SA 2.0 | Selby |
+| img/lejog/northallerton.jpg | File:Northallerton High Street.jpg | CC BY-SA 2.0 | Northallerton |
+| img/lejog/newcastle.jpg | File:Tyne Bridge, Newcastle upon Tyne (geograph 3394344).jpg | CC BY-SA 2.0 | Newcastle |
+| img/lejog/alnwick.jpg | File:Alnwick Castle 2011.JPG | CC BY-SA 3.0 | Alnwick |
+| img/lejog/berwick.jpg | File:Berwick-upon-Tweed MMB 17 Royal Tweed Bridge.jpg | CC BY-SA 4.0 | Berwick-upon-Tweed |
+| img/lejog/durham.jpg | File:Durham Cathedral from the river - geograph.org.uk - 5351542.jpg | CC BY-SA 2.0 | Durham |
+| img/lejog/york.jpg | File:York Minster - geograph.org.uk - 2295889.jpg | CC BY-SA 2.0 | York |

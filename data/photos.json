@@ -55,7 +55,7 @@
         "img/gotthard.jpg"
       ],
       "Martigny": [
-        "img/lavaux.jpg"
+        "img/ch/martigny.jpg"
       ],
       "Aigle": [
         "img/chillon.jpg",
@@ -70,15 +70,15 @@
         "img/chillon.jpg"
       ],
       "Genève": [
-        "img/chillon.jpg",
+        "img/ch/geneva.jpg",
         "img/lavaux.jpg"
       ],
       "Geneva": [
-        "img/chillon.jpg",
+        "img/ch/geneva.jpg",
         "img/lavaux.jpg"
       ],
       "Sion": [
-        "img/gletsch.jpg"
+        "img/ch/sion.jpg"
       ],
       "Basel": [
         "img/basel.jpg",
@@ -98,11 +98,10 @@
         "img/lucerne.jpg"
       ],
       "Interlaken": [
-        "img/lucerne.jpg",
-        "img/gletsch.jpg"
+        "img/ch/interlaken.jpg"
       ],
       "Chur": [
-        "img/engadin.jpg"
+        "img/ch/chur.jpg"
       ],
       "St. Moritz": [
         "img/engadin.jpg"
@@ -132,7 +131,7 @@
         "img/lugano.jpg"
       ],
       "Bellinzona": [
-        "img/lugano.jpg",
+        "img/ch/bellinzona.jpg",
         "img/gotthard.jpg"
       ],
       "Airolo": [
@@ -161,10 +160,10 @@
         "img/gletsch.jpg"
       ],
       "Spiez": [
-        "img/lucerne.jpg"
+        "img/ch/spiez.jpg"
       ],
       "Thun": [
-        "img/lucerne.jpg"
+        "img/ch/thun.jpg"
       ],
       "Kandersteg": [
         "img/gletsch.jpg"
@@ -179,10 +178,10 @@
         "img/jaun.jpg"
       ],
       "Bern": [
-        "img/murten.jpg"
+        "img/ch/bern.jpg"
       ],
       "Fribourg": [
-        "img/murten.jpg"
+        "img/ch/fribourg.jpg"
       ],
       "Laupen": [
         "img/murten.jpg"
@@ -194,7 +193,7 @@
         "img/jura.jpg"
       ],
       "Davos": [
-        "img/engadin.jpg"
+        "img/ch/davos.jpg"
       ],
       "Ilanz/Glion": [
         "img/engadin.jpg"
@@ -225,7 +224,7 @@
         "img/basel.jpg"
       ],
       "Aarau": [
-        "img/basel.jpg"
+        "img/ch/aarau.jpg"
       ],
       "Glarus": [
         "img/klausen.jpg"
@@ -253,7 +252,157 @@
       ],
       "Saint-Maurice": [
         "img/lavaux.jpg"
+      ],
+      "Zürich": [
+        "img/ch/zurich.jpg"
+      ],
+      "Zug": [
+        "img/ch/zug.jpg"
+      ],
+      "Olten": [
+        "img/ch/olten.jpg"
+      ],
+      "St. Gallen": [
+        "img/ch/stgallen.jpg"
+      ],
+      "Neuchâtel": [
+        "img/ch/neuchatel.jpg"
+      ],
+      "Rapperswil": [
+        "img/ch/rapperswil.jpg"
+      ],
+      "Meiringen": [
+        "img/ch/meiringen.jpg"
+      ],
+      "Yverdon-les-Bains": [
+        "img/ch/yverdon.jpg"
+      ],
+      "Sargans": [
+        "img/ch/sargans.jpg"
+      ],
+      "Zernez": [
+        "img/ch/zernez.jpg"
+      ],
+      "Évian-les-Bains": [
+        "img/ch/evian.jpg"
+      ],
+      "Thonon-les-Bains": [
+        "img/ch/thonon.jpg"
+      ],
+      "Bregenz": [
+        "img/ch/bregenz.jpg"
+      ],
+      "Lindau": [
+        "img/ch/lindau.jpg"
+      ],
+      "Friedrichshafen": [
+        "img/ch/friedrichshafen.jpg"
+      ],
+      "Winterthur": [
+        "img/ch/winterthur.jpg"
+      ],
+      "Solothurn": [
+        "img/aare.jpg"
+      ],
+      "Altstätten": [
+        "img/ch/altstaetten.jpg"
+      ],
+      "Appenzell": [
+        "img/ch/appenzell.jpg"
+      ],
+      "Beckenried": [
+        "img/ch/beckenried.jpg"
+      ],
+      "Bulle": [
+        "img/ch/bulle.jpg"
+      ],
+      "Burgdorf": [
+        "img/ch/burgdorf.jpg"
+      ],
+      "Gersau": [
+        "img/ch/gersau.jpg"
+      ],
+      "Herisau": [
+        "img/ch/herisau.jpg"
+      ],
+      "Langnau im Emmental": [
+        "img/ch/langnau.jpg"
+      ],
+      "Laufenburg": [
+        "img/ch/laufenburg.jpg"
+      ],
+      "Nyon": [
+        "img/ch/nyon.jpg"
+      ],
+      "Radolfzell": [
+        "img/ch/radolfzell.jpg"
+      ],
+      "Romont": [
+        "img/ch/romont.jpg"
+      ],
+      "Sainte-Croix": [
+        "img/ch/saintcroix.jpg"
+      ],
+      "San Bernardino": [
+        "img/ch/sanbernardino.jpg"
+      ],
+      "Sarnen": [
+        "img/ch/sarnen.jpg"
+      ],
+      "St. Margrethen": [
+        "img/ch/stmargrethen.jpg"
+      ],
+      "Stans": [
+        "img/ch/stans.jpg"
+      ],
+      "Sustenpass": [
+        "img/ch/sustenpass.jpg"
+      ],
+      "Sörenberg": [
+        "img/ch/soerenberg.jpg"
+      ],
+      "Thusis": [
+        "img/ch/thusis.jpg"
+      ],
+      "Tiefencastel": [
+        "img/ch/tiefencastel.jpg"
+      ],
+      "Vallorbe": [
+        "img/ch/vallorbe.jpg"
+      ],
+      "Wattwil": [
+        "img/ch/wattwil.jpg"
+      ],
+      "Wil SG": [
+        "img/ch/wil.jpg"
+      ],
+      "Willisau": [
+        "img/ch/willisau.jpg"
+      ],
+      "Zweisimmen": [
+        "img/ch/zweisimmen.jpg"
+      ],
+      "Überlingen": [
+        "img/ch/ueberlingen.jpg"
       ]
+    },
+    "photoAliases": {
+      "Zurich": "Zürich",
+      "Sankt Gallen": "St. Gallen",
+      "Yverdon": "Yverdon-les-Bains",
+      "Evian": "Évian-les-Bains",
+      "Evian-les-Bains": "Évian-les-Bains",
+      "Thonon": "Thonon-les-Bains",
+      "Neuchatel": "Neuchâtel",
+      "Langnau": "Langnau im Emmental",
+      "Wil": "Wil SG",
+      "Sankt Margrethen": "St. Margrethen",
+      "St Margrethen": "St. Margrethen",
+      "Ueberlingen": "Überlingen",
+      "Soerenberg": "Sörenberg",
+      "Susten": "Sustenpass",
+      "Sainte Croix": "Sainte-Croix",
+      "San Bernardino Pass": "San Bernardino"
     }
   },
   "japan": {
@@ -642,7 +791,11 @@
       "Kamiura Town Tatara Shimanami Park": "Omishima"
     },
     "photoAlong": {
-      "onomichi--imabari": ["Innoshima", "Setoda", "Omishima"]
+      "onomichi--imabari": [
+        "Innoshima",
+        "Setoda",
+        "Omishima"
+      ]
     }
   },
   "spain": {
@@ -807,10 +960,103 @@
         "img/landsend.jpg"
       ],
       "York": [
-        "img/edinburgh.jpg"
+        "img/lejog/york.jpg"
       ],
       "Durham": [
-        "img/edinburgh.jpg"
+        "img/lejog/durham.jpg"
+      ],
+      "Truro": [
+        "img/lejog/truro.jpg"
+      ],
+      "Bodmin": [
+        "img/lejog/bodmin.jpg"
+      ],
+      "Okehampton": [
+        "img/lejog/okehampton.jpg"
+      ],
+      "Exeter": [
+        "img/lejog/exeter.jpg"
+      ],
+      "Taunton": [
+        "img/lejog/taunton.jpg"
+      ],
+      "Bath": [
+        "img/lejog/bath.jpg"
+      ],
+      "Bristol": [
+        "img/lejog/bristol.jpg"
+      ],
+      "Gloucester": [
+        "img/lejog/gloucester.jpg"
+      ],
+      "Ludlow": [
+        "img/lejog/ludlow.jpg"
+      ],
+      "Shrewsbury": [
+        "img/lejog/shrewsbury.jpg"
+      ],
+      "Chester": [
+        "img/lejog/chester.jpg"
+      ],
+      "Preston": [
+        "img/lejog/preston.jpg"
+      ],
+      "Lancaster": [
+        "img/lejog/lancaster.jpg"
+      ],
+      "Kendal": [
+        "img/lejog/kendal.jpg"
+      ],
+      "Penrith": [
+        "img/lejog/penrith.jpg"
+      ],
+      "Carlisle": [
+        "img/lejog/carlisle.jpg"
+      ],
+      "Moffat": [
+        "img/lejog/moffat.jpg"
+      ],
+      "Peebles": [
+        "img/lejog/peebles.jpg"
+      ],
+      "Honiton": [
+        "img/lejog/honiton.jpg"
+      ],
+      "Dorchester": [
+        "img/lejog/dorchester.jpg"
+      ],
+      "Salisbury": [
+        "img/lejog/salisbury.jpg"
+      ],
+      "Winchester": [
+        "img/lejog/winchester.jpg"
+      ],
+      "Guildford": [
+        "img/lejog/guildford.jpg"
+      ],
+      "Hertford": [
+        "img/lejog/hertford.jpg"
+      ],
+      "Peterborough": [
+        "img/lejog/peterborough.jpg"
+      ],
+      "Lincoln": [
+        "img/lejog/lincoln.jpg"
+      ],
+      "Selby": [
+        "img/lejog/selby.jpg"
+      ],
+      "Northallerton": [
+        "img/lejog/northallerton.jpg"
+      ],
+      "Newcastle": [
+        "img/lejog/newcastle.jpg"
+      ],
+      "Alnwick": [
+        "img/lejog/alnwick.jpg"
+      ],
+      "Berwick-upon-Tweed": [
+        "img/lejog/berwick.jpg"
       ],
       "Brentford": [
         "img/osterley.jpg",
@@ -910,7 +1156,10 @@
       "Osterley Park": "Osterley",
       "Richmond Park (Roehampton Gate)": "Richmond",
       "Roehampton Gate": "Richmond",
-      "Kew": "Kew Bridge"
+      "Kew": "Kew Bridge",
+      "Berwick": "Berwick-upon-Tweed",
+      "Newcastle upon Tyne": "Newcastle",
+      "Newcastle-upon-Tyne": "Newcastle"
     }
   }
 }

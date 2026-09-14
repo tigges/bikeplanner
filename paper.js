@@ -2705,6 +2705,24 @@ function hidePlaceCard(){
   el.hidden=true;
   el.innerHTML="";
 }
+function mapsCountry(){
+  const c=PAPER.country||"";
+  if(c==="Britain") return "United Kingdom";
+  return c;
+}
+function googleSearchHref(p){
+  const country=mapsCountry();
+  const name=(p&&p.name||"").trim();
+  const local=(p&&p.nameLocal||"").trim();
+  let q=name||local;
+  if(q && country){
+    const low=q.toLowerCase();
+    const cLow=country.toLowerCase();
+    if(low!==cLow && !low.endsWith(", "+cLow) && !low.endsWith(cLow)) q=q+", "+country;
+  }
+  if(!q && p && p.lat!=null && p.lon!=null) q=(+p.lat).toFixed(5)+","+(+p.lon).toFixed(5);
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+}
 function showPlaceCard(hit){
   if(!hit || hit.lat==null || hit.lon==null) return;
   placeOpen=hit;
@@ -2725,7 +2743,7 @@ function renderPlaceCard(){
   const other=p.nameLocal && p.nameLocal!==title ? p.nameLocal : "";
   const lat=+p.lat, lon=+p.lon;
   const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
-  const gSearch="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.nameLocal||p.name||lat.toFixed(5)+","+lon.toFixed(5));
+  const gSearch=googleSearchHref(p);
   const ph=p.kind==="town"?(placePhotos(p.name)||[])[0]:"";
   el.hidden=false;
   el.innerHTML=

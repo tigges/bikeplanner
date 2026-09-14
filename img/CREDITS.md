@@ -140,3 +140,19 @@ See each file’s Commons page for author and license (typically CC BY / CC BY-S
 | img/ns/nejime.jpg | File:On Yamagawa-Nejime Ferry - Southern view.jpg | CC BY-SA 4.0 | cape-to-cape place |
 | img/ns/cape-sata.jpg | File:Cape Sata 03.jpg | CC0 | cape-to-cape place |
 | img/ns/noshiro.jpg | File:Noshiro montage.jpg | CC BY-SA 4.0 | cape-to-cape place |
+
+## Added 2026-09-14 (JAPMAP-curated Commons, copied locally)
+
+Same Wikimedia files JAPMAP already picked. Copied into this repo so the atlas does not fetch github.io/JAPMAP.
+
+| File | Commons file | Place |
+|---|---|---|
+| img/ns/wakkanai.jpg | Wakkanai city view.jpg | Wakkanai |
+| img/ns/fukaura.jpg | JRE-Gono-line Yukiaizaki.jpg | Fukaura |
+| img/ns/himi.jpg | Amaharashi Coast 20150122.JPG | Himi |
+| img/ns/otaru.jpg | Otaru Canal Dusk in summer.jpg | Otaru |
+| img/ns/sakata.jpg | Mt. Chokai over rice fields.jpg | Sakata / Nikaho |
+| img/ns/otsu.jpg | Lake Biwa viewed from Otsu SA.JPG | Ōtsu |
+| img/ns/kanazawa.jpg | Kanazawa Castle, Kanazawa City; April 2016 (04).jpg | Kanazawa |
+| img/ns/imabari.jpg | Shimanami kaidō to Tatara Bridge.jpg | Imabari |
+| img/ns/iwakuni.jpg | 20100724 Iwakuni 5235.jpg | Iwakuni |

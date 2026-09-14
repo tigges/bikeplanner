@@ -341,10 +341,28 @@
         "img/aso.jpg"
       ],
       "Yufuin": [
-        "img/aso.jpg"
+        "img/ns/yufuin.jpg"
       ],
       "Takachiho": [
-        "img/aso.jpg"
+        "img/ns/takachiho.jpg"
+      ],
+      "Hirosaki": [
+        "img/ns/hirosaki.jpg"
+      ],
+      "Hagi": [
+        "img/ns/hagi.jpg"
+      ],
+      "Innoshima": [
+        "img/ns/innoshima.jpg"
+      ],
+      "Setoda": [
+        "img/ns/setoda.jpg"
+      ],
+      "Omishima": [
+        "img/ns/omishima.jpg"
+      ],
+      "Ōmishima": [
+        "img/ns/omishima.jpg"
       ],
       "Wakkanai": [
         "img/ns/wakkanai.jpg"
@@ -598,7 +616,33 @@
       "Mori": "Yakumo",
       "Ajigasawa": "Fukaura",
       "Anamizu": "Nanao",
-      "Obira": "Rumoi"
+      "Obira": "Rumoi",
+      "Aomori City": "Aomori",
+      "Chirihama Beach": "Chirihama",
+      "Amaharashi": "Himi",
+      "Rokkosaki": "Suzu",
+      "Kosanji Temple": "Setoda",
+      "The Hill Of Hope": "Setoda",
+      "In Shima Suigun Shiro": "Innoshima",
+      "Onomichi Shi In Shima Shiryou Kan": "Innoshima",
+      "Former Hirosaki Library": "Hirosaki",
+      "Hirosaki Festival Floats Exhibition Hall": "Hirosaki",
+      "Shiseki Hirosakijou Ato": "Hirosaki",
+      "Juu Men Sawa (Hirosaki)": "Hirosaki",
+      "Ekimae (Hirosaki)": "Hirosaki",
+      "Taneichi (Hirosaki)": "Hirosaki",
+      "Minato (Onomichi)": "Setoda",
+      "Atsuta (Onomichi)": "Setoda",
+      "Tarumi (Onomichi)": "Setoda",
+      "Hosokuchi (Onomichi)": "Innoshima",
+      "Take Chou (Onomichi)": "Innoshima",
+      "Mizuba (Imabari)": "Omishima",
+      "Kuchi Kyou (Imabari)": "Omishima",
+      "Tata Ra Misaki": "Omishima",
+      "Kamiura Town Tatara Shimanami Park": "Omishima"
+    },
+    "photoAlong": {
+      "onomichi--imabari": ["Innoshima", "Setoda", "Omishima"]
     }
   },
   "spain": {

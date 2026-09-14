@@ -1573,7 +1573,20 @@ function dayPhotoItems(stops, today){
   if(selStop) add(selStop);
   add((stops||[]).find(s=>s.role==="start"));
   add((stops||[]).find(s=>s.role==="end"));
+  if(today){
+    const days=planDays();
+    const along=PAPER.photoAlong||{};
+    segsOnDay(today, days).forEach(({seg})=>{
+      const id=seg&&seg.id;
+      if(!id) return;
+      const extra=along[id]||along[id.split("#")[0]];
+      (extra||[]).forEach(name=>add({name, role:"via"}));
+    });
+  }
   (stops||[]).forEach(add);
+  if(today){
+    (daySights(today, planDays())||[]).forEach(s=>add({name:s.name, lat:s.lat, lon:s.lon, role:"sight"}));
+  }
   return items.slice(0,6);
 }
 function stopPlace(stop){
@@ -1984,7 +1997,7 @@ function plannerSheet(t){
   const onDay=!!selDay;
   const today=rideDays.find(d=>d.n===selDay);
   const stops=onDay&&today?dayStops(today, days):[];
-  const phItems=onDay&&today?dayPhotoItems(stops, today).slice(0,2):[];
+  const phItems=onDay&&today?dayPhotoItems(stops, today).slice(0,5):[];
   const daySegs=onDay&&today?segsOnDay(today, days):[];
   const charLine=onDay&&today?dayCharLine(today, days):"";
   const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
@@ -2705,6 +2718,24 @@ function hidePlaceCard(){
   el.hidden=true;
   el.innerHTML="";
 }
+function mapsCountry(){
+  const c=PAPER.country||"";
+  if(c==="Britain") return "United Kingdom";
+  return c;
+}
+function googleSearchHref(p){
+  const country=mapsCountry();
+  const name=(p&&p.name||"").trim();
+  const local=(p&&p.nameLocal||"").trim();
+  let q=name||local;
+  if(q && country){
+    const low=q.toLowerCase();
+    const cLow=country.toLowerCase();
+    if(low!==cLow && !low.endsWith(", "+cLow) && !low.endsWith(cLow)) q=q+", "+country;
+  }
+  if(!q && p && p.lat!=null && p.lon!=null) q=(+p.lat).toFixed(5)+","+(+p.lon).toFixed(5);
+  return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);
+}
 function showPlaceCard(hit){
   if(!hit || hit.lat==null || hit.lon==null) return;
   placeOpen=hit;
@@ -2725,8 +2756,8 @@ function renderPlaceCard(){
   const other=p.nameLocal && p.nameLocal!==title ? p.nameLocal : "";
   const lat=+p.lat, lon=+p.lon;
   const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
-  const gSearch="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.nameLocal||p.name||lat.toFixed(5)+","+lon.toFixed(5));
-  const ph=p.kind==="town"?(placePhotos(p.name)||[])[0]:"";
+  const gSearch=googleSearchHref(p);
+  const ph=(placePhotos(p.name)||[])[0]||"";
   el.hidden=false;
   el.innerHTML=
     '<button type="button" class="scx" id="placex" title="close">×</button>'+
@@ -3096,9 +3127,13 @@ Promise.all([
     if(block.trips) Object.assign(PHOTO, block.trips);
     if(block.places) PAPER.places=Object.assign({}, PAPER.places||{}, block.places);
     if(block.photoAliases) PAPER.photoAliases=Object.assign({}, PAPER.photoAliases||{}, block.photoAliases);
+    if(block.photoAlong) PAPER.photoAlong=Object.assign({}, PAPER.photoAlong||{}, block.photoAlong);
   }
   const foot=document.querySelector("footer");
-  if(foot) foot.textContent=PAPER.footer;
+  if(foot){
+    const line=PAPER.footer||"";
+    foot.innerHTML=(line?esc(line)+" · ":"")+'<a href="about.html">About</a>';
+  }
   drawBase(land, water, atlas);
   applyHash();
   if(mode==="network") draw();

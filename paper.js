@@ -1573,7 +1573,6 @@ function dayPhotoItems(stops, today){
   if(selStop) add(selStop);
   add((stops||[]).find(s=>s.role==="start"));
   add((stops||[]).find(s=>s.role==="end"));
-  (stops||[]).forEach(add);
   if(today){
     const days=planDays();
     const along=PAPER.photoAlong||{};
@@ -1583,7 +1582,10 @@ function dayPhotoItems(stops, today){
       const extra=along[id]||along[id.split("#")[0]];
       (extra||[]).forEach(name=>add({name, role:"via"}));
     });
-    (daySights(today, days)||[]).forEach(s=>add({name:s.name, lat:s.lat, lon:s.lon, role:"sight"}));
+  }
+  (stops||[]).forEach(add);
+  if(today){
+    (daySights(today, planDays())||[]).forEach(s=>add({name:s.name, lat:s.lat, lon:s.lon, role:"sight"}));
   }
   return items.slice(0,6);
 }
@@ -1995,7 +1997,7 @@ function plannerSheet(t){
   const onDay=!!selDay;
   const today=rideDays.find(d=>d.n===selDay);
   const stops=onDay&&today?dayStops(today, days):[];
-  const phItems=onDay&&today?dayPhotoItems(stops, today).slice(0,2):[];
+  const phItems=onDay&&today?dayPhotoItems(stops, today).slice(0,5):[];
   const daySegs=onDay&&today?segsOnDay(today, days):[];
   const charLine=onDay&&today?dayCharLine(today, days):"";
   const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">

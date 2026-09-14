@@ -167,8 +167,9 @@ body.planner main{max-width:none;padding:0;height:100vh;overflow:hidden}
 body.planner .split{display:block;position:relative;height:100%;overflow:hidden}
 body.planner .mapcard{position:absolute;inset:0;top:0;height:100%;min-height:0;border-radius:0;border:0;background:#efe8dc}
 body.planner #col.sheet{position:absolute;inset:0;z-index:8;display:block;height:auto;min-height:0;overflow:hidden;pointer-events:none;background:transparent}
-body.planner .hit,body.planner .ctx-card,body.planner .filmwrap,body.planner .daydock,body.planner .cuebar,body.planner .daybar,#minimap,#place{pointer-events:auto}
+body.planner .hit,body.planner .ctx-card,body.planner .filmwrap,body.planner .daydock,body.planner .cuebar,body.planner .daybar,body.planner .filmtog,#minimap,#place{pointer-events:auto}
 body.planner .ctx-card{position:absolute;top:56px;left:12px;width:min(340px,calc(100vw - 24px));max-height:calc(100% - 148px);overflow-x:hidden;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 10px;box-shadow:0 8px 28px rgba(28,25,22,.12);transition:width .18s ease}
+body.planner .ctx-card.has-more::after{content:"";position:sticky;display:block;height:36px;margin:8px -14px -10px;background:linear-gradient(transparent,var(--card));pointer-events:none}
 body.planner .ctxhead{display:flex;align-items:flex-start;gap:8px}
 body.planner .ctxhead .tn{flex:1;min-width:0}
 body.planner .ctxfold{flex:0 0 auto;margin:0;border:1px solid var(--line);border-radius:999px;padding:3px 9px;font:11px/1.2 inherit;color:var(--mute);background:var(--card);cursor:pointer}
@@ -192,6 +193,7 @@ body.planner .wayhead{font-size:11px;letter-spacing:.08em;text-transform:upperca
 body.planner .waylist{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
 body.planner .waylist .way{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:3px 9px;font:inherit;font-size:12px;color:var(--ink);cursor:pointer}
 body.planner .waylist .way.on{border-color:var(--gold);background:#f8efd4}
+body.planner .wayhops{margin:0 0 6px;font-size:12px;color:var(--mute);line-height:1.35}
 body.planner .sleep{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:8px 0 2px;margin:8px 0 0;font:inherit;font-size:13px;color:var(--ink);cursor:pointer}
 body.planner .sleep.on{color:#8a6a12}
 body.planner .forkline{font-size:12px;color:var(--mute);margin:8px 0 0;padding-top:8px;border-top:1px dashed var(--line)}
@@ -218,6 +220,10 @@ body.planner .film-track::-webkit-scrollbar{display:none}
 body.planner .film-track .tile,body.planner .filmwrap > .tour-tile{flex:0 0 auto;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer;font:inherit;color:inherit;box-shadow:0 4px 16px rgba(28,25,22,.1)}
 body.planner .film-track .tile{width:220px}
 body.planner .filmwrap > .tour-tile{width:112px}
+body.planner .filmtog{display:none;flex:1;min-width:0;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:8px 10px;font:inherit;color:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(28,25,22,.1)}
+body.planner .filmtog-lab{font-size:12px;color:var(--mute);white-space:nowrap}
+body.planner .filmtog-who{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.planner .filmtog-ch{margin-left:auto;color:var(--mute);font-size:14px}
 body.planner .film-track .tile:hover,body.planner .film-track .tile:focus,body.planner .film-track .tile.on,
 body.planner .filmwrap > .tour-tile:hover,body.planner .filmwrap > .tour-tile:focus,body.planner .filmwrap > .tour-tile.on{border-color:var(--route);outline:none}
 body.planner .film-track .tile-n,body.planner .filmwrap > .tour-tile .tile-n{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:10px;background:var(--route);color:#fff;font-size:11px;font-weight:700}
@@ -272,6 +278,16 @@ body.planner #maplayers{left:auto;right:12px;top:56px}
   body.planner .mapcard{position:absolute;height:100%;min-height:0;order:unset}
   body.planner .ctx-card{width:calc(100% - 24px);max-height:32%;padding:10px 12px 8px}
   body.planner.onday .ctx-card{max-height:32%}
+  body.planner.onday .ctx-card:not(.slim){max-height:42%}
+  body.planner.onday .filmtog{display:flex;flex:0 0 auto;max-width:42%}
+  body.planner.onday:not(.film-collapsed) .filmtog{width:36px;height:36px;max-width:36px;padding:0;justify-content:center;border-radius:999px;align-self:center;box-shadow:0 4px 16px rgba(28,25,22,.1)}
+  body.planner.onday:not(.film-collapsed) .filmtog-ch{margin:0}
+  body.planner.onday.film-collapsed .cuebar,
+  body.planner.onday.film-collapsed .film-nav,
+  body.planner.onday.film-collapsed .film-track{display:none!important}
+  body.planner.onday.film-collapsed .filmwrap{gap:8px}
+  body.planner.onday.film-collapsed .filmtog{flex:1;max-width:none;padding:10px 12px}
+  body.planner.onday.film-collapsed #maplayers{bottom:calc(64px + env(safe-area-inset-bottom, 0px))}
   body.planner .daybar{left:12px;transform:none;max-width:calc(100vw - 24px);top:auto;bottom:max(76px, calc(env(safe-area-inset-bottom, 0px) + 64px))}
   body.planner .film-track .tile{width:156px;padding:6px 8px}
   body.planner .filmwrap > .tour-tile{width:92px;padding:6px 8px}
@@ -292,7 +308,7 @@ body.planner #maplayers{left:auto;right:12px;top:56px}
     height:auto!important;overflow:visible!important;background:#fff!important;color:#1c1916
   }
   body.planner header,body.planner footer,body.planner main,
-  #stage,#col,#mapback,#maptools,#maplayers,#place,#pop,#minimap,#attrib,.filmwrap,.daydock,.cuebar,.daybar,.export,.chips{
+  #stage,#col,#mapback,#maptools,#maplayers,#place,#pop,#minimap,#attrib,.filmwrap,.daydock,.cuebar,.daybar,.filmtog,.export,.chips{
     display:none!important
   }
   #printsheet{

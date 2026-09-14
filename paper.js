@@ -1575,7 +1575,15 @@ function dayPhotoItems(stops, today){
   add((stops||[]).find(s=>s.role==="end"));
   (stops||[]).forEach(add);
   if(today){
-    (daySights(today, planDays())||[]).forEach(s=>add({name:s.name, lat:s.lat, lon:s.lon, role:"sight"}));
+    const days=planDays();
+    const along=PAPER.photoAlong||{};
+    segsOnDay(today, days).forEach(({seg})=>{
+      const id=seg&&seg.id;
+      if(!id) return;
+      const extra=along[id]||along[id.split("#")[0]];
+      (extra||[]).forEach(name=>add({name, role:"via"}));
+    });
+    (daySights(today, days)||[]).forEach(s=>add({name:s.name, lat:s.lat, lon:s.lon, role:"sight"}));
   }
   return items.slice(0,6);
 }
@@ -3117,6 +3125,7 @@ Promise.all([
     if(block.trips) Object.assign(PHOTO, block.trips);
     if(block.places) PAPER.places=Object.assign({}, PAPER.places||{}, block.places);
     if(block.photoAliases) PAPER.photoAliases=Object.assign({}, PAPER.photoAliases||{}, block.photoAliases);
+    if(block.photoAlong) PAPER.photoAlong=Object.assign({}, PAPER.photoAlong||{}, block.photoAlong);
   }
   const foot=document.querySelector("footer");
   if(foot) foot.textContent=PAPER.footer;

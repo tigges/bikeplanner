@@ -136,12 +136,16 @@ body.planner #stage.pan.dragging #map{cursor:grabbing}
 #maplayers{position:absolute;z-index:7;left:12px;top:52px;display:flex;flex-direction:column;gap:5px}
 #maplayers[hidden]{display:none!important}
 #maplayers button{width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--line);border-radius:8px;cursor:pointer;color:var(--mute);box-shadow:0 1px 6px rgba(28,25,22,.08)}
+#maplayers button[hidden]{display:none!important}
 #maplayers button svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 #maplayers button.on[data-l=shop]{color:#c9a227;border-color:#c9a227}
 #maplayers button.on[data-l=stay]{color:#3d7ec9;border-color:#3d7ec9}
+#maplayers button.on[data-l=eat]{color:#b85c38;border-color:#b85c38}
+#maplayers button.on[data-l=camp]{color:#3d8b6e;border-color:#3d8b6e}
 #maplayers button.on[data-l=bath]{color:#7a5ea7;border-color:#7a5ea7}
 #maplayers button.on[data-l=rail]{color:var(--ink);border-color:var(--ink)}
 #maplayers button.on[data-l=water]{color:#4a8fa3;border-color:#4a8fa3}
+#maplayers button.on[data-l=wc]{color:#6b7280;border-color:#6b7280}
 .zoompair{display:flex}
 .zoompair button{border-radius:0;padding:6px 10px}
 .zoompair button:first-child{border-radius:999px 0 0 999px}

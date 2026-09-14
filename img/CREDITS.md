@@ -170,3 +170,34 @@ Same Wikimedia files JAPMAP already picked. Copied into this repo so the atlas d
 | img/ns/innoshima.jpg | File:Innoshima Bridge from Innoshima Bridge Memorial Park.jpg | CC BY-SA 4.0 | Innoshima (Shimanami) |
 | img/ns/setoda.jpg | File:Kōsanji 21.jpg | CC0 | Setoda / Kōsanji |
 | img/ns/omishima.jpg | File:Ōyamazumi-jinja keidai.JPG | CC0 | Ōmishima |
+
+## Added 2026-09-14 (Ealing / London day-ride place photos)
+
+Commons and Geograph thumbs, copied locally. Towns on the Ealing rides — not LEJOG.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/ealing/ealing.jpg | File:Town hall ealing 804.JPG | CC BY 2.0 uk | Ealing |
+| img/ealing/hanwell.jpg | File:Grand Union Canal at Hanwell Flight of Locks - geograph.org.uk - 7141306.jpg | CC BY-SA 2.0 | Hanwell |
+| img/ealing/kingston.jpg | File:The River Thames in Kingston-upon-Thames - geograph.org.uk - 4639083.jpg | CC BY-SA 2.0 | Kingston |
+| img/ealing/marlow.jpg | File:Marlow Bridge 04.jpg | CC BY-SA 4.0 | Marlow |
+| img/ealing/littlevenice.jpg | File:Little Venice at Westbourne Terrace Road 2020.jpg | CC0 | Little Venice |
+| img/ealing/limehouse.jpg | File:Limehouse Basin panorama - 2022-04-03.jpg | CC BY-SA 4.0 | Limehouse Basin |
+| img/ealing/stratford.jpg | File:Olympic Stadium, Stratford, London - geograph.org.uk - 4711491.jpg | CC BY-SA 2.0 | Stratford |
+| img/ealing/epping.jpg | File:Epping Forest High Beach Essex England - spring pond 08.jpg | CC BY-SA 4.0 | Epping |
+| img/ealing/crystalpalace.jpg | File:Crystal Palace Park.jpg | CC BY-SA 2.0 | Crystal Palace |
+| img/ealing/carshalton.jpg | File:Carshalton Ponds (geograph 2991352).jpg | CC BY-SA 2.0 | Carshalton |
+| img/ealing/putney.jpg | File:Putney Bridge.jpg | Public domain | Putney Bridge |
+| img/ealing/staines.jpg | File:Thames Path at Staines-upon-Thames - geograph.org.uk - 6486970.jpg | CC BY-SA 2.0 | Staines |
+| img/ealing/rickmansworth.jpg | File:Grand Union Canal in Rickmansworth - geograph.org.uk - 603417.jpg | CC BY-SA 2.0 | Rickmansworth |
+| img/ealing/leatherhead.jpg | File:Bridge Street, Leatherhead (geograph 2099800).jpg | CC BY-SA 2.0 | Leatherhead |
+| img/ealing/beaconsfield.jpg | File:Beaconsfield Old Town - geograph.org.uk - 1126588.jpg | CC BY-SA 2.0 | Beaconsfield |
+| img/ealing/ware.jpg | File:Ware Gazebos from south bank of River Lea - geograph.org.uk - 302424.jpg | CC BY-SA 2.0 | Ware |
+| img/ealing/ditchling.jpg | File:View from Ditchling Beacon - geograph.org.uk - 2002188.jpg | CC BY-SA 2.0 | Ditchling |
+| img/ealing/redhill.jpg | File:Station Road, Redhill - geograph.org.uk - 877505.jpg | CC BY-SA 2.0 | Redhill |
+| img/ealing/hamptoncourt.jpg | File:Hampton Court Palace (3).jpg | CC BY-SA 4.0 | Hampton Court |
+| img/ealing/greenwich.jpg | File:Cutty Sark Frontage, Greenwich.jpg | CC BY-SA 4.0 | Greenwich |
+| img/ealing/westminster.jpg | File:Palace of Westminster, London - Feb 2007.jpg | CC BY-SA 2.5 | Westminster |
+| img/ealing/uxbridge.jpg | File:Grand Union Canal, Uxbridge - geograph.org.uk - 3500694.jpg | CC BY-SA 2.0 | Uxbridge |
+| img/ealing/syon.jpg | File:Syon House West Aspect.JPG | CC BY-SA 3.0 | Syon Park |
+| img/ealing/horsenden.jpg | File:Horsenden Hill - geograph.org.uk - 312820.jpg | CC BY-SA 2.0 | Horsenden Hill |

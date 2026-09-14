@@ -1676,6 +1676,7 @@ function paintRide(){
       const lab=mapStopLabel(s.name, cues.map(o=>o.name));
       const pos=pack.take(q[0], q[1], lab, ink(on?9:8), always);
       if(!pos) return;
+      stopHits.push({x:pos.x, y:pos.y, stop});
       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
       tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
       tx.style.cursor="pointer";
@@ -2765,8 +2766,11 @@ function tapMap(e){
     const stop=nearestStopHit(pt[0], pt[1], pinSlop);
     const fac=nearestPlace(pt[0], pt[1]);
     if(stop && fac && fac.kind && fac.kind!=="town"){
-      const sh=stopHits.find(h=>h.stop===stop);
-      const dStop=sh?Math.hypot(sh.x-pt[0], sh.y-pt[1]):Infinity;
+      let dStop=Infinity;
+      stopHits.forEach(h=>{
+        if(h.stop!==stop) return;
+        dStop=Math.min(dStop, Math.hypot(h.x-pt[0], h.y-pt[1]));
+      });
       const dFac=Math.hypot(fac.x-pt[0], fac.y-pt[1]);
       if(dFac<=dStop){ showPlaceCard(fac); return; }
     }
@@ -2816,6 +2820,8 @@ function rideMapOn(){
 let mapDrag=null;
 const mapPtrs=new Map();
 let panMoved=false;
+let swallowClick=false;
+let awaitingTap=false;
 
 function endMapGesture(){
   if(!mapDrag && mapPtrs.size===0) return;
@@ -2849,6 +2855,8 @@ document.getElementById("stage").addEventListener("pointerdown", e=>{
   if(!svg) return;
   if(mapPtrs.size===1){
     panMoved=false;
+    awaitingTap=true;
+    swallowClick=false;
     mapDrag={x:e.clientX, y:e.clientY, vb:readVb(svg), id:e.pointerId};
     document.getElementById("stage").classList.add("dragging");
     try{ e.currentTarget.setPointerCapture(e.pointerId); }catch(err){}
@@ -2895,18 +2903,48 @@ document.getElementById("stage").addEventListener("pointermove", e=>{
 ["pointerup","pointercancel","lostpointercapture"].forEach(ev=>{
   document.getElementById("stage").addEventListener(ev, e=>{
     if(!mapPtrs.has(e.pointerId) && !(mapDrag && mapDrag.id===e.pointerId)) return;
+    const last=mapPtrs.size<=1;
+    const tap=ev==="pointerup" && !panMoved && last;
     mapPtrs.delete(e.pointerId);
-    if(mapPtrs.size===0) endMapGesture();
-    else if(mapPtrs.size===1){
+    if(mapPtrs.size===0){
+      endMapGesture();
+      if(ev!=="lostpointercapture") awaitingTap=false;
+    } else if(mapPtrs.size===1){
       const svg=document.getElementById("map");
       const left=[...mapPtrs.entries()][0];
       mapDrag={x:left[1].x, y:left[1].y, vb:svg?readVb(svg):null, id:left[0]};
     }
+    if(tap){
+      tapMap(e);
+      swallowClick=true;
+      awaitingTap=false;
+    }
   });
 });
 
+document.getElementById("stage").addEventListener("pointerup", e=>{
+  if(!awaitingTap) return;
+  awaitingTap=false;
+  if(panMoved || swallowClick) return;
+  tapMap(e);
+  swallowClick=true;
+});
+
+document.getElementById("stage").addEventListener("click", e=>{
+  if(!swallowClick) return;
+  swallowClick=false;
+  e.preventDefault();
+  e.stopPropagation();
+}, true);
+
 document.getElementById("map").addEventListener("click", e=>{
-  if(panMoved){ panMoved=false; e.preventDefault(); e.stopPropagation(); return; }
+  if(panMoved || swallowClick){
+    panMoved=false;
+    swallowClick=false;
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
   tapMap(e);
 });
 

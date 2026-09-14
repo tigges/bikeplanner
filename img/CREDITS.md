@@ -201,3 +201,33 @@ Commons and Geograph thumbs, copied locally. Towns on the Ealing rides — not L
 | img/ealing/uxbridge.jpg | File:Grand Union Canal, Uxbridge - geograph.org.uk - 3500694.jpg | CC BY-SA 2.0 | Uxbridge |
 | img/ealing/syon.jpg | File:Syon House West Aspect.JPG | CC BY-SA 3.0 | Syon Park |
 | img/ealing/horsenden.jpg | File:Horsenden Hill - geograph.org.uk - 312820.jpg | CC BY-SA 2.0 | Horsenden Hill |
+
+## Added 2026-09-14 (Swiss graph-town faces)
+
+Commons thumbs copied locally. Towns that had no key, plus cities that were wearing a neighbour’s trip-hero.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/ch/zurich.jpg | File:Zürich view Quaibrücke 20200702.jpg | CC BY-SA 3.0 | Zürich |
+| img/ch/zug.jpg | File:Evening sunshine in the old town of Zug.jpg | CC BY-SA 4.0 | Zug |
+| img/ch/olten.jpg | File:Olten Alte Brücke 02.jpg | CC BY-SA 3.0 | Olten |
+| img/ch/stgallen.jpg | File:Stiftskirche St. Gallen (April 2017).jpg | CC BY-SA 4.0 | St. Gallen |
+| img/ch/neuchatel.jpg | File:Château de Neuchatel et de la collégiale.jpg | CC BY 4.0 | Neuchâtel |
+| img/ch/rapperswil.jpg | File:Rapperswil SG Panorama Februar 2011.jpg | CC BY-SA 2.5 | Rapperswil |
+| img/ch/meiringen.jpg | File:Aareschlucht 159 7 8.jpg | CC BY-SA 2.0 | Meiringen |
+| img/ch/yverdon.jpg | File:Yverdon - Place Pestalozzi mit Denkmal, Schloss & Rathaus (2026).jpg | CC BY-SA 4.0 | Yverdon-les-Bains |
+| img/ch/sargans.jpg | File:Sargans asv2022-10 img1 Schloss.jpg | FAL | Sargans |
+| img/ch/zernez.jpg | File:Zernez, Unterengadin, Graubünden. 20-09-2023. (actm.) 01.jpg | CC BY-SA 4.0 | Zernez |
+| img/ch/evian.jpg | File:Anciens thermes Evian 2.jpg | CC BY-SA 3.0 | Évian-les-Bains |
+| img/ch/thonon.jpg | File:Thonon-les-Bains Ripaille.jpg | CC BY-SA 3.0 | Thonon-les-Bains |
+| img/ch/bregenz.jpg | File:Bregenz-view from Pfaender to Bregen harbour, central station-caserne-lake constance-01ASD.jpg | CC BY-SA 4.0 | Bregenz |
+| img/ch/lindau.jpg | File:Lindau Harbor Lake Constance 01.jpg | CC BY 4.0 | Lindau |
+| img/ch/friedrichshafen.jpg | File:Uferpromenade Friedrichshafen.JPG | CC BY-SA 3.0 | Friedrichshafen |
+| img/ch/geneva.jpg | File:Jet d'eau de Genève (swiss).jpg | CC BY-SA 4.0 | Genève |
+| img/ch/bern.jpg | File:Bern - Kramgasse mit Zytglogge (2014).jpg | CC BY-SA 4.0 | Bern |
+| img/ch/interlaken.jpg | File:2011-07-21-Interlaken (Foto Dietrich Michael Weidmann) 033.JPG | CC BY-SA 3.0 | Interlaken |
+| img/ch/thun.jpg | File:Thun Castle.jpg | CC BY 4.0 | Thun |
+| img/ch/spiez.jpg | File:Blick auf Schloss Spiez und Thunersee.jpg | CC BY-SA 4.0 | Spiez |
+| img/ch/chur.jpg | File:Chur in Graubünden (Zwitserland) 41.jpg | CC BY-SA 4.0 | Chur |
+| img/ch/bellinzona.jpg | File:Piazza del Sole and Castelgrande, Bellinzona, Ticino.jpg | CC BY-SA 4.0 | Bellinzona |
+| img/ch/winterthur.jpg | File:Winterthur Stadtkirche nordost.jpg | CC BY-SA 3.0 | Winterthur |

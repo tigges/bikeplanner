@@ -70,11 +70,11 @@
         "img/chillon.jpg"
       ],
       "Genève": [
-        "img/chillon.jpg",
+        "img/ch/geneva.jpg",
         "img/lavaux.jpg"
       ],
       "Geneva": [
-        "img/chillon.jpg",
+        "img/ch/geneva.jpg",
         "img/lavaux.jpg"
       ],
       "Sion": [
@@ -98,11 +98,10 @@
         "img/lucerne.jpg"
       ],
       "Interlaken": [
-        "img/lucerne.jpg",
-        "img/gletsch.jpg"
+        "img/ch/interlaken.jpg"
       ],
       "Chur": [
-        "img/engadin.jpg"
+        "img/ch/chur.jpg"
       ],
       "St. Moritz": [
         "img/engadin.jpg"
@@ -132,7 +131,7 @@
         "img/lugano.jpg"
       ],
       "Bellinzona": [
-        "img/lugano.jpg",
+        "img/ch/bellinzona.jpg",
         "img/gotthard.jpg"
       ],
       "Airolo": [
@@ -161,10 +160,10 @@
         "img/gletsch.jpg"
       ],
       "Spiez": [
-        "img/lucerne.jpg"
+        "img/ch/spiez.jpg"
       ],
       "Thun": [
-        "img/lucerne.jpg"
+        "img/ch/thun.jpg"
       ],
       "Kandersteg": [
         "img/gletsch.jpg"
@@ -179,7 +178,7 @@
         "img/jaun.jpg"
       ],
       "Bern": [
-        "img/murten.jpg"
+        "img/ch/bern.jpg"
       ],
       "Fribourg": [
         "img/murten.jpg"
@@ -253,7 +252,67 @@
       ],
       "Saint-Maurice": [
         "img/lavaux.jpg"
+      ],
+      "Zürich": [
+        "img/ch/zurich.jpg"
+      ],
+      "Zug": [
+        "img/ch/zug.jpg"
+      ],
+      "Olten": [
+        "img/ch/olten.jpg"
+      ],
+      "St. Gallen": [
+        "img/ch/stgallen.jpg"
+      ],
+      "Neuchâtel": [
+        "img/ch/neuchatel.jpg"
+      ],
+      "Rapperswil": [
+        "img/ch/rapperswil.jpg"
+      ],
+      "Meiringen": [
+        "img/ch/meiringen.jpg"
+      ],
+      "Yverdon-les-Bains": [
+        "img/ch/yverdon.jpg"
+      ],
+      "Sargans": [
+        "img/ch/sargans.jpg"
+      ],
+      "Zernez": [
+        "img/ch/zernez.jpg"
+      ],
+      "Évian-les-Bains": [
+        "img/ch/evian.jpg"
+      ],
+      "Thonon-les-Bains": [
+        "img/ch/thonon.jpg"
+      ],
+      "Bregenz": [
+        "img/ch/bregenz.jpg"
+      ],
+      "Lindau": [
+        "img/ch/lindau.jpg"
+      ],
+      "Friedrichshafen": [
+        "img/ch/friedrichshafen.jpg"
+      ],
+      "Winterthur": [
+        "img/ch/winterthur.jpg"
+      ],
+      "Solothurn": [
+        "img/aare.jpg"
       ]
+    },
+    "photoAliases": {
+      "Zurich": "Zürich",
+      "Sankt Gallen": "St. Gallen",
+      "Yverdon": "Yverdon-les-Bains",
+      "Evian": "Évian-les-Bains",
+      "Evian-les-Bains": "Évian-les-Bains",
+      "Thonon": "Thonon-les-Bains",
+      "Neuchatel": "Neuchâtel"
     }
   },
   "japan": {
@@ -642,7 +701,11 @@
       "Kamiura Town Tatara Shimanami Park": "Omishima"
     },
     "photoAlong": {
-      "onomichi--imabari": ["Innoshima", "Setoda", "Omishima"]
+      "onomichi--imabari": [
+        "Innoshima",
+        "Setoda",
+        "Omishima"
+      ]
     }
   },
   "spain": {

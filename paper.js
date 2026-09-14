@@ -3130,7 +3130,10 @@ Promise.all([
     if(block.photoAlong) PAPER.photoAlong=Object.assign({}, PAPER.photoAlong||{}, block.photoAlong);
   }
   const foot=document.querySelector("footer");
-  if(foot) foot.textContent=PAPER.footer;
+  if(foot){
+    const line=PAPER.footer||"";
+    foot.innerHTML=(line?esc(line)+" · ":"")+'<a href="about.html">About</a>';
+  }
   drawBase(land, water, atlas);
   applyHash();
   if(mode==="network") draw();

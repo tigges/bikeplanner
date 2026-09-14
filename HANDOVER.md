@@ -79,7 +79,7 @@ On the tiled ride/day map the strokes are brighter so they read on Esri/CyclOSM:
 **Hub**
 
 - Title: Your Bike Route Planners by CT.
-- About footer. Credit line does **not** link to routeplanner.
+- About is `about.html`, linked from the hub and gallery footers. Credit line does **not** link to routeplanner.
 - Top / crossing pills: coral frame when unselected, not a fill.
 
 ---

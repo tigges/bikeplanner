@@ -166,6 +166,7 @@ body.planner #stage.pan.dragging #map{cursor:grabbing}
 #place .scx{position:absolute;top:8px;right:8px;border:0;background:none;cursor:pointer;font:inherit;color:var(--mute);line-height:1}
 .note{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);color:var(--mute);font-size:13px}
 footer{max-width:1120px;margin:0 auto;padding:0 24px 40px;color:var(--mute);font-size:13px}
+footer a{color:var(--mute)}
 body.planner header,body.planner footer{display:none}
 body.planner main{max-width:none;padding:0;height:100vh;overflow:hidden}
 body.planner .split{display:block;position:relative;height:100%;overflow:hidden}

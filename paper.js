@@ -1574,6 +1574,9 @@ function dayPhotoItems(stops, today){
   add((stops||[]).find(s=>s.role==="start"));
   add((stops||[]).find(s=>s.role==="end"));
   (stops||[]).forEach(add);
+  if(today){
+    (daySights(today, planDays())||[]).forEach(s=>add({name:s.name, lat:s.lat, lon:s.lon, role:"sight"}));
+  }
   return items.slice(0,6);
 }
 function stopPlace(stop){
@@ -2744,7 +2747,7 @@ function renderPlaceCard(){
   const lat=+p.lat, lon=+p.lon;
   const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
   const gSearch=googleSearchHref(p);
-  const ph=p.kind==="town"?(placePhotos(p.name)||[])[0]:"";
+  const ph=(placePhotos(p.name)||[])[0]||"";
   el.hidden=false;
   el.innerHTML=
     '<button type="button" class="scx" id="placex" title="close">×</button>'+

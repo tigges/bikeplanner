@@ -156,3 +156,17 @@ Same Wikimedia files JAPMAP already picked. Copied into this repo so the atlas d
 | img/ns/kanazawa.jpg | Kanazawa Castle, Kanazawa City; April 2016 (04).jpg | Kanazawa |
 | img/ns/imabari.jpg | Shimanami kaidō to Tatara Bridge.jpg | Imabari |
 | img/ns/iwakuni.jpg | 20100724 Iwakuni 5235.jpg | Iwakuni |
+
+## Added 2026-09-14 (JAPANRIDE place list, Commons copies)
+
+[japanride.pages.dev](https://japanride.pages.dev/) is an NHK *Cycle Around Japan* companion map. Its stills are NHK WORLD episode images — not copied. The overlapping towns and Shimanami island names from that map are illustrated here with Wikimedia Commons thumbs, same as JAPMAP: copy into this repo, do not fetch pages.dev at runtime.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/ns/hirosaki.jpg | File:Hirosaki Castle Keep Tower 20220508.jpg | CC BY-SA 4.0 | Hirosaki (Aomori fork) |
+| img/ns/hagi.jpg | File:Kikugahama Beach from Shioirimon Gate of Hagi Castle 1.jpg | CC BY-SA 4.0 | Hagi (San'in fork) |
+| img/ns/yufuin.jpg | File:Yufuin and Mount Yufu.jpg | CC BY 2.0 | Yufuin (Yamanami) |
+| img/ns/takachiho.jpg | File:Takachiho-gorge.jpg | CC BY 2.5 | Takachiho (Yamanami) |
+| img/ns/innoshima.jpg | File:Innoshima Bridge from Innoshima Bridge Memorial Park.jpg | CC BY-SA 4.0 | Innoshima (Shimanami) |
+| img/ns/setoda.jpg | File:Kōsanji 21.jpg | CC0 | Setoda / Kōsanji |
+| img/ns/omishima.jpg | File:Ōyamazumi-jinja keidai.JPG | CC0 | Ōmishima |

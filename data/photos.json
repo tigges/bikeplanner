@@ -55,7 +55,7 @@
         "img/gotthard.jpg"
       ],
       "Martigny": [
-        "img/lavaux.jpg"
+        "img/ch/martigny.jpg"
       ],
       "Aigle": [
         "img/chillon.jpg",
@@ -78,7 +78,7 @@
         "img/lavaux.jpg"
       ],
       "Sion": [
-        "img/gletsch.jpg"
+        "img/ch/sion.jpg"
       ],
       "Basel": [
         "img/basel.jpg",
@@ -181,7 +181,7 @@
         "img/ch/bern.jpg"
       ],
       "Fribourg": [
-        "img/murten.jpg"
+        "img/ch/fribourg.jpg"
       ],
       "Laupen": [
         "img/murten.jpg"
@@ -193,7 +193,7 @@
         "img/jura.jpg"
       ],
       "Davos": [
-        "img/engadin.jpg"
+        "img/ch/davos.jpg"
       ],
       "Ilanz/Glion": [
         "img/engadin.jpg"
@@ -224,7 +224,7 @@
         "img/basel.jpg"
       ],
       "Aarau": [
-        "img/basel.jpg"
+        "img/ch/aarau.jpg"
       ],
       "Glarus": [
         "img/klausen.jpg"
@@ -303,6 +303,87 @@
       ],
       "Solothurn": [
         "img/aare.jpg"
+      ],
+      "Altstätten": [
+        "img/ch/altstaetten.jpg"
+      ],
+      "Appenzell": [
+        "img/ch/appenzell.jpg"
+      ],
+      "Beckenried": [
+        "img/ch/beckenried.jpg"
+      ],
+      "Bulle": [
+        "img/ch/bulle.jpg"
+      ],
+      "Burgdorf": [
+        "img/ch/burgdorf.jpg"
+      ],
+      "Gersau": [
+        "img/ch/gersau.jpg"
+      ],
+      "Herisau": [
+        "img/ch/herisau.jpg"
+      ],
+      "Langnau im Emmental": [
+        "img/ch/langnau.jpg"
+      ],
+      "Laufenburg": [
+        "img/ch/laufenburg.jpg"
+      ],
+      "Nyon": [
+        "img/ch/nyon.jpg"
+      ],
+      "Radolfzell": [
+        "img/ch/radolfzell.jpg"
+      ],
+      "Romont": [
+        "img/ch/romont.jpg"
+      ],
+      "Sainte-Croix": [
+        "img/ch/saintcroix.jpg"
+      ],
+      "San Bernardino": [
+        "img/ch/sanbernardino.jpg"
+      ],
+      "Sarnen": [
+        "img/ch/sarnen.jpg"
+      ],
+      "St. Margrethen": [
+        "img/ch/stmargrethen.jpg"
+      ],
+      "Stans": [
+        "img/ch/stans.jpg"
+      ],
+      "Sustenpass": [
+        "img/ch/sustenpass.jpg"
+      ],
+      "Sörenberg": [
+        "img/ch/soerenberg.jpg"
+      ],
+      "Thusis": [
+        "img/ch/thusis.jpg"
+      ],
+      "Tiefencastel": [
+        "img/ch/tiefencastel.jpg"
+      ],
+      "Vallorbe": [
+        "img/ch/vallorbe.jpg"
+      ],
+      "Wattwil": [
+        "img/ch/wattwil.jpg"
+      ],
+      "Wil SG": [
+        "img/ch/wil.jpg"
+      ],
+      "Willisau": [
+        "img/ch/willisau.jpg"
+      ],
+      "Zweisimmen": [
+        "img/ch/zweisimmen.jpg"
+      ],
+      "Überlingen": [
+        "img/ch/ueberlingen.jpg"
       ]
     },
     "photoAliases": {
@@ -312,7 +393,16 @@
       "Evian": "Évian-les-Bains",
       "Evian-les-Bains": "Évian-les-Bains",
       "Thonon": "Thonon-les-Bains",
-      "Neuchatel": "Neuchâtel"
+      "Neuchatel": "Neuchâtel",
+      "Langnau": "Langnau im Emmental",
+      "Wil": "Wil SG",
+      "Sankt Margrethen": "St. Margrethen",
+      "St Margrethen": "St. Margrethen",
+      "Ueberlingen": "Überlingen",
+      "Soerenberg": "Sörenberg",
+      "Susten": "Sustenpass",
+      "Sainte Croix": "Sainte-Croix",
+      "San Bernardino Pass": "San Bernardino"
     }
   },
   "japan": {

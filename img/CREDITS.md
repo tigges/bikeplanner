@@ -231,3 +231,42 @@ Commons thumbs copied locally. Towns that had no key, plus cities that were wear
 | img/ch/chur.jpg | File:Chur in Graubünden (Zwitserland) 41.jpg | CC BY-SA 4.0 | Chur |
 | img/ch/bellinzona.jpg | File:Piazza del Sole and Castelgrande, Bellinzona, Ticino.jpg | CC BY-SA 4.0 | Bellinzona |
 | img/ch/winterthur.jpg | File:Winterthur Stadtkirche nordost.jpg | CC BY-SA 3.0 | Winterthur |
+
+## Added 2026-09-14 (Swiss graph-town faces, batch 2)
+
+Remaining overnight towns, plus cities that still wore a neighbour’s trip-hero. Zweisimmen is the church, not the station.
+
+| File | Commons file | License | Place |
+|---|---|---|---|
+| img/ch/altstaetten.jpg | File:Altstätten Marktgasse 2024a.jpg | CC BY 4.0 | Altstätten |
+| img/ch/appenzell.jpg | File:Hauptgasse in Appenzell (2017).jpg | CC BY-SA 4.0 | Appenzell |
+| img/ch/beckenried.jpg | File:Schweiz - Vierwaldstättersee - Beckenried 0236.jpg | CC BY-SA 3.0 | Beckenried |
+| img/ch/bulle.jpg | File:Bulle-Chateau.jpg | CC BY-SA 3.0 | Bulle |
+| img/ch/burgdorf.jpg | File:Schloss Burgdorf.jpg | CC BY-SA 3.0 | Burgdorf |
+| img/ch/gersau.jpg | File:Gersau-Vierwaldstaettersee-01ASD.jpg | CC BY-SA 4.0 | Gersau |
+| img/ch/herisau.jpg | File:Herisau Platz Reformierte Kirche Suedfassade 02.jpg | CC BY-SA 4.0 | Herisau |
+| img/ch/langnau.jpg | File:Langnau im Emmental, Haldenstrasse mit reformierter Kirche.jpg | CC BY 4.0 | Langnau im Emmental |
+| img/ch/laufenburg.jpg | File:Altstadt mit Rheinbrücke Laufenburg AG 20230601 0018.jpg | CC BY-SA 4.0 | Laufenburg |
+| img/ch/nyon.jpg | File:Château de Nyon 2015.jpg | CC BY-SA 4.0 | Nyon |
+| img/ch/radolfzell.jpg | File:Obertorstraße und Münster Radolfzell.jpg | CC BY-SA 4.0 | Radolfzell |
+| img/ch/romont.jpg | File:Romontchateau.jpg | CC BY-SA 3.0 | Romont |
+| img/ch/saintcroix.jpg | File:View of Sainte-Croix (Vaud) 02.jpg | CC0 | Sainte-Croix |
+| img/ch/sanbernardino.jpg | File:San Bernardino Villagio.jpg | CC BY-SA 3.0 | San Bernardino |
+| img/ch/sarnen.jpg | File:Rathaus Sarnen OW, Nordwestansicht (2018).jpg | CC BY-SA 4.0 | Sarnen |
+| img/ch/stmargrethen.jpg | File:2022-St-Margrethen-Kath-Kirche.jpg | CC BY-SA 4.0 | St. Margrethen |
+| img/ch/stans.jpg | File:Ortsmitte Stans.JPG | Public domain | Stans |
+| img/ch/sustenpass.jpg | File:Am Sustenpass.jpg | CC BY-SA 4.0 | Sustenpass |
+| img/ch/soerenberg.jpg | File:Sörenberg01.JPG | CC BY-SA 3.0 | Sörenberg |
+| img/ch/thusis.jpg | File:Kirche Thusis 2022.jpg | CC0 | Thusis |
+| img/ch/tiefencastel.jpg | File:Tiefencastel Dorf.jpg | CC BY-SA 3.0 | Tiefencastel |
+| img/ch/vallorbe.jpg | File:Vallorbe-Village.jpg | CC BY-SA 3.0 | Vallorbe |
+| img/ch/wattwil.jpg | File:Wattwil-Kirche-R.jpg | CC BY 3.0 | Wattwil |
+| img/ch/wil.jpg | File:Altstadt (Marktgasse) in Wil SG.jpg | CC BY-SA 4.0 | Wil SG |
+| img/ch/willisau.jpg | File:Untertor in Willisau, Kanton Luzern.jpg | CC BY-SA 4.0 | Willisau |
+| img/ch/zweisimmen.jpg | File:Zweisimmen Eglise canton Berne Suisse.jpg | CC BY-SA 3.0 | Zweisimmen |
+| img/ch/ueberlingen.jpg | File:Überlingen, Promenade IMG 4755.JPG | CC BY-SA 3.0 | Überlingen |
+| img/ch/sion.jpg | File:Panorama of Sion, Switzerland from the north-west, with Tourbillon Castle and Valère Basilica (2022).jpg | CC BY-SA 4.0 | Sion |
+| img/ch/martigny.jpg | File:Château de La Bâtiaz depuis Chemin-Dessous.jpg | CC BY-SA 4.0 | Martigny |
+| img/ch/aarau.jpg | File:Aarau Altstadt.jpg | CC BY-SA 3.0 | Aarau |
+| img/ch/fribourg.jpg | File:Altstadt Fribourg mit Kathedalenturm und Saane (2019).jpg | CC BY-SA 4.0 | Fribourg |
+| img/ch/davos.jpg | File:Davos2.jpg | CC BY-SA 3.0 | Davos |

@@ -2195,7 +2195,7 @@ function plannerSheet(t){
   if(veh==="opium"){
     const n=((PLAN.segs||[]).concat(PLAN.altSegs||[])).filter(s=>s.mopedAlt).length;
     vnote.textContent=n
-      ? "S-pedelec: a day is distance only. "+n+" segments follow the moped line (cycle-only paths dropped)."
+      ? "S-pedelec: a day is distance only. "+n+" segment"+(n===1?"":"s")+" follow"+(n===1?"s":"")+" the moped line (cycle-only paths dropped)."
       : "S-pedelec mode: a day is distance only (no climb penalty).";
   } else {
     vnote.textContent=veh==="ebike"?"E-bike mode: same roads as the bicycle, climbing counts a third, days capped at one battery.":"";

@@ -1571,6 +1571,8 @@ function dayPhotoItems(stops, today){
     items.push({src, name:stop.name, stop});
   };
   if(selStop) add(selStop);
+  add((stops||[]).find(s=>s.role==="start"));
+  add((stops||[]).find(s=>s.role==="end"));
   (stops||[]).forEach(add);
   return items.slice(0,6);
 }

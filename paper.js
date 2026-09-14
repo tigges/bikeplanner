@@ -1485,30 +1485,32 @@ function dayBandPhrase(daySegs){
   else parts.push("mixed roads");
   return parts.join(" · ");
 }
+function dayCharLine(today, days){
+  if(!today) return "";
+  const hops=segsOnDay(today, days);
+  const bits=[dayRouteHint(), dayBandPhrase(hops)];
+  if(today.gap!=null) bits.push(Math.round(today.gap)+" km longest shop gap");
+  const fork=dayForkNote(today, days);
+  if(fork) bits.push(fork);
+  return bits.filter(Boolean).join(" · ");
+}
 function dayCues(today, days){
   if(!today) return {steps:[], phrase:"", route:"", fork:""};
   const hops=segsOnDay(today, days);
   const stops=dayStops(today, days);
-  const vias=stops.filter(s=>s.role==="via");
   const k0=stops[0]?stops[0].km:0;
-  let steps=[];
-  if(vias.length){
-    stops.forEach(s=>steps.push({kind:s.role, name:s.name, km:+((s.km||0)-k0).toFixed(1)}));
-  } else if(hops.length){
-    let acc=0;
-    hops.forEach(({seg,km},i)=>{
-      if(i===0) steps.push({kind:"start", name:showName(seg.frmName||seg.frm), km:0, band:seg.band});
-      acc+=km||0;
-      steps.push({kind:i===hops.length-1?"end":"hop", name:showName(seg.toName||seg.to), km:+acc.toFixed(1), band:seg.band});
-    });
-  }
-  (daySights(today, days)||[]).filter(p=>/castle|waterfall|cape|peak|mne/.test(p.kind||"")).slice(0,2).forEach(p=>{
-    const km=+((p.km||0)-k0).toFixed(1);
-    const nm=showName(p.name);
-    if(!nm || steps.some(s=>s.name===nm || Math.abs((s.km||0)-km)<1.5 && s.kind!=="sight")) return;
-    steps.push({kind:"sight", name:nm, km, sight:p.kind});
+  let steps=stops.map(s=>({
+    kind:s.role==="start"?"start":s.role==="end"?"end":"via",
+    name:s.name, km:s.km, dayKm:+((s.km||0)-k0).toFixed(1),
+    lat:s.lat, lon:s.lon, role:s.role
+  }));
+  const seen={};
+  steps=steps.filter(s=>{
+    const k=stopNameKey(s.name);
+    if(!k || seen[k]) return false;
+    seen[k]=1;
+    return true;
   });
-  steps.sort((a,b)=>(a.km||0)-(b.km||0));
   if(steps.length>8){
     const first=steps[0], last=steps[steps.length-1];
     const mid=steps.slice(1,-1);
@@ -1526,15 +1528,14 @@ function dayCueHtml(today, days){
   const c=dayCues(today, days);
   if(!c.steps.length) return "";
   const chips=c.steps.map(s=>{
-    const km=Math.round(s.km||0);
+    const km=Math.round(s.dayKm!=null?s.dayKm:s.km||0);
     const tag=s.kind==="start"?"Start":s.kind==="end"?"Sleep":s.kind==="sight"?(SIGHT_KIND[s.sight]||"sight"):km+" km";
-    return `<button type="button" class="cue cue-${s.kind}" data-name="${esc(s.name)}" data-km="${s.km}">`+
+    return `<button type="button" class="cue cue-${s.kind}" data-name="${esc(s.name)}" data-km="${s.km}" data-lat="${s.lat||""}" data-lon="${s.lon||""}" data-role="${esc(s.role||s.kind)}">`+
       `<span class="cue-tag">${esc(tag)}</span><span class="cue-who">${esc(s.name)}</span></button>`;
   }).join('<span class="cue-then" aria-hidden="true">then</span>');
   return `<div class="cuebar hit" id="daycues">`+
     (c.route?`<p class="cue-kicker">${esc(c.route)}</p>`:"")+
     `<div class="cue-row">${chips}</div>`+
-    (c.phrase||c.fork?`<p class="cue-note">${esc([c.phrase,c.fork].filter(Boolean).join(" · "))}</p>`:"")+
     `</div>`;
 }
 function dayPhotoItems(stops, today){
@@ -1645,14 +1646,23 @@ function paintRide(){
   const c0=rideSegs[0]&&rideSegs[0].cand&&rideSegs[0].cand[0];
   const ends=travelEnds();
   const today=selDay?days.find(x=>x.n===selDay):null;
-  const stops=today?dayStops(today, days):[];
+  const cues=today?dayCues(today, days).steps:[];
   if(selDay && today){
     const pack=mapLabelPack();
-    stops.forEach(s=>{
+    cues.forEach(s=>{
+      if(s.lat==null || s.lon==null) return;
       const q=xy(s.lat, s.lon);
       if(q[0]==null) return;
-      stopHits.push({x:q[0], y:q[1], stop:s});
-      const on=stopEq(selStop, s);
+      const stop={name:s.name, lat:s.lat, lon:s.lon, km:s.km, role:s.role||s.kind};
+      stopHits.push({x:q[0], y:q[1], stop});
+      const on=stopEq(selStop, stop);
+      const hit=document.createElementNS("http://www.w3.org/2000/svg","circle");
+      hit.setAttribute("cx", q[0]); hit.setAttribute("cy", q[1]);
+      hit.setAttribute("r", ink(14));
+      hit.setAttribute("fill", "transparent");
+      hit.style.cursor="pointer";
+      hit.addEventListener("click",e=>{ e.stopPropagation(); selectStop(stop); });
+      gT.appendChild(hit);
       const disc=document.createElementNS("http://www.w3.org/2000/svg","circle");
       disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]);
       disc.setAttribute("r", ink(on?8:6));
@@ -1660,17 +1670,15 @@ function paintRide(){
       disc.setAttribute("stroke", "#c9a227");
       disc.setAttribute("stroke-width", ink(on?2.2:1.4));
       disc.style.cursor="pointer";
-      disc.addEventListener("click",e=>{ e.stopPropagation(); selectStop(s); });
+      disc.addEventListener("click",e=>{ e.stopPropagation(); selectStop(stop); });
       gT.appendChild(disc);
-      const always=s.role==="start" || s.role==="end" || on;
-      const nearEnd=!always && stops.some(o=>(o.role==="start"||o.role==="end") && Math.abs((o.km||0)-(s.km||0))<4);
-      if(nearEnd) return;
-      const lab=mapStopLabel(s.name, stops.map(o=>o.name));
+      const always=s.kind==="start" || s.kind==="end" || on;
+      const lab=mapStopLabel(s.name, cues.map(o=>o.name));
       const pos=pack.take(q[0], q[1], lab, ink(on?9:8), always);
       if(!pos) return;
       const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
       tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
-      tx.setAttribute("pointer-events","none");
+      tx.style.cursor="pointer";
       tx.setAttribute("font-size", ink(on?9:8));
       tx.setAttribute("font-weight", on?"700":"600");
       tx.setAttribute("fill", on?"#1c1916":"#6f675e");
@@ -1679,41 +1687,7 @@ function paintRide(){
       tx.setAttribute("paint-order", "stroke");
       tx.setAttribute("stroke-linejoin", "round");
       tx.textContent=lab;
-      gT.appendChild(tx);
-    });
-    daySights(today, days).forEach(p=>{
-      const q=xy(p.lat, p.lon);
-      if(q[0]==null) return;
-      const kindLab=SIGHT_KIND[p.kind]||String(p.kind||"sight").replace(/_/g," ");
-      const nm=p.name;
-      const hit={kind:p.kind, name:nm, nameLocal:p.nameLocal||"", lat:p.lat, lon:p.lon,
-        sub:kindLab+(p.off!=null?" · "+p.off+" km off the road":""), x:q[0], y:q[1]};
-      placeHits.push(hit);
-      const mne=p.kind==="mne";
-      const disc=document.createElementNS("http://www.w3.org/2000/svg","circle");
-      disc.setAttribute("cx", q[0]); disc.setAttribute("cy", q[1]);
-      disc.setAttribute("r", ink(3.2));
-      disc.setAttribute("fill", mne?"#97C459":"#6f675e");
-      disc.setAttribute("stroke", "#fffdf8");
-      disc.setAttribute("stroke-width", ink(0.6));
-      disc.style.cursor="pointer";
-      disc.addEventListener("click",e=>{ e.stopPropagation(); showPlaceCard(hit); });
-      gT.appendChild(disc);
-      const lab=mapSightLabel(p);
-      const pos=pack.take(q[0], q[1], lab, ink(7.2), false);
-      if(!pos) return;
-      const tx=document.createElementNS("http://www.w3.org/2000/svg","text");
-      tx.setAttribute("x", pos.x); tx.setAttribute("y", pos.y);
-      tx.setAttribute("pointer-events","none");
-      tx.setAttribute("font-size", ink(7.2));
-      tx.setAttribute("font-style", mne?"normal":"italic");
-      tx.setAttribute("font-weight", "500");
-      tx.setAttribute("fill", mne?"#3d6b1e":"#6f675e");
-      tx.setAttribute("stroke", "#fffdf8");
-      tx.setAttribute("stroke-width", ink(2));
-      tx.setAttribute("paint-order", "stroke");
-      tx.setAttribute("stroke-linejoin", "round");
-      tx.textContent=lab;
+      tx.addEventListener("click",e=>{ e.stopPropagation(); selectStop(stop); });
       gT.appendChild(tx);
     });
   } else {
@@ -1982,11 +1956,9 @@ function plannerSheet(t){
   const onDay=!!selDay;
   const today=rideDays.find(d=>d.n===selDay);
   const stops=onDay&&today?dayStops(today, days):[];
-  const vias=stops.filter(s=>s.role==="via").slice(0,6);
-  const hopLine=onDay&&today?dayHopLine(today, days):"";
-  const phItems=onDay&&today?dayPhotoItems(stops, today):[];
+  const phItems=onDay&&today?dayPhotoItems(stops, today).slice(0,2):[];
   const daySegs=onDay&&today?segsOnDay(today, days):[];
-  const forkNote=onDay&&today?dayForkNote(today, days):"";
+  const charLine=onDay&&today?dayCharLine(today, days):"";
   const filmHtml=rideDays.map(d=>`<button type="button" class="tile" data-day="${d.n}">
       <span class="tile-n">${d.n}</span>
       <span class="tile-who">${d.frm} → ${d.to}</span>
@@ -2020,20 +1992,16 @@ function plannerSheet(t){
       <div class="stats4">
         <div><b>${today?today.km:"—"}</b><span>km</span></div>
         <div><b>${today?Math.round(today.eff||today.climb||0).toLocaleString():"—"}</b><span>effort</span></div>
-        <div><b>${today?today.shop||0:0}</b><span>shops</span></div>
         <div><b>${today?today.stay||0:0}</b><span>beds</span></div>
       </div>
       <div class="profwrap">
         <svg viewBox="0 0 300 56" preserveAspectRatio="none"><g id="prof"></g></svg>
         <div class="profhi" id="profhi"></div><div class="proflo" id="proflo"></div>
       </div>
-      <div class="dayfacts">${today?dayGapLine(today):""}</div>
+      ${charLine?`<p class="dayfacts">${esc(charLine)}</p>`:""}
       <div class="strip daystrip" id="daystrip" title="Friendliness on today's legs">${daySegs.map(({seg,km})=>`<i style="flex-grow:${Math.max(km,1)};background:${BAND[seg.band]||"#c4b8a8"}" title="${esc(showName(seg.frmName)+" → "+showName(seg.toName))}"></i>`).join("")}</div>
       <div class="phs" id="dayph"${phItems.length?"":" hidden"}>${phItems.map(p=>`<button type="button" class="ph${selStop&&(stopEq(selStop,p.stop)||selStop.photo===p.src)?" on":""}" data-name="${esc(p.name)}" data-src="${esc(p.src)}" style="background-image:url('${esc(p.src)}')"></button>`).join("")}</div>
-      ${vias.length?`<div class="wayhead">On the way</div><div class="waylist">${vias.map(s=>`<button type="button" class="way${stopEq(selStop,s)?" on":""}" data-km="${s.km}">${esc(s.name)}</button>`).join("")}</div>`:""}
-      ${hopLine?`<p class="wayhops">${esc(hopLine)}</p>`:""}
       <button type="button" class="sleep${selStop&&selStop.role==="end"?" on":""}" id="daysleep">Sleep: ${esc(today?today.to:"")} · ${today?today.stay||0:0} beds</button>
-      ${forkNote?`<p class="forkline">${esc(forkNote)}</p>`:""}
       <div class="export"><div class="row">
         <button class="opt" id="gpx">GPX today</button>
         <button class="opt" id="kml" title="Import into Google My Maps">KML</button>
@@ -2377,7 +2345,9 @@ function plannerSheet(t){
     document.querySelectorAll("#daycues .cue").forEach(el=>{
       el.onclick=e=>{
         e.stopPropagation();
-        const stop=stops.find(s=>s.name===el.dataset.name);
+        const lat=+el.dataset.lat, lon=+el.dataset.lon;
+        const stop=stops.find(s=>s.name===el.dataset.name)
+          || (lat && lon ? {name:el.dataset.name, lat, lon, km:+el.dataset.km, role:el.dataset.role||"via"} : null);
         if(stop) selectStop(stop);
       };
     });
@@ -2721,8 +2691,6 @@ function renderPlaceCard(){
   const other=p.nameLocal && p.nameLocal!==title ? p.nameLocal : "";
   const lat=+p.lat, lon=+p.lon;
   const osmMap="https://www.openstreetmap.org/?mlat="+lat.toFixed(5)+"&mlon="+lon.toFixed(5)+"#map=14/"+lat.toFixed(5)+"/"+lon.toFixed(5);
-  const osmSearch="https://www.openstreetmap.org/search?query="+encodeURIComponent(p.nameLocal||p.name||"");
-  const gPin="https://www.google.com/maps?q="+lat.toFixed(5)+","+lon.toFixed(5);
   const gSearch="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(p.nameLocal||p.name||lat.toFixed(5)+","+lon.toFixed(5));
   const ph=p.kind==="town"?(placePhotos(p.name)||[])[0]:"";
   el.hidden=false;
@@ -2734,9 +2702,7 @@ function renderPlaceCard(){
     (p.sub?`<div class="sub">${esc(p.sub)}</div>`:"")+
     '<div class="links">'+
       `<a target="_blank" rel="noopener" href="${osmMap}">OpenStreetMap pin ↗</a>`+
-      `<a target="_blank" rel="noopener" href="${gPin}">Google Maps pin ↗</a>`+
-      (title==="Point on the route"?"":`<a target="_blank" rel="noopener" href="${osmSearch}">Search on OSM ↗</a>`)+
-      (title==="Point on the route"?"":`<a target="_blank" rel="noopener" href="${gSearch}">Search on Google ↗</a>`)+
+      (title==="Point on the route"?"":`<a target="_blank" rel="noopener" href="${gSearch}">Google Search ↗</a>`)+
     "</div>";
   const svg=document.getElementById("map");
   const st=document.getElementById("stage").getBoundingClientRect();
@@ -2795,7 +2761,7 @@ function tapMap(e){
     const svg=document.getElementById("map");
     const r=svg.getBoundingClientRect();
     const vb=(svg.getAttribute("viewBox")||VB0).split(/\s+/).map(Number);
-    const pinSlop=24*vb[2]/Math.max(r.width,1);
+    const pinSlop=28*vb[2]/Math.max(r.width,1);
     const stop=nearestStopHit(pt[0], pt[1], pinSlop);
     const fac=nearestPlace(pt[0], pt[1]);
     if(stop && fac && fac.kind && fac.kind!=="town"){

@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 /**
- * Pull per-trip planner snapshots from the published country pages (input).
- * Each ride JSON is a thinned chain: segs, fork alts, facilities, computed days.
- * It is not the full graph. Re-run after a new publish:
- *   node tools/extract_ride_snapshots.mjs
+ * Build per-trip snapshots from graphs/ owned in this repo.
+ * Does not fetch tigges.github.io/routeplanner.
  *   node tools/extract_ride_snapshots.mjs --all
- *   node tools/extract_ride_snapshots.mjs --country japan
+ *   node tools/extract_ride_snapshots.mjs --country britain
+ *   node tools/extract_ride_snapshots.mjs --trip lejog-west
+ *   node tools/extract_ride_snapshots.mjs --assemble-only
  */
 import { spawn } from "child_process";
-import { writeFileSync, mkdirSync, existsSync, renameSync } from "fs";
+import { writeFileSync, mkdirSync, existsSync, renameSync, readFileSync } from "fs";
 import { createServer } from "http";
 import { readFile } from "fs/promises";
 import { extname, join, dirname } from "path";
 import { fileURLToPath } from "url";
 
-const ROOT = "/tmp/rp";
-const DATA = join(dirname(fileURLToPath(import.meta.url)), "..", "data");
+const REPO = join(dirname(fileURLToPath(import.meta.url)), "..");
+const GRAPHS = join(REPO, "graphs");
+const EXTRACT_DIR = "/tmp/bikeplanner-extract";
+const DATA = join(REPO, "data");
 const PORT = 8767;
 const CDP = 9224;
 const ALL = process.argv.includes("--all");
@@ -430,10 +432,65 @@ function mime(p) {
   return { ".html": "text/html", ".json": "application/json" }[extname(p)] || "application/octet-stream";
 }
 
+function loadRaw(dir, name, fallback = "{}") {
+  const p = join(dir, name);
+  return existsSync(p) ? readFileSync(p, "utf8") : fallback;
+}
+
+function loadJson(dir, name, fallback) {
+  const p = join(dir, name);
+  return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : fallback;
+}
+
+function motorfreeShares(mf) {
+  const out = {};
+  for (const [k, v] of Object.entries(mf || {})) {
+    out[k] = typeof v === "number" ? v : (v && v.share) || 0;
+  }
+  return out;
+}
+
+function assembleGraphHtml(slug) {
+  const dir = join(GRAPHS, slug);
+  const page = loadJson(dir, "page.json", null);
+  if (!page) throw new Error("missing graphs/" + slug + "/page.json");
+  const { presets, ...cfg } = page;
+  const subs = {
+    CFG: JSON.stringify(cfg),
+    P: loadRaw(dir, "P.json"),
+    SD: loadRaw(dir, "seg_data.json"),
+    SC: loadRaw(dir, "seg_scores.json"),
+    MSEG: loadRaw(dir, "moped_segments.json"),
+    MSD: loadRaw(dir, "moped_sd.json"),
+    MSC: loadRaw(dir, "moped_sc.json"),
+    MF: JSON.stringify(motorfreeShares(loadJson(dir, "motorfree.json", {}))),
+    PRESETS: JSON.stringify(presets || []),
+    SSEG: loadRaw(dir, "signed_segments.json"),
+    SSD: loadRaw(dir, "signed_sd.json"),
+    SSC: loadRaw(dir, "signed_sc.json")
+  };
+  let html = readFileSync(join(GRAPHS, "planner-template.html"), "utf8");
+  for (const [k, v] of Object.entries(subs)) {
+    const ph = "/*@" + k + "@*/";
+    if (!html.includes(ph)) throw new Error("template missing " + ph);
+    html = html.replace(ph, v);
+  }
+  return html;
+}
+
+function assemblePages(pages) {
+  mkdirSync(EXTRACT_DIR, { recursive: true });
+  for (const spec of pages) {
+    const dest = join(EXTRACT_DIR, spec.slug + ".html");
+    writeFileSync(dest, assembleGraphHtml(spec.slug));
+    console.log("assembled", spec.slug, "→", dest);
+  }
+}
+
 function serve() {
   return new Promise((resolve) => {
     const s = createServer(async (req, res) => {
-      const p = join(ROOT, req.url === "/" ? "switzerland.html" : req.url.replace(/^\//, ""));
+      const p = join(EXTRACT_DIR, req.url === "/" ? "uk.html" : req.url.replace(/^\//, ""));
       try {
         const b = await readFile(p);
         res.writeHead(200, { "content-type": mime(p) });
@@ -560,12 +617,12 @@ function atlasToGeo(atlas) {
 }
 
 const PAGES = [
-  { country: "switzerland", file: "docs/switzerland/index.html", wait: 2200 },
-  { country: "switzerland", file: "docs/switzerland-north-south/index.html", wait: 1800 },
-  { country: "japan", file: "docs/japan/index.html", wait: 5000 },
-  { country: "spain", file: "docs/spain/index.html", wait: 2500 },
-  { country: "britain", file: "docs/uk/index.html", wait: 2200 },
-  { country: "britain", file: "docs/london/index.html", wait: 1800 }
+  { country: "switzerland", slug: "switzerland", wait: 2200 },
+  { country: "switzerland", slug: "switzerland-north-south", wait: 1800 },
+  { country: "japan", slug: "japan", wait: 5000 },
+  { country: "spain", slug: "spain", wait: 2500 },
+  { country: "britain", slug: "uk", wait: 2200 },
+  { country: "britain", slug: "london", wait: 1800 }
 ];
 
 function rideDir(country) {
@@ -574,6 +631,9 @@ function rideDir(country) {
 
 async function main() {
   const pages = PAGES.filter(p => !ONLY || p.country === ONLY);
+  if (!pages.length) throw new Error("no graphs for --country " + ONLY);
+  assemblePages(pages);
+  if (process.argv.includes("--assemble-only")) return;
   for (const p of pages) mkdirSync(rideDir(p.country), { recursive: true });
 
   // Keep existing Swiss snapshots at the old path working until we move them.
@@ -604,8 +664,8 @@ async function main() {
     const browserWs = ver.webSocketDebuggerUrl;
     const dumpedAtlas = new Set();
     for (const spec of pages) {
-      const url = `http://127.0.0.1:${PORT}/${spec.file}`;
-      console.log("open", spec.country, spec.file);
+      const url = `http://127.0.0.1:${PORT}/${spec.slug}.html`;
+      console.log("open", spec.country, spec.slug);
       const { page, ws } = await openPage(browserWs, url, spec.wait);
       const meta = await tripIds(page);
       const ids = TRIP ? meta.ids.filter(id => id === TRIP) : meta.ids;

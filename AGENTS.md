@@ -1,6 +1,6 @@
 # Agent notes
 
-Paper product in this repo: hub → country gallery → tour sheet, served from the repo root. Serve with `python3 -m http.server 8766`. The navy GIS planner is input only; do not restyle `planner/template.html`.
+Paper product in this repo: hub → country gallery → tour sheet, served from the repo root. Serve with `python3 -m http.server 8766`. The navy GIS planner is input only; do not restyle `graphs/planner-template.html`.
 
 ## Testing during the paper-atlas design loop
 

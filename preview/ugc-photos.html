@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UGC photo options — discussion mock</title>
+<style>
+:root{
+  --paper:#f6f1ea; --ink:#1c1916; --mute:#6f675e; --line:#ddd4c8;
+  --card:#fffdf8; --coral:#f0713f; --gold:#c9a227;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);
+  font:15px/1.45 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+header{max-width:1100px;margin:0 auto;padding:28px 24px 8px}
+.kicker{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin:0 0 8px}
+h1{font-family:Georgia,"Iowan Old Style",serif;font-size:32px;font-weight:600;margin:0 0 8px}
+.lede{color:var(--mute);max-width:46em;margin:0 0 8px}
+main{max-width:1100px;margin:0 auto;padding:8px 24px 48px}
+.opt{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;margin:0 0 22px}
+.opt h2{font-family:Georgia,serif;font-size:22px;margin:0 0 6px}
+.opt .tag{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--coral);font-weight:700;margin:0 0 8px}
+.opt .tag.rec{color:#6a5a12;background:#f3e6b3;padding:2px 8px;border-radius:999px;letter-spacing:.06em}
+.opt p{margin:0 0 12px;color:#3f3a34}
+.mock{
+  display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:14px;
+  background:#efe7dc;border-radius:12px;padding:12px;align-items:start
+}
+@media (max-width:800px){ .mock{grid-template-columns:1fr} }
+.sheet{background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+.sheet h3{font-family:Georgia,serif;margin:0 0 4px;font-size:18px}
+.meta{font-size:12px;color:var(--mute);margin:0 0 8px}
+.toggle{display:flex;gap:6px;margin:0 0 10px}
+.toggle b{
+  font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:999px;
+  padding:4px 10px;background:#fff
+}
+.toggle b.on{border-color:var(--coral);color:var(--coral)}
+.phs{display:flex;gap:8px}
+.ph{width:104px;height:68px;border-radius:8px;background:#cfc4b4 center/cover no-repeat;border:2px solid transparent}
+.ph.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.map{
+  min-height:220px;border-radius:12px;background:#d9cfc3 center/cover no-repeat;
+  position:relative;overflow:hidden
+}
+.card{
+  position:absolute;left:16px;top:16px;width:200px;background:var(--card);
+  border:1px solid var(--line);border-radius:12px;padding:8px 10px 10px;
+  box-shadow:0 8px 24px rgba(28,25,22,.12)
+}
+.card .placeph{height:72px;border-radius:8px;background:#cfc4b4 center/cover no-repeat;margin:0 0 6px}
+.card b{display:block;font-family:Georgia,serif;font-size:16px}
+.card .sub{font-size:12px;color:var(--mute);margin:2px 0 6px}
+.card a{display:block;color:var(--coral);font-size:12px;text-decoration:none}
+.album{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.album i{width:72px;height:48px;border-radius:6px;background:#cfc4b4 center/cover no-repeat;display:block}
+.note{font-size:13px;color:var(--mute);margin:10px 0 0}
+</style>
+</head>
+<body>
+<header>
+<p class="kicker">Discussion mock · not the live product</p>
+<h1>Your photos on cape to cape</h1>
+<p class="lede">Commons stays the public face of each town. These three options are how your own ride pictures could sit on the same place keys later. Recommended: Option A.</p>
+</header>
+<main>
+
+<section class="opt" id="opt-a">
+<p class="tag rec">Recommended · Option A</p>
+<h2>Toggle: Places vs This ride</h2>
+<p>Same day card and place card. A two-chip switch. Commons illustrates the town for everyone. Your GPS-snapped thumbs replace the face only while This ride is on. Nothing is mixed silently. Import stays a local tool, not an upload form on the atlas.</p>
+<div class="mock">
+  <div class="sheet">
+    <h3>Aomori → Fukaura</h3>
+    <p class="meta">Day 17 · 62 km · sleep Fukaura</p>
+    <div class="toggle"><b>Places</b><b class="on">This ride</b></div>
+    <div class="phs">
+      <div class="ph" style="background-image:url('../img/ns/aomori.jpg')"></div>
+      <div class="ph on" style="background-image:url('../img/ns/fukaura.jpg')"></div>
+    </div>
+    <p class="note">Chips still open the place. The gold frame is the town you tapped.</p>
+  </div>
+  <div class="map" style="background-image:linear-gradient(180deg,rgba(246,241,234,.2),rgba(28,25,22,.25)),url('../img/ns/fukaura.jpg')">
+    <div class="card">
+      <div class="placeph" style="background-image:url('../img/ns/fukaura.jpg')"></div>
+      <b>Fukaura</b>
+      <div class="sub">Your photo · sleep tonight</div>
+      <a>OpenStreetMap pin ↗</a>
+      <a>Google Search ↗</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="opt" id="opt-b">
+<p class="tag">Option B · not first</p>
+<h2>Silent mix: yours replace the face</h2>
+<p>No switch. If you have a photo for Fukaura, it becomes the day thumb automatically. Simpler, but a café snapshot can overwrite the lighthouse for you without saying so, and guests cannot tell Commons from yours.</p>
+<div class="mock">
+  <div class="sheet">
+    <h3>Aomori → Fukaura</h3>
+    <p class="meta">Day 17 · 62 km · sleep Fukaura</p>
+    <div class="phs">
+      <div class="ph" style="background-image:url('../img/ns/aomori.jpg')"></div>
+      <div class="ph on" style="background-image:url('../img/ns/fukaura.jpg')"></div>
+    </div>
+    <p class="note">Looks identical to today’s card. The swap is invisible.</p>
+  </div>
+  <div class="map" style="background-image:linear-gradient(180deg,rgba(246,241,234,.15),rgba(28,25,22,.3)),url('../img/ns/aomori.jpg')">
+    <div class="card">
+      <div class="placeph" style="background-image:url('../img/ns/fukaura.jpg')"></div>
+      <b>Fukaura</b>
+      <div class="sub">sleep tonight</div>
+      <a>OpenStreetMap pin ↗</a>
+      <a>Google Search ↗</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="opt" id="opt-c">
+<p class="tag">Option C · later, on the place</p>
+<h2>Town album on the place card</h2>
+<p>Keep one face on the day card (Commons, or yours if This ride is on). Extra frames live on the place card as a small strip. Good after GPS import, when a town has four keepers. Do not put the album on the day card — that card stays km, effort, two thumbs.</p>
+<div class="mock">
+  <div class="sheet">
+    <h3>Aomori → Fukaura</h3>
+    <p class="meta">Day 17 · still two thumbs, not a gallery</p>
+    <div class="phs">
+      <div class="ph" style="background-image:url('../img/ns/aomori.jpg')"></div>
+      <div class="ph on" style="background-image:url('../img/ns/fukaura.jpg')"></div>
+    </div>
+  </div>
+  <div class="map" style="background-image:linear-gradient(180deg,rgba(246,241,234,.15),rgba(28,25,22,.28)),url('../img/ns/aomori.jpg')">
+    <div class="card" style="width:228px">
+      <div class="placeph" style="background-image:url('../img/ns/fukaura.jpg')"></div>
+      <b>Fukaura</b>
+      <div class="sub">sleep tonight · 4 photos</div>
+      <div class="album">
+        <i style="background-image:url('../img/ns/fukaura.jpg')"></i>
+        <i style="background-image:url('../img/ns/aomori.jpg')"></i>
+        <i style="background-image:url('../img/ns/wakkanai.jpg')"></i>
+        <i style="background-image:url('../img/ns/hakodate.jpg')"></i>
+      </div>
+      <a style="margin-top:6px">OpenStreetMap pin ↗</a>
+      <a>Google Search ↗</a>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+</body>
+</html>

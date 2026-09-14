@@ -1209,29 +1209,35 @@ function enrichDays(days){
   });
   return days;
 }
+function placePhotoList(v){
+  if(!v) return [];
+  return Array.isArray(v)?v.filter(Boolean):[v];
+}
 function placePhotos(name){
   const places=PAPER.places||{};
   if(!name) return [];
-  const hit=places[name];
-  if(hit) return Array.isArray(hit)?hit:[hit];
-  const low=String(name).toLowerCase();
-  let fuzzy=null;
-  for(const k of Object.keys(places)){
-    const kl=k.toLowerCase();
-    const alias=String((PAPER.en&&PAPER.en[k])||"").toLowerCase();
-    if(low===kl || (alias && low===alias)){
-      const v=places[k];
-      return Array.isArray(v)?v:[v];
+  const aliases=PAPER.photoAliases||{};
+  const names=[name];
+  if(aliases[name]) names.push(aliases[name]);
+  const paren=String(name).match(/\(([^)]+)\)/);
+  if(paren) names.push(paren[1]);
+  const plus=String(name).match(/^(.+?)\s+\+\d+\s*km$/i);
+  if(plus) names.push(plus[1]);
+  const tried=new Set();
+  for(const n of names){
+    if(!n || tried.has(n)) continue;
+    tried.add(n);
+    const hit=places[n];
+    if(hit) return placePhotoList(hit);
+    const low=String(n).toLowerCase();
+    const en=PAPER.en||{};
+    for(const k of Object.keys(places)){
+      const alias=String(en[k]||"").toLowerCase();
+      if(low===k.toLowerCase() || (alias && low===alias)) return placePhotoList(places[k]);
     }
-    const shorter=Math.min(low.length, kl.length);
-    if(k.length>=5 && shorter>=5 && (low.indexOf(kl)>=0 || kl.indexOf(low)>=0)){
-      const score=Math.abs(k.length-String(name).length);
-      if(!fuzzy || score<fuzzy.score) fuzzy={score, v:places[k]};
-    }
+    if(aliases[n] && !tried.has(aliases[n])) names.push(aliases[n]);
   }
-  if(!fuzzy) return [];
-  const v=fuzzy.v;
-  return Array.isArray(v)?v:[v];
+  return [];
 }
 function dayGapLine(today){
   if(!today) return "";
@@ -3087,6 +3093,7 @@ Promise.all([
     const block=photos[PAPER.id]||photos;
     if(block.trips) Object.assign(PHOTO, block.trips);
     if(block.places) PAPER.places=Object.assign({}, PAPER.places||{}, block.places);
+    if(block.photoAliases) PAPER.photoAliases=Object.assign({}, PAPER.photoAliases||{}, block.photoAliases);
   }
   const foot=document.querySelector("footer");
   if(foot) foot.textContent=PAPER.footer;

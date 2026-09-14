@@ -1,35 +1,37 @@
 # Owned graphs
 
-Country graphs live here so ride snapshots can be rebuilt without
-`tigges.github.io/routeplanner`.
+This directory is the source of truth for country graphs. The paper
+site does not fetch `tigges.github.io/routeplanner`. Serve, extract,
+and ship from this repo alone.
 
 `planner-template.html` is **build input only**. Do not restyle it.
 The paper product is the hub, galleries, and tour sheets at the repo root.
 
-| slug | country gallery | source |
+| slug | country gallery | frozen from |
 |---|---|---|
 | `japan` | Japan | `examples/japan` |
 | `uk` | Britain | `examples/uk` |
 | `london` | Britain | `examples/london` |
 | `switzerland` | Switzerland | `examples/switzerland` |
-| `switzerland-north-south` | Switzerland | frozen from published HTML |
-| `spain` | Spain | frozen from published HTML |
+| `switzerland-north-south` | Switzerland | published HTML |
+| `spain` | Spain | published HTML |
 
-Caches (`route_cache`, `rev_cache`, `moped_cache`, OSM extracts) stay in
-the routeplanner checkout. Spain and Switzerland N–S have no `examples/`
-dir there, so `P` / `seg_data` / `seg_scores` are frozen from
-`docs/<slug>/index.html` in that checkout.
+Provenance is `manifest.json` (`sourceRepo`, `sourceHead`).
+`tigges/routeplanner` is archived input. You do not need that checkout
+to run the site or to rebuild snapshots.
 
-Refresh from a local `tigges/routeplanner` clone:
-
-```
-ROUTEPLANNER=/path/to/routeplanner python3 tools/import_graphs.py
-```
-
-Rebuild snapshots (Chrome, local assembled HTML, no github.io):
+Rebuild snapshots (Chrome, local assembled HTML):
 
 ```
 node tools/extract_ride_snapshots.mjs --all
 ```
 
-Snapshots keep eat / wc / camp as well as shops and beds, thin less than the old github.io scrape, and store signed and moped alternate lines when the graph has them.
+Optional: copy a frozen local checkout into `graphs/` (caches and OSM
+extracts stay behind; the OSM rebuild pipeline is not in this repo):
+
+```
+ROUTEPLANNER=/path/to/archived-routeplanner python3 tools/import_graphs.py
+```
+
+Snapshots keep eat / wc / camp as well as shops and beds, and store
+signed and moped alternate lines when the graph has them.

@@ -1,6 +1,6 @@
 # Agent notes
 
-Paper product in this repo: hub → country gallery → tour sheet, served from the repo root. Serve with `python3 -m http.server 8766`. The navy GIS planner is input only; do not restyle `graphs/planner-template.html`.
+Paper product in this repo: hub → country gallery → tour sheet, served from the repo root. Serve with `python3 -m http.server 8766`. The navy GIS planner template is build input only; do not restyle `graphs/planner-template.html`. Country graphs live in `graphs/`. Rebuild snapshots with `node tools/extract_ride_snapshots.mjs`. Do not fetch `tigges.github.io/routeplanner`.
 
 Start a new thread from `main`. Paste [HANDOVER.md](HANDOVER.md) as the first message. Do not continue older agent chats; they already shipped.
 
@@ -12,3 +12,4 @@ Start a new thread from `main`. Paste [HANDOVER.md](HANDOVER.md) as the first me
 - Default proof: stills (or the live site). Do not record a walkthrough unless the user asks, or the change is motion/interaction a screenshot cannot show.
 - If a recording is needed, start it only after push, and write the summary without waiting for ffmpeg.
 - Serve: `python3 -m http.server 8766`
+- Independence: `bash tools/check_independence.sh`

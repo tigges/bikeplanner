@@ -4,7 +4,7 @@ const PAPER=Object.assign({
   country:"Switzerland",
   kicker:n=>"Switzerland · "+n+" trips",
   lede:"National routes, pass days, lake loops and the Swiss leg of EuroVelo 6. Scroll the atlas or use the arrows to walk the list. Open a tour when you are ready. Days are computed from effort — the number is a default, not a timetable.",
-  note:"Same catalogue as the old picker. Scroll or use the arrows to walk the list. Open a tour for a paper sheet — days computed from effort, from a snapshot of the graph, not the whole graph in this repo. This page is the product, not a doorway to the dark planner.",
+  note:"Same catalogue as the old picker. Scroll or use the arrows to walk the list. Open a tour for a paper sheet — days computed from effort, from a snapshot of graphs in this repo.",
   footer:"Photos Wikimedia Commons. Days are computed, not stored.",
   backAll:n=>"‹ All "+n+" trips",
   tripsUrl:"data/switzerland-trips.json",

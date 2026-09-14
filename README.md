@@ -19,4 +19,4 @@ Every trip opens a paper tour sheet from a **ride snapshot** (computed days, ele
 
 Old `/preview/…` URLs redirect to the same page at the site root.
 
-Serve with `python3 -m http.server 8766`.
+Serve with `python3 -m http.server 8766`. Independence check: `bash tools/check_independence.sh`.
